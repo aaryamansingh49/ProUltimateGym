@@ -1,0 +1,196 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import getCurrentDay from "../utils/getCurrentDay";
+import { updateGoalProgress } from "../utils/goalProgress";
+import BASE_URL from "../api/config.js";
+import { useNavigate } from "react-router-dom";
+
+import "../styles/dashboard/todayWorkout.css";
+
+const TodayWorkout = () => {
+
+  const [workout, setWorkout] = useState(null);
+  const [completed, setCompleted] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const userId = localStorage.getItem("userKey");
+  const day = getCurrentDay();
+  const navigate = useNavigate();
+
+  if (!userId) {
+    return <p>Please login again</p>;
+  }
+
+  /* ================= FETCH WORKOUT ================= */
+
+  useEffect(() => {
+
+    if (!userId) return;
+
+    const fetchWorkout = async () => {
+
+      try {
+
+        setLoading(true);
+
+        const workoutRes = await axios.get(
+          `${BASE_URL}/api/workout/${userId}/${day}`
+        );
+
+        const workoutData = workoutRes.data;
+        setWorkout(workoutData);
+
+        const progressRes = await axios.get(
+          `${BASE_URL}/api/workout/progress/${userId}/${day}`
+        );
+
+        const initialCompleted = workoutData.exercises.map((ex, index) => {
+
+          const saved = progressRes.data?.completedExercises?.[index];
+
+          return {
+            name: ex.name,
+            calories: ex.calories,
+            done: saved?.done || false
+          };
+
+        });
+
+        setCompleted(initialCompleted);
+
+      } catch (error) {
+
+        alert(
+          error.response?.data?.message ||
+          "Failed to load workout"
+        );
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
+
+    fetchWorkout();
+
+  }, [day, userId]);
+
+  /* ================= TOGGLE EXERCISE ================= */
+
+  const toggleExercise = (index) => {
+
+    setCompleted(prev => {
+
+      const updated = [...prev];
+
+      if (!updated[index]) return prev;
+
+      updated[index] = {
+        ...updated[index],
+        done: !updated[index].done
+      };
+
+      return updated;
+
+    });
+
+  };
+
+  /* ================= CALORIES ================= */
+
+  const totalCalories = completed.reduce(
+    (sum, ex) => sum + (ex.done ? ex.calories : 0),
+    0
+  );
+
+  /* ================= SAVE PROGRESS ================= */
+
+  const saveProgress = async () => {
+
+    try {
+  
+      setLoading(true);
+  
+      await axios.post(
+        `${BASE_URL}/api/workout/progress`,
+        {
+          userId,
+          day,
+          type: workout.muscleGroup,
+          completedExercises: completed
+        }
+      );
+  
+      const userKey = localStorage.getItem("userKey");
+  
+      const todayName = new Date().toLocaleDateString("en-US",{weekday:"short"});
+  
+      localStorage.setItem(`workoutCompleted_${todayName}_${userKey}`, true);
+  
+      /* ===== UPDATE GOAL PROGRESS ===== */
+  
+      updateGoalProgress();
+      /* 🔥 Trigger dashboard refresh */
+window.dispatchEvent(new Event("workoutUpdated"));
+  
+      navigate("/dashboard");
+  
+    } catch (error) {
+  
+      alert(
+        error.response?.data?.message ||
+        "Failed to save workout"
+      );
+  
+    } finally {
+  
+      setLoading(false);
+  
+    }
+  
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (!workout) return <p>No workout found</p>;
+
+  return (
+
+    <div className="workout-page">
+
+      <h2>
+        {workout.day} – {workout.muscleGroup} Workout
+      </h2>
+
+      {workout.exercises.map((ex, index) => (
+
+        <div key={ex.name} className="exercise-row">
+
+          <input
+            type="checkbox"
+            checked={completed[index]?.done || false}
+            onChange={() => toggleExercise(index)}
+          />
+
+          <span>
+            {ex.name} – {ex.sets}x{ex.reps}
+          </span>
+
+          <strong>{ex.calories} kcal</strong>
+
+        </div>
+
+      ))}
+
+      <h3>🔥 Total Calories Burned: {totalCalories}</h3>
+
+      <button onClick={saveProgress}>Done</button>
+
+    </div>
+
+  );
+
+};
+
+export default TodayWorkout;

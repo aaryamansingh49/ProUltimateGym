@@ -3,6 +3,11 @@ import React, { useState, useEffect } from "react";
 import "../styles/Chatbot.css"; // Create this CSS file for styling
 import botIcon from "../assets/bot-icon2.jpg"; // use your bot icon image
 import axios from "axios";
+import BASE_URL from "../api/config.js";
+const API_BASE = BASE_URL;
+
+
+
 
 const chatbotData = [
   {
@@ -31,6 +36,7 @@ const chatbotData = [
     response: "Yes, online coaching is available under the 9 and 12-month plans."
   },
   {
+    key: "membership_expiry",
     question: "When my membership will expire?",
     type: "protected",
     loginRequired: true,
@@ -56,7 +62,7 @@ const ChatBot = () => {
   const token = localStorage.getItem("token");
   const email = localStorage.getItem("userEmail");
 
-  const isLoggedIn = token && email; // Replace with actual login check in future
+  const isLoggedIn = token && email; 
 
   useEffect(() => {
     setShowHello(true);
@@ -88,16 +94,26 @@ const ChatBot = () => {
         let postData = { token, email };
   
         if (item.question.includes("membership")) {
-          apiUrl = "http://localhost:5001/api/membership/end-date";
+          apiUrl = `${API_BASE}/api/membership/end-date`;
         } else if (item.question.includes("coach")) {
-          apiUrl = "http://localhost:5001/api/coach/assigned";
+          apiUrl = `${API_BASE}/api/coach/assigned`;
         }
+        
   
         const res = await axios.post(apiUrl, postData);
   
-        if (item.question.includes("membership")) {
-          setResponse(`Your membership will end on ${res.data.endDate}`);
-        } else if (item.question.includes("coach")) {
+        if (item.key === "membership_expiry") {
+          console.log("API RESPONSE:", res.data);
+        
+          const endDate = res.data?.endDate;
+        
+          if (!endDate || endDate === "Invalid Date") {
+            setResponse("Membership end date not available. Please contact admin.");
+          } else {
+            setResponse(`Your membership will end on ${endDate}`);
+          }
+        }
+        else if (item.question.includes("coach")) {
           setResponse(`Your assigned coach is ${res.data.coach}`);
         }
       } catch (error) {

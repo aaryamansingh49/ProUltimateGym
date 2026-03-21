@@ -2,7 +2,8 @@ import UserModel from "../models/userSchema.js";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-
+import sendOtpMail from "../utils/sendOtp.js";
+const otpStore = {};
 dotenv.config(); 
 
 class UserController {
@@ -49,11 +50,12 @@ class UserController {
       const savedUser = await newUser.save();
 
       const userResponse = {
-        id: savedUser._id,
+        _id: savedUser._id,
         firstName: savedUser.firstName,
         lastName: savedUser.lastName,
         email: savedUser.email,
       };
+      
 
       res.status(201).json({
         message: "Signup successful",
@@ -85,15 +87,16 @@ class UserController {
       const token = jwt.sign(
         { id: user._id, email: user.email },
         process.env.JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "7d" }
       );
 
       const userResponse = {
-        id: user._id,
+        _id: user._id,   // 🔥 IMPORTANT
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
       };
+      
 
       res.status(200).json({
         message: "Login successful",
@@ -104,6 +107,96 @@ class UserController {
       res.status(500).json({ error: "Server error" });
     }
   };
+
+  //Send otp
+  static sendLoginOtp = async (req, res) => {
+    const { email } = req.body;
+  
+    try {
+  
+      const otp = Math.floor(100000 + Math.random() * 900000);
+  
+      otpStore[email] = {
+        otp,
+        expires: Date.now() + 5 * 60 * 1000
+      };
+  
+      await sendOtpMail(email, otp);
+  
+      res.json({
+        message: "OTP sent successfully"
+      });
+  
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
+
+  // Verify otp
+  static verifyLoginOtp = async (req, res) => {
+    try {
+      const { email, otp } = req.body;
+  
+      console.log("VERIFY OTP REQ:", { email, otp });
+  
+      const record = otpStore[email];
+  
+      if (!record) {
+        return res.status(400).json({ message: "OTP not requested." });
+      }
+  
+      if (record.otp != otp) {
+        return res.status(400).json({ message: "Invalid OTP" });
+      }
+  
+      if (record.expires < Date.now()) {
+        return res.status(400).json({ message: "OTP expired" });
+      }
+  
+      let user = await UserModel.findOne({ email });
+      let isNewUser = false;
+  
+      if (!user) {
+        isNewUser = true;
+  
+        // ⚠️ If password is required in schema, give a default value
+        user = new UserModel({
+          email,
+          password: "otp-login"
+        });
+  
+        await user.save();
+      }
+  
+      const token = jwt.sign(
+        { id: user._id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+  
+      const userResponse = {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      };
+  
+      res.json({
+        message: "Login successful",
+        token,
+        user: userResponse,
+        isNewUser
+      });
+  
+    } catch (error) {
+      console.error("OTP VERIFY ERROR:", error);
+      res.status(500).json({ message: "Server error during OTP verify" });
+    }
+  };
+  
 }
+
+
 
 export default UserController;

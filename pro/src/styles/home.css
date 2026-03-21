@@ -136,7 +136,7 @@
   .gym-services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 3rem;
+    gap: 6rem;
   }
   
   .gym-service-card {

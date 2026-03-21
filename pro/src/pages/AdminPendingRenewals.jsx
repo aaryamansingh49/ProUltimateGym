@@ -1,8 +1,9 @@
 // src/pages/AdminPendingRenewals.jsx
 import React, { useEffect, useState } from "react";
 import { useAdminAuth } from "../context/AdminAuthContext";
+import BASE_URL from "../api/config.js";
 
-const API_BASE = "http://localhost:5001"; 
+const API_BASE = BASE_URL;
 
 export default function AdminPendingRenewals() {
   const [members, setMembers] = useState([]);

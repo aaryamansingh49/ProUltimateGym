@@ -103,11 +103,32 @@
 .chatbot-header button {
   position: absolute;
   right: 15px;
-  background: transparent;
+  top: 50%;
+  transform: translateY(-50%);
+  
+  background-color: white;   /* 🔥 visible background */
+  color: #d32f2f;            /* 🔥 red cross */
+  
   border: none;
-  color: white;
-  font-size: 20px;
+  border-radius: 50%;
+  
+  width: 28px;
+  height: 28px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  font-size: 16px;
   cursor: pointer;
+  
+  transition: all 0.3s ease;
+}
+
+/* 🔥 Hover effect */
+.chatbot-header button:hover {
+  background-color: #d32f2f;
+  color: white;
 }
 
 .chatbot-body {

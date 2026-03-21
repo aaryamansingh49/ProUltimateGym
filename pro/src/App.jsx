@@ -6,10 +6,11 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import { jwtDecode } from "jwt-decode";
 
 // Components
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./components/dashboard/ScrollToTop";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -25,6 +26,16 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminPendingRenewals from "./pages/AdminPendingRenewals";
 
+//workout
+import TodayWorkout from "./pages/TodayWorkout";
+import Meal from "./pages/Meal";
+// import MyGoal from "./components/dashboard/MyGoal.jsx";
+// import Statistics from "./components/dashboard/Statistics.jsx";
+
+//UserDashboard
+import ProtectedUserRoute from "./routes/ProtectedUserRoute";
+import UserDashboard from "./pages/UserDashboard";
+
 // Lazy loaded normal (user) pages
 const Home = lazy(() => import("./components/Home"));
 const About = lazy(() => import("./components/About"));
@@ -33,18 +44,22 @@ const Contact = lazy(() => import("./components/Contact"));
 const Signup = lazy(() => import("./components/Signup"));
 const Login = lazy(() => import("./components/Login"));
 import Payments from "./pages/Payments";
+import OtpLogin from "./pages/OtpLogin";
 
 // Regular user components
-import UserDashboard from "./components/userDashboard.jsx";
+// import UserDashboard from "./components/userDashboard.jsx";
 import Membership from "./components/Membership.jsx";
 import AccountStatement from "./components/AccountStatement.jsx";
 
 //  Updated Conditional Components
-function ConditionalNavbar() {
+function ConditionalNavbar({ setSidebarOpen }) {
   const { adminToken } = useAdminAuth();
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
-  return adminToken && isAdminRoute ? null : <Navbar />;
+
+  return adminToken && isAdminRoute
+    ? null
+    : <Navbar setSidebarOpen={setSidebarOpen} />;
 }
 
 function ConditionalFooter() {
@@ -63,6 +78,7 @@ function ConditionalChatbot() {
 
 const App = () => {
   const [userEmail, setUserEmail] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -81,8 +97,18 @@ const App = () => {
     <AdminAuthProvider>
       <Router>
         <ErrorBoundary>
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              duration: 2000,
+            }}
+            containerStyle={{
+              top: 10, // 🔥 yaha value change kar (px me)
+            }}
+          />
+
           {/* Hide these for Admin */}
-          <ConditionalNavbar />
+          <ConditionalNavbar setSidebarOpen={setSidebarOpen} />
           <ConditionalChatbot />
 
           <Suspense
@@ -93,51 +119,80 @@ const App = () => {
             }
           >
             <ScrollToTop />
+
             <Routes>
-              {/* User routes */}
+              {/* ================= USER PUBLIC ROUTES ================= */}
+
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/userDashboard" element={<UserDashboard />} />
+              <Route path="/otp-login" element={<OtpLogin />} />
+
+              <Route path="/workout/today" element={<TodayWorkout />} />
+              <Route path="/meal" element={<Meal />} />
+
+              {/* 🔥 REMOVE THESE (dashboard internal sections)
+              <Route path="/my-goals" element={<MyGoal />} />
+              <Route path="/statistics" element={<Statistics />} />
+              */}
+
               <Route path="/membership" element={<Membership />} />
-              <Route path="/admin/payments" element={<Payments />} />
+
               <Route
                 path="/account"
                 element={<AccountStatement userEmail={userEmail} />}
               />
 
-              {/* Admin routes */}
-            <Route path="/admin-login" element={<AdminLogin />} />
-            <Route
-              path="/admin-dashboard"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminDashboard />
-                </ProtectedAdminRoute>
-              }
-            />
-            <Route
-              path="/admin/payments"
-              element={
-                <ProtectedAdminRoute>
-                  <Payments />
-                </ProtectedAdminRoute>
-              }
-            />
+              {/* ================= PROTECTED USER DASHBOARD ================= */}
 
-            <Route
-              path="/admin/pending-renewals"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminPendingRenewals />
-                </ProtectedAdminRoute>
-              }
-            />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedUserRoute>
+                    <UserDashboard
+                      sidebarOpen={sidebarOpen}
+                      setSidebarOpen={setSidebarOpen}
+                    />
+                  </ProtectedUserRoute>
+                }
+              />
 
-              
+              {/* ================= ADMIN ROUTES ================= */}
+
+              <Route path="/admin-login" element={<AdminLogin />} />
+
+              <Route
+                path="/admin-dashboard"
+                element={
+                  <ProtectedAdminRoute>
+                    <AdminDashboard />
+                  </ProtectedAdminRoute>
+                }
+              />
+
+              <Route
+                path="/admin/payments"
+                element={
+                  <ProtectedAdminRoute>
+                    <Payments />
+                  </ProtectedAdminRoute>
+                }
+              />
+
+              <Route
+                path="/admin/pending-renewals"
+                element={
+                  <ProtectedAdminRoute>
+                    <AdminPendingRenewals />
+                  </ProtectedAdminRoute>
+                }
+              />
+
+              {/* ================= FALLBACK ================= */}
+
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>

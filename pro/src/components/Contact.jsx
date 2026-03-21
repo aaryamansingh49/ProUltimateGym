@@ -1,6 +1,8 @@
 // src/components/Contact.jsx
 import React, { useState } from "react";
 import "../styles/contact.css";
+import BASE_URL from "../api/config.js";
+
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -18,7 +20,8 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5001/api/contact', {
+      const res = await fetch(`${BASE_URL}/api/contact`, {
+
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

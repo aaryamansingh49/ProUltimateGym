@@ -26,15 +26,17 @@ const Plans = () => {
           </ul>
           <button
             className="plan-btn"
-            onClick={() => navigate("/membership", { state: { plan: "Basic" } })}
+            onClick={() =>
+              navigate("/membership", { state: { plan: "Basic" } })
+            }
           >
             Choose Basic
           </button>
         </div>
 
         {/* Pro Plan */}
-        <div className="plan-card pro-plan">
-          <div className="popular-badge">Most Popular</div>
+        {/* Pro Plan */}
+        <div className="plan-card">
           <h3>Pro</h3>
           <p className="price">₹12k/6mo</p>
           <ul>
@@ -52,7 +54,9 @@ const Plans = () => {
         </div>
 
         {/* Premium Plan */}
-        <div className="plan-card">
+        {/* Premium Plan */}
+        <div className="plan-card pro-plan">
+          <div className="popular-badge">Most Popular</div>
           <h3>Premium</h3>
           <p className="price">₹20k/12mo</p>
           <ul>

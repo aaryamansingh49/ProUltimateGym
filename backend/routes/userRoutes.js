@@ -10,4 +10,8 @@ router.post("/signup", UserController.createUserDoc);
 // Login route
 router.post("/login", UserController.verifyLogin);
 
+router.post("/send-otp", UserController.sendLoginOtp);
+router.post("/verify-otp", UserController.verifyLoginOtp);
+
+
 export default router;

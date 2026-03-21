@@ -1,0 +1,328 @@
+/* ================================
+   MAIN WRAPPER
+================================ */
+
+.meal-wrapper{
+  padding:40px;
+  background:#f4f6f8;
+  min-height:100vh;
+  font-family: "Inter", sans-serif;
+}
+
+.meal-wrapper h1{
+  font-size:28px;
+  font-weight:700;
+  color:#111;
+  margin-bottom:25px;
+}
+
+/* ================================
+   MEAL SECTION CARDS
+================================ */
+
+.meal-section{
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  margin-bottom:25px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.05);
+  transition:0.3s;
+}
+
+.meal-section:hover{
+  transform:translateY(-2px);
+}
+
+.meal-section h3{
+  color:#e60023;
+  margin-bottom:12px;
+  font-size:18px;
+}
+
+/* ================================
+   MEAL BOX
+================================ */
+
+.meal-box{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#fafafa;
+  padding:10px 15px;
+  margin-bottom:10px;
+  border-radius:10px;
+  transition:0.25s;
+  cursor:pointer;
+}
+
+.meal-box:hover{
+  background:#fff0f3;
+}
+
+.meal-box.selected {
+  background: #ffe5ea;
+  border: 1px solid #e60023;
+}
+.meal-box input[type="checkbox"]{
+  accent-color:#e60023;
+  width:16px;
+  height:16px;
+}
+
+/* ================================
+   AI RECOMMENDATION BOX
+================================ */
+
+.ai-box{
+  background:white;
+  border-radius:14px;
+  padding:20px;
+  margin-bottom:25px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.05);
+}
+
+.ai-box h2{
+  color:#111;
+  margin-bottom:15px;
+}
+
+.ai-box div{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
+  border-radius:8px;
+  background:#f9fafb;
+  margin-bottom:8px;
+}
+
+.ai-box button{
+  background:#e60023;
+  color:white;
+  border:none;
+  padding:6px 14px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.ai-box button:hover{
+  background:#c4001d;
+}
+
+/* ================================
+   FOOD LIBRARY SEARCH
+================================ */
+
+.food-library{
+  background:white;
+  border-radius:14px;
+  padding:20px;
+  margin-top:25px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.05);
+}
+
+.food-library h2{
+  margin-bottom:10px;
+}
+
+.food-library input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ddd;
+  margin-bottom:10px;
+  outline:none;
+}
+
+.food-library input:focus{
+  border-color:#e60023;
+}
+
+.food-library button{
+  background:#111;
+  color:white;
+  border:none;
+  padding:8px 16px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-bottom:15px;
+}
+
+.food-library button:hover{
+  background:#000;
+}
+
+/* ================================
+   CUSTOM FOOD FORM
+================================ */
+
+.food-library form{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.food-library form input{
+  flex:1;
+}
+
+/* ================================
+   SUBMIT BUTTON
+================================ */
+
+.submit-btn{
+  background:#e60023;
+  color:white;
+  padding:14px 32px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+  margin-top:25px;
+}
+
+.submit-btn:hover{
+  background:#c4001d;
+  transform:translateY(-1px);
+}
+
+/* ================================
+   NUTRITION DASHBOARD
+================================ */
+
+.nutrition{
+  background:white;
+  margin-top:30px;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.05);
+}
+
+.nutrition p{
+  margin-bottom:8px;
+  font-weight:500;
+}
+
+/* ================================
+   PROGRESS BARS
+================================ */
+
+.progress-bar{
+  height:8px;
+  background:#eee;
+  border-radius:10px;
+  margin-bottom:15px;
+  overflow:hidden;
+}
+
+.progress-bar div{
+  height:100%;
+  background:#e60023;
+  transition:0.4s;
+}
+
+.progress-bar.protein div{
+  background:#2ecc71;
+}
+
+.progress-bar.fats div{
+  background:#f39c12;
+}
+
+.progress-bar.carbs div{
+  background:#3498db;
+}
+
+.meal-header-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.add-food-btn{
+  background:#e60023;
+  color:white;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.food-popup{
+  position:fixed;
+  top:55%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  z-index:1000;
+
+  width:420px;          /* fixed width */
+  max-height:70vh;      /* max height */
+  overflow-y:auto;      /* ✅ scroll enable */
+}
+
+.food-popup::-webkit-scrollbar{
+  width:6px;
+}
+
+.food-popup::-webkit-scrollbar-thumb{
+  background:#e60023;
+  border-radius:6px;
+}
+
+.qty-pill{
+  margin-left:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;              /* tight spacing */
+  background:#fff4f6;
+  border-radius:18px;
+  padding:4px 10px;
+  width:80px;
+  height:50px;
+}
+
+.qty-pill button{
+  border:none;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  font-weight:700;
+  color:#e60023;
+  cursor:pointer;
+  padding:0;
+  width:20px;           /* equal button width */
+  height:20px;
+  margin-bottom: 26px;
+}
+
+.qty-pill span{
+  font-weight:600;
+  font-size:14px;
+  text-align:center;
+  
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media(max-width:768px){
+
+  .meal-wrapper{
+    padding:20px;
+  }
+
+  .food-library form{
+    flex-direction:column;
+  }
+
+}

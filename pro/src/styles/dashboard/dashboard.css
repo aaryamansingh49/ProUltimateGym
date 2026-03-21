@@ -1,0 +1,224 @@
+:root {
+  --primary-red: #ef4444;
+  --light-red: #fee2e2;
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+  --border-light: #e5e7eb;
+  --bg-soft: #f9fafb;
+}
+
+/* CONTAINER */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-soft);
+}
+
+/* MAIN AREA */
+.dashboard-main {
+  flex: 1;
+  padding: 28px;
+  background: var(--bg-soft);
+  overflow-y:auto;  
+  color:#0f172a; 
+}
+
+/* STATS CARDS */
+.stats-cards {
+  display: flex;
+  gap: 22px;
+  margin-bottom: 32px;
+}
+
+.stats-cards > div {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  flex: 1;
+  border: 1px solid var(--border-light);
+  transition: all 0.2s ease;
+}
+
+.stats-cards > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.12);
+}
+
+/* SECTION */
+.dashboard-section {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  border: 1px solid var(--border-light);
+  margin-bottom: 32px;
+}
+
+.dashboard-section h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 18px;
+  position: relative;
+}
+
+/* RED UNDERLINE */
+.dashboard-section h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 40px;
+  height: 3px;
+  background: var(--primary-red);
+  border-radius: 4px;
+}
+
+/* COMMON CARD */
+.fitness-card {
+  flex: 1;
+  height: 170px;
+  padding: 22px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* LEFT CONTENT */
+.card-left h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 8px 0 4px;
+}
+
+.card-left p {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.card-icon {
+  font-size: 28px;
+  opacity: 0.9;
+}
+
+/* CIRCLE */
+.progress-circle {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  border: 6px solid rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* COLORS */
+.blue {
+  background: linear-gradient(135deg, #2dd4ff, #3b82f6);
+}
+
+.pink {
+  background: linear-gradient(135deg, #fb7185, #f43f5e);
+}
+
+.green {
+  background: linear-gradient(135deg, #34d399, #10b981);
+}
+
+
+/* ========================= */
+/* TABLET RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 1024px) {
+
+  .stats-cards {
+    flex-wrap: wrap;
+  }
+
+  .stats-cards > div {
+    flex: 1 1 calc(50% - 12px);
+  }
+
+  .dashboard-main {
+    padding: 22px;
+  }
+
+}
+
+
+/* ========================= */
+/* MOBILE RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .dashboard-main {
+    padding: 18px;
+  }
+
+  .stats-cards {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .stats-cards > div {
+    width: 100%;
+  }
+
+  .fitness-card {
+    height: auto;
+    padding: 18px;
+  }
+
+  .progress-circle {
+    width: 64px;
+    height: 64px;
+    font-size: 14px;
+  }
+
+  .card-left h3 {
+    font-size: 16px;
+  }
+
+  .card-left p {
+    font-size: 12px;
+  }
+
+}
+
+
+/* ========================= */
+/* SMALL MOBILE */
+/* ========================= */
+
+@media (max-width: 480px) {
+
+  .dashboard-main {
+    padding: 14px;
+  }
+
+  .dashboard-section {
+    padding: 18px;
+  }
+
+  .fitness-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .progress-circle {
+    align-self: flex-end;
+  }
+
+}

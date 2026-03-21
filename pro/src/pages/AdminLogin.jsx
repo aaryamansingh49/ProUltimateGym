@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../context/AdminAuthContext";
 import bgImage from "../assets/signup.png";
 
+
+
 export default function AdminLogin() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
@@ -48,7 +50,7 @@ export default function AdminLogin() {
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
           className="w-full p-2 mb-4 rounded bg-white text-black outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="admin"
+          placeholder="Enter user ID"
         />
 
         <label className="block text-gray-200 mb-2">Password</label>
@@ -57,7 +59,7 @@ export default function AdminLogin() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full p-2 mb-6 rounded bg-white text-black outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="admin123"
+          placeholder="Enter Password"
         />
 
         <button

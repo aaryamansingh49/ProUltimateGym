@@ -1,0 +1,325 @@
+:root {
+  --primary-red: #ef4444;
+  --light-red: #fee2e2;
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+  --border-light: #e5e7eb;
+  --bg-soft: #f9fafb;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 280px;
+  min-width: 280px;  
+  height: 100dvh;
+  overflow-y: auto;
+  background: #ffffff;
+  padding: 22px;
+  border-right: 1px solid var(--border-light);
+  /* overflow-y: auto; */
+}
+
+/* PROFILE CARD */
+.profile-card {
+  background: var(--bg-soft);
+  border-radius: 20px;
+  padding: 22px 18px;
+  text-align: center;
+}
+
+/* AVATAR */
+.avatar {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar img {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 3px solid var(--primary-red);
+  object-fit: cover;
+}
+
+.edit-btn {
+  position: absolute;
+  top: 0;
+  right: -8px;
+  font-size: 12px;
+  color: var(--primary-red);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* NAME */
+.username {
+  margin-top: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.user-meta {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+
+/* STATS */
+.stats-row {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* center align */
+  text-align: center;    /* text center */
+}
+
+.stat-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary-red);
+  letter-spacing: 0.5px;
+}
+
+.stat-number {
+  margin-top: 6px;
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.divider {
+  width: 1px;
+  height: 42px;
+  background: var(--border-light);
+}
+
+.stat-placeholder{
+  height:14px;
+}
+
+.bmi-indicator {
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 3px;
+  display: block;
+}
+
+/* MENU */
+.menu {
+  margin-top: 34px;
+  list-style: none;
+  padding: 0;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--text-dark);
+  transition: all 0.2s ease;
+}
+
+.menu li:hover {
+  background: var(--light-red);
+  color: var(--primary-red);
+}
+
+.menu li.active {
+  background: #fddede;
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.menu span {
+  flex: 1;
+}
+
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  margin-top: 12px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary-red);
+}
+
+/* divider effect */
+.logout-btn {
+  border-top: 1px solid var(--border-light);
+}
+
+/* hover */
+.logout-btn:hover {
+  background: var(--light-red);
+  color: #dc2626;
+}
+
+.menu li svg,
+.logout-btn svg {
+  min-width: 18px;
+}
+
+
+/* ========================= */
+/* TABLET */
+/* ========================= */
+
+@media (max-width: 1024px) {
+
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    padding: 18px;
+  }
+
+  .avatar img {
+    width: 80px;
+    height: 80px;
+  }
+
+}
+
+
+
+/* ========================= */
+/* SMALL MOBILE */
+/* ========================= */
+
+@media (max-width: 480px) {
+
+  .profile-card {
+    padding: 16px;
+  }
+
+  .stats-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .menu li {
+    padding: 11px 12px;
+    font-size: 13px;
+  }
+
+  .logout-btn {
+    font-size: 14px;
+  }
+
+}
+
+
+/* ========================= */
+/* MOBILE SIDEBAR DRAWER */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+  /* 🔥 NAVBAR HEIGHT FIX */
+  :root {
+    --navbar-height: 70px;
+  }
+
+  /* 🔥 SIDEBAR */
+  .sidebar {
+    position: fixed;
+    top: 0; /* 🔥 CHANGE */
+    left: -100%;
+    width: 260px;
+
+    height: 100dvh; /* 🔥 FULL HEIGHT FIX */
+
+    z-index: 1000;
+    transition: 0.3s ease;
+    background: #fff;
+
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    padding-top: var(--navbar-height); /* 🔥 navbar space */
+    padding-bottom: 120px; /* 🔥 logout safe */
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  /* 🔥 OVERLAY */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+  }
+
+  .sidebar-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* 🔥 PROFILE + MENU FIX */
+  .profile-card {
+    padding: 18px;
+  }
+
+  .avatar img {
+    width: 72px;
+    height: 72px;
+  }
+
+  .username {
+    font-size: 16px;
+  }
+
+  .menu {
+    margin-top: 24px;
+  }
+
+  .menu li {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+  }
+
+  .menu span {
+    flex: unset;
+  }
+
+  .logout-btn {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+}

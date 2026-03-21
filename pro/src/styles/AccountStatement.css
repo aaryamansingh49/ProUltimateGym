@@ -89,3 +89,53 @@
 .error-message {
   color: #ff4c4c;
 }
+
+
+.no-membership {
+  text-align: center;
+  padding: 50px;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.no-membership h2 {
+  color: #ff3b3b;
+}
+
+.no-membership button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-tag {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+}
+
+/* Different Colors for Plans */
+.plan-tag.basic {
+  background: #4caf50; /* green */
+}
+
+.plan-tag.pro {
+  background: #2196f3; /* blue */
+}
+
+.plan-tag.premium {
+  background: #d32f2f; /* purple */
+}

@@ -6,6 +6,7 @@ import { StatCard } from "../components/AdminCards";
 import { RevenueChart, GrowthChart } from "../components/AdminCharts";
 import "../styles/AdminDashboard.css";
 import { useAdminAuth } from "../context/AdminAuthContext";
+import BASE_URL from "../api/config.js";
 
 const PLAN_DURATION_MONTHS = {
   Basic: 1,
@@ -33,7 +34,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchMemberships = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/admin/all-memberships", {
+        const res = await fetch(`${BASE_URL}/api/admin/all-memberships`, {
+
           headers: {
             "Content-Type": "application/json",
             ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),

@@ -9,7 +9,7 @@ const router = express.Router();
 
 //  Dummy admin credentials
 const ADMIN_EMAIL = "admin";
-const ADMIN_PASSWORD = "admin123";
+const ADMIN_PASSWORD = "yeah!yeah";
 
 //  Admin Login Route
 router.post("/login", (req, res) => {

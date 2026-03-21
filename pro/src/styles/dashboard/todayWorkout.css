@@ -1,0 +1,106 @@
+/* ===== Main Container ===== */
+
+.workout-page {
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    font-family: "Inter", sans-serif;
+  }
+  
+  /* ===== Header ===== */
+  
+  .workout-page h2 {
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #dc2626; /* RED */
+    font-weight: 700;
+  }
+  
+  /* ===== Exercise Card ===== */
+  
+  .exercise-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-radius: 10px;
+    background: #fafafa;
+    border: 1px solid #f1f1f1;
+    margin-bottom: 12px;
+    transition: all 0.25s ease;
+  }
+  
+  .exercise-row:hover {
+    border-color: #dc2626;
+    transform: translateY(-2px);
+  }
+  
+  /* Checkbox */
+  
+  .exercise-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #dc2626;
+    cursor: pointer;
+  }
+  
+  /* Exercise text */
+  
+  .exercise-row span {
+    flex: 1;
+    margin-left: 15px;
+    font-size: 15px;
+    color: #111827;
+    font-weight: 500;
+  }
+  
+  /* Calories */
+  
+  .exercise-row strong {
+    color: #dc2626;
+    font-weight: 600;
+  }
+  
+  /* ===== Calories section ===== */
+  
+  .workout-page h3 {
+    margin-top: 20px;
+    text-align: center;
+    color: #111827;
+    font-weight: 600;
+  }
+  
+  /* ===== Save Button ===== */
+  
+  .workout-page button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: #dc2626;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  
+  .workout-page button:hover {
+    background: #b91c1c;
+    transform: scale(1.02);
+  }
+  
+  /* ===== Loading Text ===== */
+  
+  .workout-page p {
+    text-align: center;
+    font-size: 16px;
+    color: #111827;
+  }
+  

@@ -10,12 +10,18 @@ const userSchema = new mongoose.Schema({
   state: String,
   city: String,
   password: String,
-  membershipPlan: Number, 
+  membershipPlan: String, 
   membershipStartDate: Date,
   assignedCoach: String,
-  profilePhoto: { type: String, default: "" }
-
-});
+  profilePhoto: {
+    type: String, 
+    default: null,
+  },
+},
+{
+  timestamps: true,
+}
+);
 
 const User = mongoose.model("User", userSchema);
 

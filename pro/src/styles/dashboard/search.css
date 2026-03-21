@@ -1,0 +1,20 @@
+.search-box {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .search-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .search-item button {
+    padding: 5px 10px;
+    background: #0f172a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  

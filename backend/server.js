@@ -11,6 +11,15 @@ import userDashboardRouter from "./routes/user-dashboard.js";
 import chatbotRoutes from "./routes/chatbotRoutes.js";
 import uploadRoutes from "./routes/uploadPhoto.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
+//workout dashboard
+import workoutRoutes from "./routes/workoutRoutes.js";
+import userWorkoutRoutes from "./routes/userWorkoutRoutes.js";
+//meal
+import mealRoutes from "./routes/mealRoutes.js";
+//food library
+import foodRoutes from "./routes/foodRoutes.js";
+
 
 import Stripe from "stripe";
 
@@ -66,6 +75,12 @@ app.use("/api", userDashboardRouter);
 app.use("/api", chatbotRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api", workoutRoutes);
+app.use("/api", userWorkoutRoutes);
+app.use("/api", mealRoutes);
+app.use("/api", foodRoutes);
+
 
 /* =======================
    SERVER START

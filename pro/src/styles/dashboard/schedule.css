@@ -1,0 +1,251 @@
+.schedule-container {
+    width:100%;
+    min-height:100vh;
+    padding:30px;
+    background:#f8f9fb;
+  }
+  
+  /* ================= TODAY CARD ================= */
+  
+  .today-focus-card {
+    color:#333;
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    border-left: 5px solid #e60023;
+  }
+  
+  /* header */
+  
+  .today-focus-card h3 {
+    color: #666;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  /* main title */
+  
+  .today-info h2 {
+    color: #e60023;
+    font-size: 30px;
+    margin: 10px 0;
+  }
+  
+  /* stats row */
+  
+  .today-info {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .today-info p {
+    color: #444;
+    font-weight: 500;
+  }
+  
+  
+  /* ================= WEEKLY CALENDAR ================= */
+  
+  .weekly-calendar {
+    display:grid;
+    grid-template-columns: repeat(7,1fr);
+    gap:15px;
+  }
+  
+  .day-card {
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:600;
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+    transition:0.3s;
+    color:#333;   /* ✅ ADD THIS */
+  }
+  
+  
+  /* STATUS COLORS */
+  
+  .day-card.done {
+    background:#d4edda;
+    color:#1b5e20;   /* dark green text */
+  }
+  
+  .day-card.missed {
+    background:#f8d7da;
+    color:#b71c1c;   /* dark red text */
+  }
+  
+  .day-card.today {
+    border:2px solid #e60023;
+    background:#ffe6ea;
+    color:#e60023;
+  }
+  
+  .day-card.upcoming {
+    background:#f1f1f1;
+    color:#555;
+  }
+  
+  /* ================= WORKOUT DETAIL CARD ================= */
+
+.workout-detail-card{
+    background:white;
+    border-radius:18px;
+    padding:28px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.06);
+    border-left:5px solid #e60023;
+    margin-top:25px;
+  }
+  
+  .workout-header h3{
+    color:#333;
+    margin-bottom:18px;
+    font-weight:600;
+  }
+  
+  .exercise-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  
+  .exercise-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#fafafa;
+    padding:14px 18px;
+    border-radius:12px;
+    transition:0.3s;
+  }
+  
+  .exercise-item:hover{
+    transform:translateY(-2px);
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  }
+  
+  .exercise-name{
+    font-weight:500;
+    color:#333;
+  }
+  
+  .exercise-badge{
+    background:#e60023;
+    color:white;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+  }
+  
+  .rest-text{
+    color:#777;
+    font-weight:500;
+  }
+  
+  /* ================= MISSED REMINDER BADGE ================= */
+
+.missed-reminder{
+  background:#fff3cd;
+  color:#856404;
+  padding:14px 20px;
+  border-radius:12px;
+  margin-bottom:20px;
+  font-weight:600;
+  border-left:5px solid #ff9800;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown{
+  from{
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* ================= MOBILE RESPONSIVE ================= */
+
+@media (max-width:768px){
+
+  .schedule-container{
+    padding:16px;
+  }
+
+  /* TODAY CARD */
+
+  .today-focus-card{
+    padding:20px;
+  }
+
+  .today-info{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+  }
+
+  .today-info h2{
+    font-size:22px;
+  }
+
+  .today-info p{
+    font-size:14px;
+  }
+
+  /* WEEKLY CALENDAR */
+
+  .weekly-calendar{
+    grid-template-columns: repeat(4,1fr);
+    gap:10px;
+  }
+
+  .day-card{
+    padding:14px;
+    font-size:14px;
+  }
+
+  /* WORKOUT DETAIL CARD */
+
+  .workout-detail-card{
+    padding:20px;
+  }
+
+  .exercise-item{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+  }
+
+  .exercise-name{
+    font-size:14px;
+  }
+
+  .exercise-badge{
+    font-size:12px;
+  }
+
+}
+
+
+/* EXTRA SMALL MOBILE */
+
+@media (max-width:480px){
+
+  .weekly-calendar{
+    grid-template-columns: repeat(3,1fr);
+  }
+
+  .today-info h2{
+    font-size:20px;
+  }
+
+}

@@ -13,8 +13,10 @@ import {
 } from "recharts";
 import { useAdminAuth } from "../context/AdminAuthContext";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../api/config.js";
 
-const API_BASE = "http://localhost:5001";
+
+const API_BASE = BASE_URL;
 
 
 

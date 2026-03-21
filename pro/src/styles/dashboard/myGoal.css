@@ -1,0 +1,178 @@
+.mygoal-container{
+    flex:1;
+    width:100%;
+    padding:25px;
+    box-sizing:border-box;
+  }
+  
+  .mygoal-title{
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:20px;
+    color:#0f172a;
+  }
+  
+  .goal-card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  
+  .goal-item{
+    display:flex;
+    justify-content:space-between;
+    border-bottom:1px solid #f1f5f9;
+    padding-bottom:6px;
+  }
+  
+  .goal-label{
+    font-weight:500;
+    color:#475569;
+  }
+  
+  .goal-value{
+    font-weight:600;
+    color:#0f172a;
+  }
+  
+  /* 🔥 PROGRESS SECTION */
+
+  .progress-section{
+    margin-top:20px;
+  }
+  
+  .progress-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    font-weight:600;
+  
+    color:#0f172a;   /* ⭐ IMPORTANT */
+    z-index:2;
+  }
+  
+  .progress-bar{
+    width:100%;
+    height:14px;
+    background:#e2e8f0;
+    border-radius:20px;
+    overflow:hidden;
+    position:relative;
+  }
+  
+  /* BASE FILL */
+  .progress-fill{
+    height:100%;
+    border-radius:20px;
+    position:relative;
+  
+    transition:width 1s ease;
+  
+    background-size:200% 100%;
+  
+    animation: gradientMove 3s linear infinite;
+  }
+  
+  /* 🔴 LOW */
+  .progress-red{
+    background:linear-gradient(90deg,#ef4444,#f97316,#ef4444);
+  }
+  
+  /* 🟡 MEDIUM */
+  .progress-yellow{
+    background:linear-gradient(90deg,#facc15,#f59e0b,#facc15);
+  }
+  
+  /* 🟢 HIGH */
+  .progress-green{
+    background:linear-gradient(90deg,#22c55e,#06b6d4,#22c55e);
+  }
+  
+  /* 🔥 GRADIENT MOVING ANIMATION */
+  @keyframes gradientMove{
+    0%{background-position:0%;}
+    100%{background-position:200%;}
+  }
+  
+  /* ✨ SHINE EFFECT */
+  .progress-fill::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-50%;
+    width:50%;
+    height:100%;
+  
+    background:linear-gradient(
+      120deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.5) 50%,
+      rgba(255,255,255,0) 100%
+    );
+  
+    animation: shineMove 2.5s infinite;
+  }
+  
+  @keyframes shineMove{
+    0%{left:-50%;}
+    100%{left:120%;}
+  }
+  
+  /* 🔥 COMPLETE GLOW + PULSE */
+  .progress-complete{
+    box-shadow:
+      0 0 10px #22c55e,
+      0 0 20px #22c55e,
+      0 0 30px #22c55e;
+  
+    animation:pulseGlow 1.5s infinite alternate;
+  }
+  
+  @keyframes pulseGlow{
+    from{
+      box-shadow:0 0 5px #22c55e;
+    }
+    to{
+      box-shadow:
+        0 0 15px #22c55e,
+        0 0 25px #22c55e;
+    }
+  }
+  
+
+  .goal-status{
+    padding:6px 14px;
+    border-radius:20px;
+    font-weight:600;
+    font-size:14px;
+    margin-bottom:10px;
+    align-self:flex-start;
+  }
+  
+  .status-red{
+    background:#fee2e2;
+    color:#dc2626;
+  }
+  
+  .status-yellow{
+    background:#fef9c3;
+    color:#ca8a04;
+  }
+  
+  .status-green{
+    background:#dcfce7;
+    color:#16a34a;
+  }
+  
+  .goal-remaining{
+    margin-top:5px;
+    font-weight:600;
+    color:#0f172a;
+  }
+  
+  

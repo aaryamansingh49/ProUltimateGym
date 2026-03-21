@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/login.css";
+import BASE_URL from "../api/config.js";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -17,16 +20,48 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
-      const res = await axios.post("http://localhost:5001/api/login", formData);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userEmail", formData.email);
-      navigate("/");
+      // 🔐 Login request
+      const res = await axios.post(`${BASE_URL}/api/login`, formData);
+
+      const user = res.data.user;
+      const token = res.data.token;
+
+      // Save auth data
+      localStorage.setItem("token", token);
+      localStorage.setItem("userKey", user._id);
+      localStorage.setItem("userId", user._id);
+
+      let userProfile = user;
+
+      try {
+        // ✅ Get profile using token
+        const profileRes = await axios.get(`${BASE_URL}/api/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        userProfile = {
+          ...user,
+          ...profileRes.data.profile,
+        };
+      } catch (err) {
+        console.log("Profile fetch failed or not created yet");
+      }
+
+      // Save full profile
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+      navigate("/dashboard");
     } catch (error) {
       alert(error.response?.data?.message || "Login failed!");
+    } finally {
+      setLoading(false);
     }
   };
-
   const handleForgotPassword = () => {
     navigate("/forgot-password");
   };
@@ -35,6 +70,7 @@ const Login = () => {
     <div className="login-section">
       <div className="login-box">
         <h2>Login</h2>
+
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <input
@@ -46,6 +82,7 @@ const Login = () => {
               required
             />
           </div>
+
           <div className="input-group">
             <input
               type="password"
@@ -55,12 +92,19 @@ const Login = () => {
               onChange={handleChange}
               required
             />
-            <p className="forgot-password" onClick={handleForgotPassword}>
-              Forgot Password?
-            </p>
+
           </div>
-          <button type="submit" className="login-btn">
-            Login
+
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
+          <button
+            type="button"
+            className="login-btn"
+            onClick={() => navigate("/otp-login")}
+          >
+            Login via OTP
           </button>
         </form>
       </div>

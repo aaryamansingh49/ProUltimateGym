@@ -1,0 +1,182 @@
+/* ===============================
+   MAIN CONTAINER
+================================ */
+
+.achievements-container{
+  padding:25px;
+  width:100%;
+}
+
+.achievements-title{
+  font-size:24px;
+  font-weight:600;
+  margin-bottom:25px;
+  color:#111;
+}
+
+/* ===============================
+   GRID
+================================ */
+
+.achievement-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:25px;
+}
+
+/* ===============================
+   CARD (Premium Look)
+================================ */
+
+.achievement-card{
+  background:#ffffff;
+  border-radius:18px;
+  padding:22px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  transition:0.35s ease;
+}
+
+.achievement-card:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 15px 35px rgba(0,0,0,0.15);
+}
+
+/* ===============================
+   RING PROGRESS (MODERN)
+================================ */
+
+.ring{
+  position:relative;
+  width:85px;
+  height:85px;
+}
+
+.ring svg{
+  width:85px;
+  height:85px;
+  transform:rotate(-90deg);
+}
+
+.ring circle{
+  fill:none;
+  stroke-width:7;
+}
+
+.ring .bg{
+  stroke:#eee;
+}
+
+.ring .progress{
+  stroke:url(#gradient);
+  stroke-dasharray:220;
+  stroke-linecap:round;
+  transition:stroke-dashoffset 1.4s ease;
+
+  filter: drop-shadow(0 0 6px rgba(0,255,150,0.6));
+}
+
+.ring{
+  background: radial-gradient(circle at center,
+    rgba(0,0,0,0.02),
+    transparent);
+  border-radius:50%;
+}
+/* .ring:hover{
+  animation:pulseRing 1.2s infinite;
+} */
+
+/* .ring-center{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:50px;
+  font-weight:700;
+  color:#111;
+} */
+
+
+.ring span{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:22px;
+  font-weight:700;
+  color:#222;
+}
+
+/* ===============================
+   TEXT
+================================ */
+
+.achievement-text{
+  font-size:18px;
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+.achievement-content{
+  display:flex;
+  flex-direction:column;
+}
+
+.achievement-title-text{
+  font-size:18px;
+  font-weight:700;
+  color:#111;
+  margin-bottom:4px;
+}
+
+.achievement-value{
+  font-size:15px;
+  color:#555;
+}
+
+
+small{
+  color:#666;
+  font-size:14px;
+}
+
+/* ⚡ Calories Pulse */
+@keyframes pulseEnergy{
+  0%{ transform:translate(-50%,-50%) scale(1); }
+  50%{ transform:translate(-50%,-50%) scale(1.2); }
+  100%{ transform:translate(-50%,-50%) scale(1); }
+}
+.ring span.calories{
+  animation:pulseEnergy 1.2s infinite;
+}
+
+/* 🔥 Fire Flicker */
+@keyframes fireFlicker{
+  0%{ transform:translate(-50%,-50%) scale(1); }
+  50%{ transform:translate(-50%,-50%) scale(1.2); }
+  100%{ transform:translate(-50%,-50%) scale(1); }
+}
+.ring span.streak{
+  animation:fireFlicker 0.8s infinite;
+}
+
+/* 🔥 Streak Glow Aura */
+.achievement-card:has(.streak){
+  box-shadow:0 0 20px rgba(255,120,0,0.4), 0 10px 25px rgba(0,0,0,0.08);
+}
+
+
+.ring .progress{
+  stroke: var(--ring-color, #4CAF50);
+  stroke-dasharray:220;
+  stroke-linecap:round;
+  transition:stroke-dashoffset 1.4s ease, stroke 0.4s ease;
+
+  filter: drop-shadow(0 0 8px rgba(0,255,150,0.6));
+}
+
+
