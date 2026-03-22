@@ -100,10 +100,10 @@ const App = () => {
           <Toaster
             position="top-center"
             toastOptions={{
-              duration: 2000,
+              duration: 3000,
             }}
             containerStyle={{
-              top: 10, // 🔥 yaha value change kar (px me)
+              top: 70,
             }}
           />
 
