@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import dns from "dns";
 
 const sendOtpMail = async (email, otp) => {
   try {
@@ -7,16 +6,19 @@ const sendOtpMail = async (email, otp) => {
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
+      port: 587,
+      secure: false, // ❗ IMPORTANT (587 ke liye false hota hai)
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      requireTLS: true, // ✅ TLS force karega
       connectionTimeout: 20000,
-      family: 4, // ✅ FORCE IPv4 (MOST IMPORTANT FIX)
+      greetingTimeout: 20000,
+      family: 4, // ✅ IPv4 force
     });
 
+    // 🔍 Check connection
     await transporter.verify()
       .then(() => console.log("✅ SMTP Connected"))
       .catch((err) => console.log("❌ SMTP ERROR:", err));
