@@ -15,6 +15,7 @@ const TodayWorkout = () => {
 
   const userId = localStorage.getItem("userKey");
   const day = getCurrentDay();
+  const isSunday = day.toLowerCase() === "sunday";
   const navigate = useNavigate();
 
   if (!userId) {
@@ -153,7 +154,26 @@ window.dispatchEvent(new Event("workoutUpdated"));
   };
 
   if (loading) return <p>Loading...</p>;
-  if (!workout) return <p>No workout found</p>;
+  if (isSunday) {
+    return (
+      <div className="rest-day-container">
+        <h2>🛌 Rest Day</h2>
+        <p>
+          Today is Sunday. Your body needs recovery. 
+          Take proper rest and come back stronger 💪
+        </p>
+      </div>
+    );
+  }
+  
+  if (!workout) {
+    return (
+      <div className="no-workout-container">
+        <h2>No Workout Available</h2>
+        <p>Please check your plan or try again later.</p>
+      </div>
+    );
+  }
 
   return (
 

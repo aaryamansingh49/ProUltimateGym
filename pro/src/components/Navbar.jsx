@@ -53,7 +53,7 @@ const Navbar = ({ setSidebarOpen }) => {
             <div className="dropdown-menu">
               <Link to="/dashboard" onClick={() => { setIsOpen(false); setDropdownOpen(false); }}>Profile</Link>
               <Link to="/membership" onClick={() => { setIsOpen(false); setDropdownOpen(false); }}>Membership</Link>
-              <Link to="/account" onClick={() => { setIsOpen(false); setDropdownOpen(false); }}>Account</Link>
+              <Link to="/account" onClick={() => { setIsOpen(false); setDropdownOpen(false); }}>Account Statement</Link>
             </div>
           )}
         </div>
