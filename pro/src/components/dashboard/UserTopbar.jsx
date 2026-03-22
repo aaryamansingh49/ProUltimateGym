@@ -7,10 +7,14 @@ const UserTopbar = () => {
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem("userProfile"));
 
-    if (profile?.name) {
+    if (profile?.firstName) {
+      setUserName(profile.firstName);
+    } else if (profile?.name) {
       setUserName(profile.name);
     } else if (profile?.fullName) {
       setUserName(profile.fullName);
+    } else if (profile?.email) {
+      setUserName(profile.email.split("@")[0]);
     } else {
       setUserName("");
     }

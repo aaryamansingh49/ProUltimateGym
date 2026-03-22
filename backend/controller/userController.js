@@ -159,13 +159,14 @@ class UserController {
   
       if (!user) {
         isNewUser = true;
-  
-        // ⚠️ If password is required in schema, give a default value
+      
         user = new UserModel({
           email,
-          password: "otp-login"
+          password: "otp-login",
+          firstName: "User",
+          lastName: ""
         });
-  
+      
         await user.save();
       }
   

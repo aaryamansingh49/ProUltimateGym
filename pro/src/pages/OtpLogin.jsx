@@ -55,15 +55,37 @@ const OtpLogin = () => {
 
       showNotification("success", "Login Successful");
 
-      setTimeout(() => {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("userKey", res.data.user._id);
+      setTimeout(async () => {
+        const token = res.data.token;
+        const user = res.data.user;
+      
+        // basic save
+        localStorage.setItem("token", token);
+        localStorage.setItem("userKey", user._id);
         localStorage.setItem("isNewUser", res.data.isNewUser);
-
-        localStorage.setItem("userProfile", JSON.stringify(res.data.user));
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-        localStorage.setItem("userEmail", res.data.user.email);
-
+      
+        let userProfile = user;
+      
+        try {
+          // 🔥 SAME AS NORMAL LOGIN (IMPORTANT)
+          const profileRes = await axios.get(`${BASE_URL}/api/profile`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+      
+          userProfile = {
+            ...user,
+            ...profileRes.data.profile,
+          };
+        } catch (err) {
+          console.log("Profile fetch failed");
+        }
+      
+        // save final profile
+        localStorage.setItem("userProfile", JSON.stringify(userProfile));
+        localStorage.setItem("userEmail", user.email);
+      
         window.location = "/dashboard";
       }, 800);
     } catch (err) {
