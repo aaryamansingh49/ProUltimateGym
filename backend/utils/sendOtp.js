@@ -7,12 +7,12 @@ const sendOtpMail = async (email, otp) => {
     console.log("📧 Sending OTP via Resend...");
 
     const response = await resend.emails.send({
-      from: "onboarding@resend.dev", // working default sender
+      from: "Pro Ultimate Gym <onboarding@resend.dev>", // working default sender
       to: email,
       subject: "Your Login OTP",
       html: `
         <div style="font-family: Arial; text-align: center;">
-          <h2 style="color:#e53935;">Pro Ultimate Gym 💪</h2>
+          <h2 style="color:#e53935;">Pro Ultimate Gym </h2>
           <p>Your OTP for login:</p>
           <h1 style="letter-spacing:5px;">${otp}</h1>
           <p>This OTP will expire in 5 minutes.</p>

@@ -1,11 +1,13 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
+import { useLocation } from "react-router-dom";
 
 const Navbar = ({ setSidebarOpen }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const location = useLocation();
 
   const toggleNav = () => {
     setIsOpen(!isOpen);
@@ -14,14 +16,15 @@ const Navbar = ({ setSidebarOpen }) => {
 
   return (
     <nav className="navbar">
-
       {/* LEFT SIDE (ONLY MOBILE) */}
-      <button
-        className="sidebar-toggle-btn"
-        onClick={() => setSidebarOpen(prev => !prev)}
-      >
-        ☰
-      </button>
+      {location.pathname === "/dashboard" && (
+        <button
+          className="sidebar-toggle-btn"
+          onClick={() => setSidebarOpen((prev) => !prev)}
+        >
+          ☰
+        </button>
+      )}
 
       {/* LOGO (UNCHANGED) */}
       <div className="logo-wrapper">
@@ -34,14 +37,29 @@ const Navbar = ({ setSidebarOpen }) => {
 
       {/* NAV LINKS */}
       <div className={`nav-links ${isOpen ? "open" : ""}`}>
-        <Link to="/" onClick={() => setIsOpen(false)}>Home</Link>
-        <Link to="/about" onClick={() => setIsOpen(false)}>About</Link>
-        <Link to="/services" onClick={() => setIsOpen(false)}>Services</Link>
-        <Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
-        <Link to="/signup" onClick={() => setIsOpen(false)}>SignUp</Link>
-        <Link to="/login" onClick={() => setIsOpen(false)}>Login</Link>
+        <Link to="/" onClick={() => setIsOpen(false)}>
+          Home
+        </Link>
+        <Link to="/about" onClick={() => setIsOpen(false)}>
+          About
+        </Link>
+        <Link to="/services" onClick={() => setIsOpen(false)}>
+          Services
+        </Link>
+        <Link to="/contact" onClick={() => setIsOpen(false)}>
+          Contact
+        </Link>
+        <Link to="/signup" onClick={() => setIsOpen(false)}>
+          SignUp
+        </Link>
+        <Link to="/login" onClick={() => setIsOpen(false)}>
+          Login
+        </Link>
 
-        <div className={`dropdown ${dropdownOpen ? "open" : ""}`} ref={dropdownRef}>
+        <div
+          className={`dropdown ${dropdownOpen ? "open" : ""}`}
+          ref={dropdownRef}
+        >
           <span
             className="dropdown-title"
             onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -51,9 +69,33 @@ const Navbar = ({ setSidebarOpen }) => {
 
           {dropdownOpen && (
             <div className="dropdown-menu">
-              <Link to="/dashboard" onClick={() => { setIsOpen(false); setDropdownOpen(false); }}>Profile</Link>
-              <Link to="/membership" onClick={() => { setIsOpen(false); setDropdownOpen(false); }}>Membership</Link>
-              <Link to="/account" onClick={() => { setIsOpen(false); setDropdownOpen(false); }}>Account Statement</Link>
+              <Link
+                to="/dashboard"
+                onClick={() => {
+                  setIsOpen(false);
+                  setDropdownOpen(false);
+                }}
+              >
+                Profile
+              </Link>
+              <Link
+                to="/membership"
+                onClick={() => {
+                  setIsOpen(false);
+                  setDropdownOpen(false);
+                }}
+              >
+                Membership
+              </Link>
+              <Link
+                to="/account"
+                onClick={() => {
+                  setIsOpen(false);
+                  setDropdownOpen(false);
+                }}
+              >
+                Account Statement
+              </Link>
             </div>
           )}
         </div>
