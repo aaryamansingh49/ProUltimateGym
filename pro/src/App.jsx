@@ -103,7 +103,7 @@ const App = () => {
               duration: 3000,
             }}
             containerStyle={{
-              top: 70,
+              top: 100,
             }}
           />
 

@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import { useLocation } from "react-router-dom";
 
@@ -8,10 +8,24 @@ const Navbar = ({ setSidebarOpen }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // ✅ CHECK LOGIN STATUS
+  const isLoggedIn = !!localStorage.getItem("token");
 
   const toggleNav = () => {
     setIsOpen(!isOpen);
     if (isOpen) setDropdownOpen(false);
+  };
+
+  // ✅ LOGOUT FUNCTION
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userKey");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userProfile");
+
+    navigate("/login");
   };
 
   return (
@@ -26,7 +40,7 @@ const Navbar = ({ setSidebarOpen }) => {
         </button>
       )}
 
-      {/* LOGO (UNCHANGED) */}
+      {/* LOGO */}
       <div className="logo-wrapper">
         <div className="logo">
           <span className="pro">PRO</span>&nbsp;
@@ -49,12 +63,35 @@ const Navbar = ({ setSidebarOpen }) => {
         <Link to="/contact" onClick={() => setIsOpen(false)}>
           Contact
         </Link>
-        <Link to="/signup" onClick={() => setIsOpen(false)}>
-          SignUp
-        </Link>
-        <Link to="/login" onClick={() => setIsOpen(false)}>
-          Login
-        </Link>
+
+        {!isLoggedIn && (
+          <>
+            <Link to="/signup" onClick={() => setIsOpen(false)}>
+              SignUp
+            </Link>
+            <Link to="/login" onClick={() => setIsOpen(false)}>
+              Login
+            </Link>
+          </>
+        )}
+
+        {isLoggedIn && (
+          <button
+            onClick={handleLogout}
+            className="logout-btn"
+            style={{
+              background: "red",
+              color: "#fff",
+              border: "none",
+              padding: "8px 12px",
+              cursor: "pointer",
+              borderRadius: "5px",
+              marginLeft: "10px"
+            }}
+          >
+            Logout
+          </button>
+        )}
 
         <div
           className={`dropdown ${dropdownOpen ? "open" : ""}`}

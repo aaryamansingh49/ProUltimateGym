@@ -102,7 +102,7 @@ const UserSidebar = ({
             <img
               src={
                 profile?.profilePhoto
-                 ? `https://your-backend.onrender.com${profile.profilePhoto}`
+                  ? `${"https://proultimategym.onrender.com"}${profile.profilePhoto}`
                   : "https://i.pravatar.cc/120"
               }
               alt="Profile"
