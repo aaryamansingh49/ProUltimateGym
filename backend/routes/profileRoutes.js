@@ -1,6 +1,6 @@
 import express from "express";
 import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
-import upload from "../middleware/multer.js";
+import upload from "../middleware/uploadPhoto.js";
 import UserProfile from "../models/UserProfile.js";
 import User from "../models/User.js";
 
