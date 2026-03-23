@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import "../../styles/dashboard/sidebar.css";
-import { uploadProfilePhoto } from "../../api/profileApi";
+import { saveProfile } from "../../api/profileApi";
 import { useNavigate } from "react-router-dom";
 import {
   FiHome,
@@ -56,12 +56,31 @@ const UserSidebar = ({
     }
 
     try {
-      const res = await uploadProfilePhoto(file);
+      const form = new FormData();
+
+      // ✅ IMAGE
+      form.append("profileImage", file);
+
+      // ✅ EXISTING DATA (VERY IMPORTANT)
+      form.append("age", profile?.age);
+      form.append("height", profile?.height);
+      form.append("weight", profile?.weight);
+      form.append("goal", profile?.goal);
+      form.append("gender", profile?.gender);
+      form.append("level", profile?.level);
+      form.append("targetWeight", profile?.targetWeight);
+      form.append("goalDuration", profile?.goalDuration);
+      form.append("activityLevel", profile?.activityLevel);
+      form.append("workoutPreference", profile?.workoutPreference);
+      form.append("dietPreference", profile?.dietPreference);
+      form.append("focusArea", profile?.focusArea);
+
+      const res = await saveProfile(form);
 
       if (res.success) {
         setProfile((prev) => ({
           ...prev,
-          profilePhoto: res.profilePhoto,
+          profileImage: res.profile.profileImage,
         }));
       }
     } catch (err) {
@@ -101,8 +120,8 @@ const UserSidebar = ({
           <div className="avatar" onClick={openGallery}>
             <img
               src={
-                profile?.profilePhoto
-                  ? `${"https://proultimategym.onrender.com"}${profile.profilePhoto}`
+                profile?.profileImage
+                  ? `https://proultimategym.onrender.com${profile.profileImage}`
                   : "https://i.pravatar.cc/120"
               }
               alt="Profile"

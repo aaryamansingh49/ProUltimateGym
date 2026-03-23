@@ -47,23 +47,38 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   // PROFILE FETCH
   useEffect(() => {
     const fetchProfile = async () => {
-      const res = await getProfile();
-
-      if (res.success) {
-        const mergedProfile = {
-          ...res.profile,
-          profilePhoto: res.user?.profilePhoto,
-        };
-
-        setProfile(mergedProfile);
-
-        // ⭐ FIXED
-        setUserName(res.profile?.name || "Athlete");
-
-        fetchLastMonthStats(mergedProfile.userId);
+      try {
+        const res = await getProfile();
+  
+        if (res.success && res.profile) {
+  
+          // ✅ FIX: correct field name
+          const mergedProfile = {
+            ...res.profile,
+            profileImage: res.user?.profileImage || null,
+          };
+  
+          // ✅ state update
+          setProfile(mergedProfile);
+  
+          // ✅ username fix
+          setUserName(mergedProfile?.name || "Athlete");
+  
+          // 🔥 HYBRID: localStorage update (IMPORTANT)
+          localStorage.setItem("userProfile", JSON.stringify(mergedProfile));
+  
+          // ✅ stats
+          fetchLastMonthStats(mergedProfile.userId);
+  
+        } else {
+          console.warn("Profile fetch failed");
+        }
+  
+      } catch (err) {
+        console.error("Profile fetch error:", err);
       }
     };
-
+  
     fetchProfile();
   }, []);
 

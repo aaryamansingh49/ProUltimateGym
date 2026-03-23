@@ -5,6 +5,7 @@ import { calculateNutritionTargets } from "../utils/calculateNutri";
 import { updateGoalProgress } from "../utils/goalProgress";
 import "../styles/dashboard/meal.css";
 import { useNavigate } from "react-router-dom";
+import { getProfile } from "../api/profileApi";
 const Meal = () => {
   const navigate = useNavigate();
   const [meal, setMeal] = useState(null);
@@ -29,79 +30,93 @@ const Meal = () => {
   /* ================= LOAD ================= */
 
   useEffect(() => {
-    const userKey = localStorage.getItem("userKey");
-    const userProfile = JSON.parse(localStorage.getItem("userProfile") || "{}");
-
-    if (!userKey || !userProfile?._id) return;
-
-    // const userKey = userProfile.email;
-    const dateKey = `mealDate_${userKey}`;
-    const suggestionKey = `suggestionsLocked_${userKey}`;
-
-    const today = new Date().toISOString().split("T")[0];
-    const lastSavedDate = localStorage.getItem(dateKey);
-
-    // ⭐ reset states when user changes
-    setSelectedFoods([]);
-    setUsedSuggestedFoods([]);
-    setSuggestionsLocked(false);
-
-    if (lastSavedDate !== today) {
-      localStorage.removeItem(`savedMealSelection_${userKey}`);
-      localStorage.removeItem(suggestionKey);
-
-      localStorage.setItem(dateKey, today);
-    }
-
-    const targets = calculateNutritionTargets(userProfile);
-
-    setMacroTargets(targets);
-
-    setMicroTargets({
-      iron: targets?.iron || 18,
-      calcium: targets?.calcium || 1000,
-      vitaminC: targets?.vitaminC || 90,
-    });
-
-    const goal = userProfile?.goal?.toString().toLowerCase().trim();
-    const level = userProfile?.level?.toString().toLowerCase().trim();
-    const dietPreference = userProfile?.dietPreference
-      ?.toString()
-      .toLowerCase()
-      .trim();
-
-    // profile validation
-    if (!goal || !level || !dietPreference) {
-      console.warn("User profile incomplete:", userProfile);
-      return;
-    }
-
-    // fetch meal plan
-    console.log("Fetching meal:", goal, level, dietPreference);
-
-    getMealByGoalLevel(goal, level, dietPreference)
-      .then((res) => {
-        setMeal(res.data);
-      })
-      .catch((err) => {
-        console.error("Meal fetch error:", err);
+    const loadData = async () => {
+      const userKey = localStorage.getItem("userKey");
+  
+      if (!userKey) return;
+  
+      // ✅ HYBRID LOGIC
+      let userProfile = JSON.parse(localStorage.getItem("userProfile") || "null");
+  
+      if (!userProfile || !userProfile.goal || !userProfile.level) {
+        try {
+          const res = await getProfile();
+  
+          if (res.success && res.profile) {
+            userProfile = res.profile;
+  
+            // 🔥 cache update
+            localStorage.setItem("userProfile", JSON.stringify(userProfile));
+          }
+        } catch (err) {
+          console.error("Profile fetch failed", err);
+          return;
+        }
+      }
+  
+      if (!userProfile) return;
+  
+      // ================= SAME CODE =================
+  
+      const dateKey = `mealDate_${userKey}`;
+      const suggestionKey = `suggestionsLocked_${userKey}`;
+  
+      const today = new Date().toISOString().split("T")[0];
+      const lastSavedDate = localStorage.getItem(dateKey);
+  
+      setSelectedFoods([]);
+      setUsedSuggestedFoods([]);
+      setSuggestionsLocked(false);
+  
+      if (lastSavedDate !== today) {
+        localStorage.removeItem(`savedMealSelection_${userKey}`);
+        localStorage.removeItem(suggestionKey);
+        localStorage.setItem(dateKey, today);
+      }
+  
+      const targets = calculateNutritionTargets(userProfile);
+  
+      setMacroTargets(targets);
+  
+      setMicroTargets({
+        iron: targets?.iron || 18,
+        calcium: targets?.calcium || 1000,
+        vitaminC: targets?.vitaminC || 90,
       });
-
-    searchFood("").then((res) => {
-      setRecommendationFoods(res.data);
-    });
-
-    const saved = JSON.parse(
-      localStorage.getItem(`savedMealSelection_${userKey}`)
-    );
-
-    if (saved) setSelectedFoods(saved);
-
-    const savedLock = localStorage.getItem(suggestionKey);
-
-    if (savedLock === "true") {
-      setSuggestionsLocked(true);
-    }
+  
+      const goal = userProfile?.goal?.toLowerCase().trim();
+      const level = userProfile?.level?.toLowerCase().trim();
+      const dietPreference = userProfile?.dietPreference?.toLowerCase().trim();
+  
+      if (!goal || !level || !dietPreference) {
+        console.warn("User profile incomplete:", userProfile);
+        return;
+      }
+  
+      console.log("Fetching meal:", goal, level, dietPreference);
+  
+      getMealByGoalLevel(goal, level, dietPreference)
+        .then((res) => setMeal(res.data))
+        .catch((err) => console.error("Meal fetch error:", err));
+  
+      searchFood("").then((res) => {
+        setRecommendationFoods(res.data);
+      });
+  
+      const saved = JSON.parse(
+        localStorage.getItem(`savedMealSelection_${userKey}`)
+      );
+  
+      if (saved) setSelectedFoods(saved);
+  
+      const savedLock = localStorage.getItem(suggestionKey);
+  
+      if (savedLock === "true") {
+        setSuggestionsLocked(true);
+      }
+    };
+  
+    loadData();
   }, []);
   /* ================= SEARCH ================= */
 
