@@ -147,6 +147,39 @@
     color:#777;
     font-weight:500;
   }
+
+
+  /* Default white */
+.day-card.white {
+  background: #fff;
+  color: #000;
+}
+
+/* Future */
+.day-card.future {
+  background: #fff;
+  color: #bbb;
+}
+
+/* Done */
+.day-card.done {
+  background: #2ecc71;
+  color: #fff;
+}
+
+/* Missed */
+.day-card.missed {
+  background: #e74c3c;
+  color: #fff;
+}
+
+/* Today highlight */
+.day-card.today {
+  background: #fff;
+  border: 2px solid #d32f2f;
+  box-shadow: 0 0 10px rgba(211, 47, 47, 0.5);
+  font-weight: 700;
+}
   
   /* ================= MISSED REMINDER BADGE ================= */
 

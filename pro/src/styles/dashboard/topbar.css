@@ -47,15 +47,21 @@
 
 
 
-/* 💻 Responsive */
 @media (max-width: 600px) {
   .topbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topbar h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .topbar span {
-    align-self: flex-end;
+    font-size: 11px;
+    padding: 4px 10px;
   }
 }

@@ -28,112 +28,143 @@ const Schedule = ({ profile }) => {
   const todayName = displayDays[todayIndex];
 
   useEffect(() => {
+
     const fetchSchedule = async () => {
       const userKey = localStorage.getItem("userKey");
-
+  
       const res = await getUserWorkouts(userKey);
       if (!res?.success) return;
-
+  
       const data = res.workouts || [];
       setWorkouts(data);
-
+  
       const todayDate = new Date();
       todayDate.setHours(0, 0, 0, 0);
-
+  
       const todayIndex = todayDate.getDay();
       const todayName = displayDays[todayIndex];
-
-      /* TODAY WORKOUT */
-
+  
+      /* ================= TODAY WORKOUT ================= */
+  
       const todayData = data.find((w) => {
         const workoutDate = new Date(w.date);
         workoutDate.setHours(0, 0, 0, 0);
-
+  
         return workoutDate.getTime() === todayDate.getTime();
       });
-
+  
+      let finalTodayWorkout = null;
+  
       if (todayData) {
-        setTodayWorkout({
+        finalTodayWorkout = {
           muscle: todayData.day || "Workout",
           dayName: new Date(todayData.date).toLocaleDateString("en-US", {
             weekday: "long",
           }),
           exerciseCount: todayData.completedExercises?.length || 0,
           calories: todayData.totalCalories || 0,
-        });
-      } else {
-        setTodayWorkout(null);
+        };
       }
-
-      /* COMPLETED DAYS */
-
+  
+      /* 🔥 LOCAL STORAGE FALLBACK */
+  
+      const localData = localStorage.getItem(
+        `todayWorkoutData_${todayName}_${userKey}`
+      );
+  
+      if (localData) {
+        const parsed = JSON.parse(localData);
+  
+        finalTodayWorkout = {
+          muscle: "Workout",
+          dayName: todayName,
+          exerciseCount: parsed.exerciseCount,
+          calories: parsed.calories,
+        };
+      }
+  
+      setTodayWorkout(finalTodayWorkout);
+  
+      /* ================= COMPLETED ================= */
+  
       const completedSet = new Set();
-
+  
       data.forEach((w) => {
         const workoutDate = new Date(w.date);
         workoutDate.setHours(0, 0, 0, 0);
-
+  
         const diffDays = Math.floor(
           (todayDate - workoutDate) / (1000 * 60 * 60 * 24)
         );
-
-        // Only this week's workouts
+  
         if (diffDays >= 0 && diffDays < 7) {
           completedSet.add(displayDays[workoutDate.getDay()]);
         }
       });
-
-      /* LOCAL STORAGE CHECK (instant update) */
-
+  
       const todayCompleted = localStorage.getItem(
         `workoutCompleted_${todayName}_${userKey}`
       );
-
+  
       if (todayCompleted) {
         completedSet.add(todayName);
       }
-
-      /* MISSED DAYS (Sunday is Rest Day) */
-
+  
       const missedSet = new Set();
-
+  
       displayDays.forEach((d, index) => {
-        // Sunday = Rest Day
         if (d === "Sun") return;
-
+  
         if (index < todayIndex && !completedSet.has(d)) {
           missedSet.add(d);
         }
       });
-
+  
       setCompletedDays([...completedSet]);
       setMissedDays([...missedSet]);
-
-      /* MISSED BADGE */
-
-      const yesterdayIndex = todayIndex === 0 ? 6 : todayIndex - 1;
-      const yesterdayName = displayDays[yesterdayIndex];
-
-      if (missedSet.has(yesterdayName)) {
-        setShowMissedBadge(true);
-      } else {
-        setShowMissedBadge(false);
-      }
     };
-
+  
+    // 🔥 CALL
     fetchSchedule();
+  
+    // 🔥 EVENT LISTENER
+    const handleUpdate = () => {
+      fetchSchedule();
+    };
+  
+    window.addEventListener("workoutUpdated", handleUpdate);
+  
+    return () => {
+      window.removeEventListener("workoutUpdated", handleUpdate);
+    };
+  
   }, [profile]);
 
   const getWorkoutStatus = (day) => {
-    if (day === todayName && completedDays.includes(day)) return "done";
-
-    if (day === todayName) return "today";
-
-    if (completedDays.includes(day)) return "done";
-
-    if (missedDays.includes(day)) return "missed";
-
-    return "upcoming";
+    const dayIndex = displayDays.indexOf(day);
+  
+    // ⭐ TODAY
+    if (dayIndex === todayIndex) {
+      if (completedDays.includes(day)) return "done"; 
+      return "today"; // highlight
+    }
+  
+    // FUTURE
+    if (dayIndex > todayIndex) {
+      return "future";
+    }
+  
+    // DONE
+    if (completedDays.includes(day)) {
+      return "done";
+    }
+  
+    // MISSED
+    if (missedDays.includes(day)) {
+      return "missed";
+    }
+  
+    return "white";
   };
 
   const handleDayClick = async (index) => {
