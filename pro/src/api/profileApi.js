@@ -16,9 +16,14 @@ API.interceptors.request.use((req) => {
 
 /* ✅ SAVE PROFILE */
 export const saveProfile = async (data) => {
-  const res = await API.post("/profile", data);
-  return res.data; // 🔥 IMPORTANT: sirf backend ka data return
+  const res = await API.post("/profile", data, {
+    headers: {
+      "Content-Type": "multipart/form-data", 
+    },
+  });
+  return res.data;
 };
+
 
 /* ✅ GET PROFILE */
 export const getProfile = async () => {

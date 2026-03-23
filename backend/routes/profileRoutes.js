@@ -43,7 +43,7 @@ router.post(
       const user = await User.findById(req.userId);
 
       // ✅ IMAGE PATH
-      const profileImage = req.file ? req.file.path : null;
+      const profileImage = req.file ? `/uploads/${req.file.filename}` : null;
 
       let name = req.body.name;
 
@@ -80,7 +80,7 @@ router.post(
       // ✅ UPDATE PROFILE
       if (profile) {
         if (profileImage) {
-          profile.profileImage = profileImage; // 🔥 only update if new image
+          profile.profileImage = profileImage; 
         }
 
         profile.name = name;
@@ -105,7 +105,7 @@ router.post(
       else {
         profile = new UserProfile({
           userId: req.userId,
-          profileImage, // 🔥 IMPORTANT
+          profileImage, 
           name,
           age,
           height,
