@@ -1,11 +1,12 @@
 import express from "express";
 import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
+import upload from "../middleware/multer.js";
 import UserProfile from "../models/UserProfile.js";
 import User from "../models/User.js";
 
 const router = express.Router();
 
-router.get("/", userAuthMiddleware, async (req, res) => {
+router.post("/", userAuthMiddleware, upload.single("profileImage"), async (req, res) => {
   try {
     const profile = await UserProfile.findOne({ userId: req.userId });
 
@@ -31,6 +32,7 @@ router.post("/", userAuthMiddleware, async (req, res) => {
     console.log("BODY:", req.body);
 
     const user = await User.findById(req.userId);
+    const profileImage = req.file ? req.file.path : null;
 
     let name = req.body.name;
 
@@ -65,6 +67,7 @@ router.post("/", userAuthMiddleware, async (req, res) => {
 
     if (profile) {
       //Update existing profile
+      profile.profileImage = profileImage;
       profile.name = name;
       profile.age = age;
       profile.height = height;
@@ -85,6 +88,7 @@ router.post("/", userAuthMiddleware, async (req, res) => {
       // 🆕 Create new profile (order maintained)
       profile = new UserProfile({
         userId: req.userId,
+        profileImage,
         name,
         age,
         height,

@@ -5,7 +5,6 @@ import "../../styles/dashboard/profileSetup.css";
 const isNewUser = localStorage.getItem("isNewUser") === "true";
 
 const ProfileSetup = ({ profile, onSubmit, onClose }) => {
-
   const [formData, setFormData] = useState({
     name: profile?.name || "",
     age: profile?.age || "",
@@ -90,7 +89,6 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
       onSubmit(payload);
 
       localStorage.removeItem("isNewUser");
-
     } catch (error) {
       console.error("Profile submit error:", error);
     }
@@ -107,6 +105,19 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
         <p className="subtitle">Please set up your body details</p>
 
         <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Profile Image</label>
+            <input
+              type="file"
+              name="profileImage"
+              onChange={(e) => {
+                setFormData({
+                  ...formData,
+                  profileImage: e.target.files[0],
+                });
+              }}
+            />
+          </div>
 
           {!profile?.name && (
             <div className="form-group">
@@ -143,9 +154,7 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
               required
             />
             {errors.height && (
-              <p style={{ color: "red", fontSize: "13px" }}>
-                {errors.height}
-              </p>
+              <p style={{ color: "red", fontSize: "13px" }}>{errors.height}</p>
             )}
           </div>
 
@@ -159,9 +168,7 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
               required
             />
             {errors.weight && (
-              <p style={{ color: "red", fontSize: "13px" }}>
-                {errors.weight}
-              </p>
+              <p style={{ color: "red", fontSize: "13px" }}>{errors.weight}</p>
             )}
           </div>
 
@@ -196,30 +203,32 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
           </div>
 
           <div className="form-group">
-  <label>Target Weight (kg)</label>
-  <input
-    type="number"
-    name="targetWeight"
-    value={formData.targetWeight}
-    onChange={handleChange}
-  />
+            <label>Target Weight (kg)</label>
+            <input
+              type="number"
+              name="targetWeight"
+              value={formData.targetWeight}
+              onChange={handleChange}
+            />
 
-  {healthyRange &&
-    formData.targetWeight &&
-    Number(formData.targetWeight) < Number(healthyRange.min) && (
-      <p style={{ color: "#f59e0b", fontSize: "13px" }}>
-        Warning: This target weight is too low for your height and may lead to underweight.
-      </p>
-    )}
+            {healthyRange &&
+              formData.targetWeight &&
+              Number(formData.targetWeight) < Number(healthyRange.min) && (
+                <p style={{ color: "#f59e0b", fontSize: "13px" }}>
+                  Warning: This target weight is too low for your height and may
+                  lead to underweight.
+                </p>
+              )}
 
-  {healthyRange &&
-    formData.targetWeight &&
-    Number(formData.targetWeight) > Number(healthyRange.max) && (
-      <p style={{ color: "#ef4444", fontSize: "13px" }}>
-        Warning: This target weight is higher than the healthy range and may lead to overweight.
-      </p>
-    )}
-</div>
+            {healthyRange &&
+              formData.targetWeight &&
+              Number(formData.targetWeight) > Number(healthyRange.max) && (
+                <p style={{ color: "#ef4444", fontSize: "13px" }}>
+                  Warning: This target weight is higher than the healthy range
+                  and may lead to overweight.
+                </p>
+              )}
+          </div>
 
           <div className="form-group">
             <label>Goal Duration</label>
@@ -332,7 +341,6 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
           <button type="submit" className="submit-btn">
             Save & Continue
           </button>
-
         </form>
       </div>
     </div>
