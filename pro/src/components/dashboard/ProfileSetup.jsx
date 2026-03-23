@@ -75,20 +75,32 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (errors.height || errors.weight) {
       alert("Please fix the errors before submitting.");
       return;
     }
-
+  
     try {
-      const payload = {
-        ...formData,
-      };
-
-      onSubmit(payload);
-
+      // 🔥 FormData banana hai (IMPORTANT)
+      const form = new FormData();
+  
+      Object.keys(formData).forEach((key) => {
+        if (formData[key] !== undefined && formData[key] !== null) {
+          form.append(key, formData[key]);
+        }
+      });
+  
+      // 🔥 check karne ke liye (debug)
+      console.log("FORM DATA:");
+      for (let pair of form.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+  
+      onSubmit(form); // ✅ JSON nahi, FormData bhejna hai
+  
       localStorage.removeItem("isNewUser");
+  
     } catch (error) {
       console.error("Profile submit error:", error);
     }

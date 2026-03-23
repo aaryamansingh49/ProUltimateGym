@@ -44,7 +44,7 @@ export const getWorkoutPlanByDay = async (userId, day) => {
 
 export const uploadProfilePhoto = async (file) => {
   const formData = new FormData();
-  formData.append("photo", file); // 👈 backend expects "photo"
+  formData.append("profileImage", file); // ✅ FIXED
 
   const res = await API.post("/upload-profile-photo", formData, {
     headers: { "Content-Type": "multipart/form-data" },
