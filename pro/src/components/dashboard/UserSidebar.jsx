@@ -59,22 +59,23 @@ const UserSidebar = ({
       const form = new FormData();
 
       // ✅ IMAGE
-      form.append("profileImage", file);
+      // form.append("profileImage", file);
 
       // ✅ EXISTING DATA (VERY IMPORTANT)
-      form.append("age", profile?.age);
-      form.append("height", profile?.height);
-      form.append("weight", profile?.weight);
-      form.append("goal", profile?.goal);
-      form.append("gender", profile?.gender);
-      form.append("level", profile?.level);
-      form.append("targetWeight", profile?.targetWeight);
-      form.append("goalDuration", profile?.goalDuration);
-      form.append("activityLevel", profile?.activityLevel);
-      form.append("workoutPreference", profile?.workoutPreference);
-      form.append("dietPreference", profile?.dietPreference);
-      form.append("focusArea", profile?.focusArea);
-
+      if (profile?.age) form.append("age", profile.age);
+      if (profile?.height) form.append("height", profile.height);
+      if (profile?.weight) form.append("weight", profile.weight);
+      if (profile?.goal) form.append("goal", profile.goal);
+      
+      if (profile?.gender) form.append("gender", profile.gender);
+      if (profile?.level) form.append("level", profile.level);
+      if (profile?.targetWeight) form.append("targetWeight", profile.targetWeight);
+      if (profile?.goalDuration) form.append("goalDuration", profile.goalDuration);
+      if (profile?.activityLevel) form.append("activityLevel", profile.activityLevel);
+      if (profile?.workoutPreference) form.append("workoutPreference", profile.workoutPreference);
+      if (profile?.dietPreference) form.append("dietPreference", profile.dietPreference);
+      if (profile?.focusArea) form.append("focusArea", profile.focusArea);
+      
       const res = await saveProfile(form);
 
       if (res.success) {

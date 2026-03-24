@@ -34,7 +34,7 @@ router.get("/", userAuthMiddleware, async (req, res) => {
 router.post(
   "/",
   userAuthMiddleware,
-  upload.single("profileImage"), // 🔥 MULTER
+  upload.single("profileImage"),
   async (req, res) => {
     try {
       console.log("BODY:", req.body);
@@ -42,23 +42,20 @@ router.post(
 
       const user = await User.findById(req.userId);
 
-      // ✅ IMAGE PATH
-      const profileImage = req.file ? `/uploads/${req.file.filename}` : null;
+      // ✅ SAFE NUMBER CONVERSION
+      const safeNumber = (val) => {
+        return val && val !== "NaN" ? Number(val) : undefined;
+      };
 
-      let name = req.body.name;
-
-      if (!name) {
-        name = `${user.firstName || ""} ${user.lastName || ""}`.trim();
-      }
+      const age = safeNumber(req.body.age);
+      const height = safeNumber(req.body.height);
+      const weight = safeNumber(req.body.weight);
+      const targetWeight = safeNumber(req.body.targetWeight);
 
       const {
-        age,
-        height,
-        weight,
         goal,
         gender,
         level,
-        targetWeight,
         goalDuration,
         activityLevel,
         workoutPreference,
@@ -66,6 +63,21 @@ router.post(
         focusArea,
       } = req.body;
 
+      // ✅ IMAGE PATH
+      const profileImage = req.file
+        ? `/uploads/${req.file.filename}`
+        : null;
+
+      // ✅ NAME HANDLE
+      let name = req.body.name;
+      if (!name) {
+        name = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+      }
+
+      // ✅ PROFILE FIND (IMPORTANT - pehle karo)
+      let profile = await UserProfile.findOne({ userId: req.userId });
+
+      // ✅ VALIDATION (only for new profile)
       if (!profile && (!age || !height || !weight || !goal)) {
         return res.status(400).json({
           success: false,
@@ -73,39 +85,44 @@ router.post(
         });
       }
 
-      const bmi = (weight / (height / 100) ** 2).toFixed(2);
+      // ✅ BMI SAFE CALCULATION
+      let bmi = profile?.bmi || 0;
+      if (height && weight) {
+        bmi = (weight / (height / 100) ** 2).toFixed(2);
+      }
 
-      let profile = await UserProfile.findOne({ userId: req.userId });
-
-      // ✅ UPDATE PROFILE
+      // =========================
+      // 🔥 UPDATE PROFILE
+      // =========================
       if (profile) {
-        if (profileImage) {
-          profile.profileImage = profileImage; 
-        }
+        if (profileImage) profile.profileImage = profileImage;
 
-        profile.name = name;
-        profile.age = age;
-        profile.height = height;
-        profile.weight = weight;
-        profile.goal = goal;
-        profile.gender = gender;
-        profile.level = level;
-        profile.bmi = bmi;
-        profile.targetWeight = targetWeight;
-        profile.goalDuration = goalDuration;
-        profile.activityLevel = activityLevel;
-        profile.workoutPreference = workoutPreference;
-        profile.dietPreference = dietPreference;
-        profile.focusArea = focusArea;
+        if (name) profile.name = name;
+        if (age) profile.age = age;
+        if (height) profile.height = height;
+        if (weight) profile.weight = weight;
+        if (goal) profile.goal = goal;
+        if (gender) profile.gender = gender;
+        if (level) profile.level = level;
+        if (bmi) profile.bmi = bmi;
+        if (targetWeight) profile.targetWeight = targetWeight;
+        if (goalDuration) profile.goalDuration = goalDuration;
+        if (activityLevel) profile.activityLevel = activityLevel;
+        if (workoutPreference)
+          profile.workoutPreference = workoutPreference;
+        if (dietPreference) profile.dietPreference = dietPreference;
+        if (focusArea) profile.focusArea = focusArea;
 
         await profile.save();
-      } 
-      
-      // ✅ CREATE PROFILE
+      }
+
+      // =========================
+      // 🔥 CREATE PROFILE
+      // =========================
       else {
         profile = new UserProfile({
           userId: req.userId,
-          profileImage, 
+          profileImage,
           name,
           age,
           height,
@@ -129,7 +146,6 @@ router.post(
         success: true,
         profile,
       });
-
     } catch (err) {
       console.error(err);
       res.status(500).json({
