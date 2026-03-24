@@ -19,8 +19,6 @@ import userWorkoutRoutes from "./routes/userWorkoutRoutes.js";
 import mealRoutes from "./routes/mealRoutes.js";
 //food library
 import foodRoutes from "./routes/foodRoutes.js";
-
-
 import Stripe from "stripe";
 
 dotenv.config();
@@ -37,7 +35,13 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.headers["content-type"]?.includes("multipart/form-data")) {
+    next(); // ❌ skip JSON parser for file upload
+  } else {
+    express.json()(req, res, next);
+  }
+});
 app.use("/uploads", express.static("uploads"));
 
 /* DATABASE*/
