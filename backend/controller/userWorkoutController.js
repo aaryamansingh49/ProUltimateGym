@@ -3,6 +3,34 @@ import UserModel from "../models/userSchema.js";
 import User from "../models/User.js"; 
 import mongoose from "mongoose";
 
+
+
+import Workout from "../models/Workout.js";
+
+export const getWorkoutByDay = async (req, res) => {
+  try {
+    const { day } = req.params;
+
+    console.log("DAY RECEIVED 👉", day); // debug
+
+    const workout = await Workout.findOne({ day });
+
+    if (!workout) {
+      return res.status(404).json({
+        message: "No workout found for this day",
+      });
+    }
+
+    res.status(200).json(workout);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+
 /* =========================
    ✅ SAVE WORKOUT PROGRESS
 ========================= */

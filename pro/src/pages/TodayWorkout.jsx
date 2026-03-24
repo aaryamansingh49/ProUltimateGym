@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import API from "../api/profileApi";
 import getCurrentDay from "../utils/getCurrentDay";
 import { updateGoalProgress } from "../utils/goalProgress";
+import { getWorkoutByDay } from "../api/workoutApi";
 // import BASE_URL from "../api/config.js";
 import { useNavigate } from "react-router-dom";
 
 import "../styles/dashboard/todayWorkout.css";
 
 const TodayWorkout = () => {
+
+  
 
   const [workout, setWorkout] = useState(null);
   const [completed, setCompleted] = useState([]);
@@ -31,12 +34,12 @@ const TodayWorkout = () => {
       try {
         setLoading(true);
   
-        // ✅ Workout fetch (ye same reh sakta hai agar backend aisa hi hai)
-        const workoutRes = await API.get(`/workout/${day}`);
+        // ✅ FIXED (API function use kar)
+        const workoutRes = await getWorkoutByDay(day);
         const workoutData = workoutRes.data;
         setWorkout(workoutData);
   
-        // ✅ Progress fetch (🔥 FIX: userId hata diya)
+        // ✅ Progress (same rahega)
         const progressRes = await API.get(`/workout/progress/${day}`);
   
         const initialCompleted = workoutData.exercises.map((ex, index) => {
