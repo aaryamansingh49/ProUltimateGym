@@ -117,7 +117,6 @@ const TodayWorkout = () => {
       await axios.post(
         `${BASE_URL}/api/workout/progress`,
         {
-          userId,
           day,
           type: workout.muscleGroup,
           completedExercises: completed

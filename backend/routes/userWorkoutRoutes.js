@@ -4,13 +4,14 @@ import {
   getUserWorkoutByDay,
   getAllUserWorkouts,
 } from "../controller/userWorkoutController.js";
+import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
 
 
 
 const router = express.Router();
 
 // ✅ save workout
-router.post("/workout/progress", saveWorkoutProgress);
+router.post("/workout/progress", userAuthMiddleware, saveWorkoutProgress);
 
 // ✅ get workout (prefill)
 router.get("/workout/progress/:userId/:day", getUserWorkoutByDay);

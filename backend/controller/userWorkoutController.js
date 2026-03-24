@@ -4,18 +4,14 @@ import User from "../models/User.js";
 import mongoose from "mongoose";
 
 // ✅ SAVE workout
+
 export const saveWorkoutProgress = async (req, res) => {
   try {
-    const { userId, day, type, completedExercises } = req.body;
+    const { day, type, completedExercises } = req.body;
+    const userId = req.userId; // 🔥 JWT se aa raha hai
 
+    console.log("USER ID 👉", userId);
     console.log("TYPE RECEIVED:", type);
-
-    // 🔥 VALIDATE USER ID
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({
-        message: "Invalid userId",
-      });
-    }
 
     // 🔥 FETCH USER (LOGIN MODEL)
     let user = await UserModel.findById(userId);
@@ -49,7 +45,7 @@ export const saveWorkoutProgress = async (req, res) => {
     // 🔥 SAVE LOG
     const log = await UserWorkoutLog.findOneAndUpdate(
       { userId, day },
-      { 
+      {
         type,
         completedExercises,
         totalCalories,

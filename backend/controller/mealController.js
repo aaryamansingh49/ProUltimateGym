@@ -42,7 +42,7 @@ export const getMealByGoalLevel = async (req, res) => {
     const { goal, level, dietPreference } = req.params;
 
     // 🔥 GET USER ID (frontend se bhejna padega agar nahi bhej raha)
-    const userId = req.headers.userid || req.query.userId;
+    const userId = req.userId;
 
     if (!userId) {
       return res.status(401).json({

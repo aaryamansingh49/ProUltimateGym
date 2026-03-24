@@ -4,6 +4,7 @@ import {
   createMealPlan,
   getAllMeals
 } from "../controller/mealController.js";
+import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
 
 const router = express.Router();
 
@@ -14,6 +15,6 @@ router.post("/meal", createMealPlan);
 router.get("/meal", getAllMeals);
 
 // ✅ correct route
-router.get("/meal/:goal/:level/:dietPreference", getMealByGoalLevel);
+router.get("/meal/:goal/:level/:dietPreference", userAuthMiddleware, getMealByGoalLevel);
 
 export default router;
