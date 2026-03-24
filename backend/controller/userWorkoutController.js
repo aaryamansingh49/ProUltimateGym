@@ -3,10 +3,6 @@ import UserModel from "../models/userSchema.js";
 import User from "../models/User.js"; 
 import mongoose from "mongoose";
 
-
-
-import Workout from "../models/Workout.js";
-
 export const getWorkoutByDay = async (req, res) => {
   try {
     const { day } = req.params;
