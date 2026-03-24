@@ -16,11 +16,7 @@ API.interceptors.request.use((req) => {
 
 /* ✅ SAVE PROFILE */
 export const saveProfile = async (data) => {
-  const res = await API.post("/profile", data, {
-    headers: {
-      "Content-Type": "multipart/form-data", 
-    },
-  });
+  const res = await API.post("/profile", data);
   return res.data;
 };
 
@@ -49,11 +45,9 @@ export const getWorkoutPlanByDay = async (userId, day) => {
 
 export const uploadProfilePhoto = async (file) => {
   const formData = new FormData();
-  formData.append("profileImage", file); // ✅ FIXED
+  formData.append("profileImage", file);
 
-  const res = await API.post("/upload-profile-photo", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const res = await API.post("/upload-profile-photo", formData);
 
   return res.data;
 };

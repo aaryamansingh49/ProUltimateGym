@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 // import { saveProfile } from "../../api/profileApi";
 import "../../styles/dashboard/profileSetup.css";
 
+
 const isNewUser = localStorage.getItem("isNewUser") === "true";
 
 const ProfileSetup = ({ profile, onSubmit, onClose }) => {
+  const [imageFile, setImageFile] = useState(null);
   const [formData, setFormData] = useState({
     name: profile?.name || "",
     age: profile?.age || "",
@@ -84,16 +86,31 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
     try {
       const form = new FormData();
   
+      // ✅ TEXT DATA
       Object.keys(formData).forEach((key) => {
-        if (formData[key] !== undefined && formData[key] !== null && formData[key] !== "") {
+        if (
+          formData[key] !== undefined &&
+          formData[key] !== null &&
+          formData[key] !== ""
+        ) {
           form.append(key, formData[key]);
         }
       });
   
-      // 🔥 IMPORTANT FIX
+      // 🔥 IMPORTANT FIX (FILE manually append)
+      if (imageFile) {
+        form.append("profileImage", imageFile);
+      }
+  
+      // ✅ validation
       if (!formData.age || !formData.height || !formData.weight || !formData.goal) {
-        alert("Please fill all required fields (age, height, weight, goal)");
+        alert("Please fill all required fields");
         return;
+      }
+  
+      // 🔥 DEBUG (1 baar check kar lena)
+      for (let pair of form.entries()) {
+        console.log(pair[0], pair[1]);
       }
   
       onSubmit(form);
@@ -104,7 +121,6 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
       console.error("Profile submit error:", error);
     }
   };
-
   return (
     <div className="profile-setup-overlay">
       <div className="profile-setup-card">
@@ -122,10 +138,7 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
               type="file"
               name="profileImage"
               onChange={(e) => {
-                setFormData({
-                  ...formData,
-                  profileImage: e.target.files[0],
-                });
+                setImageFile(e.target.files[0]);
               }}
             />
           </div>
