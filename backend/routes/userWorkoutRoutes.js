@@ -8,32 +8,13 @@ import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
 
 const router = express.Router();
 
-/* =========================
-   ✅ SAVE WORKOUT PROGRESS
-  
-========================= */
-router.post(
-  "/workout/progress",
-  userAuthMiddleware,
-  saveWorkoutProgress
-);
+/* SAVE */
+router.post("/workout/progress", userAuthMiddleware, saveWorkoutProgress);
 
-/* =========================
-   ✅ GET WORKOUT (PREFILL)
-   FINAL URL → /api/workout/progress/:userId/:day
-========================= */
-router.get(
-  "/workout/progress/:userId/:day",
-  getUserWorkoutByDay
-);
+/* PREFILL */
+router.get("/workout/progress/:day", userAuthMiddleware, getUserWorkoutByDay);
 
-/* =========================
-   ✅ GET ALL WORKOUTS
-   FINAL URL → /api/workouts
-========================= */
-router.get(
-  "/workouts",
-  getAllUserWorkouts
-);
+/* ALL */
+router.get("/workouts", userAuthMiddleware, getAllUserWorkouts);
 
 export default router;

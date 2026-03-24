@@ -26,53 +26,51 @@ const TodayWorkout = () => {
 
   useEffect(() => {
 
-    if (!userId) return;
-
     const fetchWorkout = async () => {
-
+  
       try {
-
         setLoading(true);
-
-        const workoutRes = await API.get(`/workout/${userId}/${day}`);
-
+  
+        // ✅ Workout fetch (ye same reh sakta hai agar backend aisa hi hai)
+        const workoutRes = await API.get(`/workout/${day}`);
         const workoutData = workoutRes.data;
         setWorkout(workoutData);
-
-        const progressRes = await API.get(`/workout/progress/${userId}/${day}`);
-
+  
+        // ✅ Progress fetch (🔥 FIX: userId hata diya)
+        const progressRes = await API.get(`/workout/progress/${day}`);
+  
         const initialCompleted = workoutData.exercises.map((ex, index) => {
-
+  
           const saved = progressRes.data?.completedExercises?.[index];
-
+  
           return {
             name: ex.name,
             calories: ex.calories,
             done: saved?.done || false
           };
-
+  
         });
-
+  
         setCompleted(initialCompleted);
-
+  
       } catch (error) {
-
+  
+        console.error("FETCH WORKOUT ERROR:", error);
+  
         alert(
           error.response?.data?.message ||
           "Failed to load workout"
         );
-
+  
       } finally {
-
         setLoading(false);
-
       }
-
+  
     };
-
+  
     fetchWorkout();
-
-  }, [day, userId]);
+  
+  }, [day]);
 
   /* ================= TOGGLE EXERCISE ================= */
 

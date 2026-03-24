@@ -3,49 +3,64 @@ import UserModel from "../models/userSchema.js";
 import User from "../models/User.js"; 
 import mongoose from "mongoose";
 
-// ✅ SAVE workout
-
+/* =========================
+   ✅ SAVE WORKOUT PROGRESS
+========================= */
 export const saveWorkoutProgress = async (req, res) => {
   try {
     const { day, type, completedExercises } = req.body;
-    const userId = req.userId; // 🔥 JWT se aa raha hai
+    const userId = req.userId; // ✅ JWT se
 
     console.log("USER ID 👉", userId);
     console.log("TYPE RECEIVED:", type);
 
-    // 🔥 FETCH USER (LOGIN MODEL)
-    let user = await UserModel.findById(userId);
+    /* 🔥 FETCH USER */
+    const user = await UserModel.findById(userId);
 
     if (!user) {
       return res.status(404).json({
+        success: false,
         message: "User not found",
       });
     }
 
-    // 🔥 DUAL MODEL MEMBERSHIP CHECK
-    let isMember = user?.membershipPlan;
+    /* 🔥 MEMBERSHIP CHECK (FIXED LOGIC) */
+    let isMember = false;
 
-    if (!isMember) {
-      const membershipUser = await User.findOne({ email: user.email });
-      isMember = membershipUser?.membershipPlan;
+    // 1️⃣ Direct check (login model)
+    if (user.membershipPlan && user.membershipPlan !== "None") {
+      isMember = true;
     }
 
+    // 2️⃣ Secondary check (membership collection)
+    if (!isMember) {
+      const membershipUser = await User.findOne({ email: user.email });
+
+      if (membershipUser && membershipUser.membershipPlan && membershipUser.membershipPlan !== "None") {
+        isMember = true;
+      }
+    }
+
+    // ❌ FINAL BLOCK
     if (!isMember) {
       return res.status(403).json({
+        success: false,
         message: "Only for active members",
       });
     }
 
-    // 🔥 CALCULATE CALORIES
+    /* 🔥 CALCULATE CALORIES */
     const totalCalories = completedExercises.reduce(
       (sum, ex) => sum + (ex.done ? ex.calories : 0),
       0
     );
 
-    // 🔥 SAVE LOG
+    /* 🔥 SAVE / UPDATE LOG */
     const log = await UserWorkoutLog.findOneAndUpdate(
       { userId, day },
       {
+        userId,
+        day,
         type,
         completedExercises,
         totalCalories,
@@ -54,45 +69,46 @@ export const saveWorkoutProgress = async (req, res) => {
       { new: true, upsert: true }
     );
 
-    res.status(200).json(log);
+    res.status(200).json({
+      success: true,
+      message: "Workout saved successfully",
+      log,
+    });
 
   } catch (error) {
     console.error("SAVE WORKOUT ERROR:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-// ✅ PREFILL workout
+/* =========================
+   ✅ GET WORKOUT (PREFILL)
+   🔥 FIX: JWT USER ONLY
+========================= */
 export const getUserWorkoutByDay = async (req, res) => {
   try {
-    const { userId, day } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({
-        message: "Invalid userId",
-      });
-    }
+    const userId = req.userId; // ✅ FIX
+    const { day } = req.params;
 
     const log = await UserWorkoutLog.findOne({ userId, day });
 
-    res.status(200).json(log);
+    res.status(200).json(log || {});
 
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// ✅ GET ALL WORKOUTS
+/* =========================
+   ✅ GET ALL WORKOUTS
+   🔥 FIX: JWT USER ONLY
+========================= */
 export const getAllUserWorkouts = async (req, res) => {
   try {
-    const { userId } = req.query;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid userId",
-      });
-    }
+    const userId = req.userId; // ✅ FIX
 
     const workouts = await UserWorkoutLog.find({ userId });
 
