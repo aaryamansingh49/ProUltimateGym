@@ -3,9 +3,10 @@ import React, { useState, useEffect } from "react";
 import "../../styles/dashboard/profileSetup.css";
 
 
-const isNewUser = localStorage.getItem("isNewUser") === "true";
 
 const ProfileSetup = ({ profile, onSubmit, onClose }) => {
+
+  const isNewUser = localStorage.getItem("isNewUser") === "true";
   const [imageFile, setImageFile] = useState(null);
   const [formData, setFormData] = useState({
     name: profile?.name || "",
@@ -97,18 +98,31 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
         }
       });
   
-      // 🔥 IMPORTANT FIX (FILE manually append)
-      if (imageFile) {
-        form.append("profileImage", imageFile);
+      // 🔥 DEBUG BEFORE APPEND
+      console.log("🧠 IMAGE STATE:", imageFile);
+  
+      // ❗ FORCE FILE CHECK
+      if (!imageFile) {
+        alert("Please select profile image");
+        return;
       }
   
+      // ✅ FILE APPEND (CRITICAL)
+      form.append("profileImage", imageFile);
+  
       // ✅ validation
-      if (!formData.age || !formData.height || !formData.weight || !formData.goal) {
+      if (
+        !formData.age ||
+        !formData.height ||
+        !formData.weight ||
+        !formData.goal
+      ) {
         alert("Please fill all required fields");
         return;
       }
   
-      // 🔥 DEBUG (1 baar check kar lena)
+      // 🔥 FULL DEBUG (MOST IMPORTANT)
+      console.log("🚀 FINAL FORMDATA:");
       for (let pair of form.entries()) {
         console.log(pair[0], pair[1]);
       }
@@ -121,6 +135,8 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
       console.error("Profile submit error:", error);
     }
   };
+
+  
   return (
     <div className="profile-setup-overlay">
       <div className="profile-setup-card">
@@ -139,6 +155,8 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
               name="profileImage"
               onChange={(e) => {
                 setImageFile(e.target.files[0]);
+                console.log("📸 SELECTED FILE:", file);
+                setImageFile(file);
               }}
             />
           </div>
