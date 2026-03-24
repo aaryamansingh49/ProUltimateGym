@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config({ path: "./backend/.env" });
 import connectDB from "./db/connectDB.js";
+import path from "path"
 
 import userRoutes from "./routes/userRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
