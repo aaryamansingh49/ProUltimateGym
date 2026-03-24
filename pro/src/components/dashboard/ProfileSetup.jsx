@@ -82,22 +82,21 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
     }
   
     try {
-      // 🔥 FormData banana hai (IMPORTANT)
       const form = new FormData();
   
       Object.keys(formData).forEach((key) => {
-        if (formData[key] !== undefined && formData[key] !== null) {
+        if (formData[key] !== undefined && formData[key] !== null && formData[key] !== "") {
           form.append(key, formData[key]);
         }
       });
   
-      // 🔥 check karne ke liye (debug)
-      console.log("FORM DATA:");
-      for (let pair of form.entries()) {
-        console.log(pair[0], pair[1]);
+      // 🔥 IMPORTANT FIX
+      if (!formData.age || !formData.height || !formData.weight || !formData.goal) {
+        alert("Please fill all required fields (age, height, weight, goal)");
+        return;
       }
   
-      onSubmit(form); // ✅ JSON nahi, FormData bhejna hai
+      onSubmit(form);
   
       localStorage.removeItem("isNewUser");
   

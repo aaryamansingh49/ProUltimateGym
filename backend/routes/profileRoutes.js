@@ -66,7 +66,7 @@ router.post(
         focusArea,
       } = req.body;
 
-      if (!age || !height || !weight || !goal) {
+      if (!profile && (!age || !height || !weight || !goal)) {
         return res.status(400).json({
           success: false,
           message: "Missing required fields",
