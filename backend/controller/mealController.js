@@ -1,4 +1,6 @@
 import Meal from "../models/Meal.js";
+import UserModel from "../models/UserModel.js";
+import User from "../models/User.js"; 
 
 /* 🔥 Admin Create Meal */
 export const createMealPlan = async (req, res) => {
@@ -33,17 +35,50 @@ export const getAllMeals = async (req, res) => {
 };
 
 
-/* 🔥 User Fetch Meal */
+/* 🔥 User Fetch Meal (WITH MEMBERSHIP CHECK) */
 export const getMealByGoalLevel = async (req, res) => {
   try {
 
     const { goal, level, dietPreference } = req.params;
 
+    // 🔥 GET USER ID (frontend se bhejna padega agar nahi bhej raha)
+    const userId = req.headers.userid || req.query.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "User not logged in",
+      });
+    }
+
+    // 🔥 FETCH USER
+    let user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // 🔥 DUAL MODEL MEMBERSHIP CHECK
+    let isMember = user?.membershipPlan;
+
+    if (!isMember) {
+      const membershipUser = await User.findOne({ email: user.email });
+      isMember = membershipUser?.membershipPlan;
+    }
+
+    if (!isMember) {
+      return res.status(403).json({
+        message: "Only for active members",
+      });
+    }
+
+    // ================= NORMAL LOGIC =================
+
     let formattedGoal = goal?.toLowerCase().trim();
     let formattedLevel = level?.toLowerCase().trim();
     let formattedDiet = dietPreference?.toLowerCase().trim();
 
-    // 🔥 NORMALIZATION FIX
     const allowedDiets = ["veg", "non-veg", "keto", "vegan", "balanced"];
 
     if (!allowedDiets.includes(formattedDiet)) {
@@ -52,26 +87,19 @@ export const getMealByGoalLevel = async (req, res) => {
 
     console.log("QUERY:", formattedGoal, formattedLevel, formattedDiet);
 
-    /* 🔥 FIRST TRY EXACT MATCH */
-
     let meal = await Meal.findOne({
       goal: formattedGoal,
       level: formattedLevel,
       dietPreference: formattedDiet
     }).lean();
 
-
-    /* 🔥 FALLBACK (ignore level) */
-
     if (!meal) {
-
       console.log("Exact meal not found, trying fallback...");
 
       meal = await Meal.findOne({
         goal: formattedGoal,
         dietPreference: formattedDiet
       }).lean();
-
     }
 
     if (!meal) {

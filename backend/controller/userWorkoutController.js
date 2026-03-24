@@ -1,17 +1,52 @@
 import UserWorkoutLog from "../models/UserWorkoutLog.js";
+import UserModel from "../models/UserModel.js";
+import User from "../models/User.js"; 
 import mongoose from "mongoose";
 
 // ✅ SAVE workout
 export const saveWorkoutProgress = async (req, res) => {
   try {
     const { userId, day, type, completedExercises } = req.body;
+
     console.log("TYPE RECEIVED:", type);
 
+    // 🔥 VALIDATE USER ID
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        message: "Invalid userId",
+      });
+    }
+
+    // 🔥 FETCH USER (LOGIN MODEL)
+    let user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // 🔥 DUAL MODEL MEMBERSHIP CHECK
+    let isMember = user?.membershipPlan;
+
+    if (!isMember) {
+      const membershipUser = await User.findOne({ email: user.email });
+      isMember = membershipUser?.membershipPlan;
+    }
+
+    if (!isMember) {
+      return res.status(403).json({
+        message: "Only for active members",
+      });
+    }
+
+    // 🔥 CALCULATE CALORIES
     const totalCalories = completedExercises.reduce(
       (sum, ex) => sum + (ex.done ? ex.calories : 0),
       0
     );
 
+    // 🔥 SAVE LOG
     const log = await UserWorkoutLog.findOneAndUpdate(
       { userId, day },
       { 
@@ -24,7 +59,9 @@ export const saveWorkoutProgress = async (req, res) => {
     );
 
     res.status(200).json(log);
+
   } catch (error) {
+    console.error("SAVE WORKOUT ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -34,26 +71,25 @@ export const getUserWorkoutByDay = async (req, res) => {
   try {
     const { userId, day } = req.params;
 
-
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).json({
-          message: "Invalid userId",
-        });
-      }
+      return res.status(400).json({
+        message: "Invalid userId",
+      });
+    }
 
     const log = await UserWorkoutLog.findOne({ userId, day });
 
-    res.status(200).json(log); // null bhi ho sakta hai
+    res.status(200).json(log);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+// ✅ GET ALL WORKOUTS
 export const getAllUserWorkouts = async (req, res) => {
-
   try {
-
-    const { userId } = req.query; // ⭐ frontend se aayega
+    const { userId } = req.query;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({
@@ -70,13 +106,9 @@ export const getAllUserWorkouts = async (req, res) => {
     });
 
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
-
 };
-
