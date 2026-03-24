@@ -1,5 +1,5 @@
 import UserWorkoutLog from "../models/UserWorkoutLog.js";
-import UserModel from "../models/UserModel.js";
+import UserModel from "../models/userSchema.js";
 import User from "../models/User.js"; 
 import mongoose from "mongoose";
 

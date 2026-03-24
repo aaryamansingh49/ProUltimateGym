@@ -1,5 +1,5 @@
 import Meal from "../models/Meal.js";
-import UserModel from "../models/UserModel.js";
+import UserModel from "../models/userSchema.js";
 import User from "../models/User.js"; 
 
 /* 🔥 Admin Create Meal */
