@@ -110,12 +110,22 @@ const TodayWorkout = () => {
   
       setLoading(true);
   
-      await API.post(`/workout/progress`, {
+      const token = localStorage.getItem("token");
+
+      await API.post(
+        `/workout/progress`,
+        {
           day,
           type: workout.muscleGroup,
           completedExercises: completed
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
       );
+     
   
       const userKey = localStorage.getItem("userKey");
   
