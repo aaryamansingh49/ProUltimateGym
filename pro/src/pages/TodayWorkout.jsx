@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api/profileApi";
 import getCurrentDay from "../utils/getCurrentDay";
 import { updateGoalProgress } from "../utils/goalProgress";
-import BASE_URL from "../api/config.js";
+// import BASE_URL from "../api/config.js";
 import { useNavigate } from "react-router-dom";
 
 import "../styles/dashboard/todayWorkout.css";
@@ -34,16 +34,12 @@ const TodayWorkout = () => {
 
         setLoading(true);
 
-        const workoutRes = await axios.get(
-          `${BASE_URL}/api/workout/${userId}/${day}`
-        );
+        const workoutRes = await API.get(`/workout/${userId}/${day}`);
 
         const workoutData = workoutRes.data;
         setWorkout(workoutData);
 
-        const progressRes = await axios.get(
-          `${BASE_URL}/api/workout/progress/${userId}/${day}`
-        );
+        const progressRes = await API.get(`/workout/progress/${userId}/${day}`);
 
         const initialCompleted = workoutData.exercises.map((ex, index) => {
 
@@ -114,9 +110,7 @@ const TodayWorkout = () => {
   
       setLoading(true);
   
-      await axios.post(
-        `${BASE_URL}/api/workout/progress`,
-        {
+      await API.post(`/workout/progress`, {
           day,
           type: workout.muscleGroup,
           completedExercises: completed

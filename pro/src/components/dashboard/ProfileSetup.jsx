@@ -26,18 +26,18 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
+  
     setFormData({
       ...formData,
       [name]: value,
     });
-
+  
     validateField(name, value);
   };
-
+  
   const validateField = (name, value) => {
     let newErrors = { ...errors };
-
+  
     if (name === "height") {
       if (value < 120 || value > 230) {
         newErrors.height =
@@ -46,7 +46,7 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
         delete newErrors.height;
       }
     }
-
+  
     if (name === "weight") {
       if (value < 35 || value > 250) {
         newErrors.weight =
@@ -55,24 +55,24 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
         delete newErrors.weight;
       }
     }
-
+  
     setErrors(newErrors);
   };
-
+  
   useEffect(() => {
     if (formData.height) {
       const heightM = formData.height / 100;
-
+  
       const minWeight = (18.5 * heightM * heightM).toFixed(1);
       const maxWeight = (24.9 * heightM * heightM).toFixed(1);
-
+  
       setHealthyRange({
         min: minWeight,
         max: maxWeight,
       });
     }
   }, [formData.height]);
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
   
@@ -82,19 +82,6 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
     }
   
     try {
-      const form = new FormData();
-  
-      // ✅ ONLY TEXT DATA
-      Object.keys(formData).forEach((key) => {
-        if (
-          formData[key] !== undefined &&
-          formData[key] !== null &&
-          formData[key] !== ""
-        ) {
-          form.append(key, formData[key]);
-        }
-      });
-  
       // ✅ validation
       if (
         !formData.age ||
@@ -106,7 +93,21 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
         return;
       }
   
-      onSubmit(form);
+      // 🔥 FIX: send JSON instead of FormData
+      const cleanData = {
+        ...formData,
+        age: Number(formData.age),
+        height: Number(formData.height),
+        weight: Number(formData.weight),
+        targetWeight: formData.targetWeight
+          ? Number(formData.targetWeight)
+          : undefined,
+      };
+  
+      console.log("SENDING DATA 👉", cleanData); // debug
+  
+      onSubmit(cleanData); // ✅ direct JSON
+  
       localStorage.removeItem("isNewUser");
   
     } catch (error) {

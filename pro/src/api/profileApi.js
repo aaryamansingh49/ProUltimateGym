@@ -51,3 +51,4 @@ export const uploadProfilePhoto = async (file) => {
 
   return res.data;
 };
+export default API;
