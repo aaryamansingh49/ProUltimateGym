@@ -4,7 +4,7 @@ import "../../styles/dashboard/profileSetup.css";
 
 const ProfileSetup = ({ profile, onSubmit, onClose }) => {
   const isNewUser = localStorage.getItem("isNewUser") === "true";
-  const [imageFile, setImageFile] = useState(null);
+
   const [formData, setFormData] = useState({
     name: profile?.name || "",
     age: profile?.age || "",
@@ -75,16 +75,16 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (errors.height || errors.weight) {
       alert("Please fix the errors before submitting.");
       return;
     }
-
+  
     try {
       const form = new FormData();
-
-      // ✅ TEXT DATA
+  
+      // ✅ ONLY TEXT DATA
       Object.keys(formData).forEach((key) => {
         if (
           formData[key] !== undefined &&
@@ -94,19 +94,7 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
           form.append(key, formData[key]);
         }
       });
-
-      // 🔥 DEBUG BEFORE APPEND
-      console.log("🧠 IMAGE STATE:", imageFile);
-
-      // ❗ FORCE FILE CHECK
-      if (!imageFile) {
-        alert("Please select profile image");
-        return;
-      }
-
-      // ✅ FILE APPEND (CRITICAL)
-      form.append("profileImage", imageFile);
-
+  
       // ✅ validation
       if (
         !formData.age ||
@@ -117,16 +105,10 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
         alert("Please fill all required fields");
         return;
       }
-
-      // 🔥 FULL DEBUG (MOST IMPORTANT)
-      console.log("🚀 FINAL FORMDATA:");
-      for (let pair of form.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
+  
       onSubmit(form);
-
       localStorage.removeItem("isNewUser");
+  
     } catch (error) {
       console.error("Profile submit error:", error);
     }
@@ -143,18 +125,6 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
         <p className="subtitle">Please set up your body details</p>
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Profile Image</label>
-            <input
-              type="file"
-              name="profileImage"
-              onChange={(e) => {
-                const file = e.target.files[0]; // ✅ define first
-                console.log("📸 SELECTED FILE:", file); // ✅ debug
-                setImageFile(file); // ✅ set once
-              }}
-            />
-          </div>
 
           {!profile?.name && (
             <div className="form-group">
