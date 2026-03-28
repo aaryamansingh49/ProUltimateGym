@@ -17,24 +17,26 @@ const ProtectedUserRoute = ({ children }) => {
         setLoading(false);
         return;
       }
-
+  
+      // ❌ MEMBERSHIP CHECK DISABLED
+  
+      /*
       const email =
         JSON.parse(localStorage.getItem("userProfile"))?.email ||
         localStorage.getItem("userEmail");
-
+  
       try {
         const res = await fetch(
           `${BASE_URL}/api/check-active-membership?email=${email}`
         );
-
+  
         const data = await res.json();
-
+  
         if (data.isActive) {
           setIsAllowed(true);
         } else {
-          // 🔥 YAHI USE HOGA TOAST
           toast.error("Only active members can access this feature");
-
+  
           setTimeout(() => {
             navigate("/membership");
           }, 1500);
@@ -42,11 +44,14 @@ const ProtectedUserRoute = ({ children }) => {
       } catch (err) {
         console.error(err);
         navigate("/membership");
-      } finally {
-        setLoading(false);
       }
+      */
+  
+      // ✅ DIRECT ACCESS
+      setIsAllowed(true);
+      setLoading(false);
     };
-
+  
     checkAccess();
   }, [token, navigate]);
 

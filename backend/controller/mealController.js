@@ -60,19 +60,25 @@ export const getMealByGoalLevel = async (req, res) => {
     }
 
     // 🔥 DUAL MODEL MEMBERSHIP CHECK
-    let isMember = user?.membershipPlan;
+    let membershipPlan = user?.membershipPlan;
 
-    if (!isMember) {
+    // 🔥 fallback check
+    if (!membershipPlan) {
       const membershipUser = await User.findOne({ email: user.email });
-      isMember = membershipUser?.membershipPlan;
+      membershipPlan = membershipUser?.membershipPlan;
     }
-
-    if (!isMember) {
+    
+    console.log("👤 FINAL MEMBERSHIP:", membershipPlan);
+    
+    // 🔥 FINAL SAFE CHECK
+    if (
+      !membershipPlan ||
+      membershipPlan.toLowerCase() === "none"
+    ) {
       return res.status(403).json({
         message: "Only for active members",
       });
     }
-
     // ================= NORMAL LOGIC =================
 
     let formattedGoal = goal?.toLowerCase().trim();

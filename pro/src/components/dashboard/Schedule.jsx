@@ -169,25 +169,26 @@ const Schedule = ({ profile }) => {
 
   const handleDayClick = async (index) => {
     const clickedDay = displayDays[index];
-
+  
     if (selectedDay === clickedDay) {
       setSelectedDay(null);
       setSelectedWorkout(null);
-
       return;
     }
-
+  
     setSelectedDay(clickedDay);
-
-    const res = await getWorkoutPlanByDay(profile.userId, apiDays[index]);
-
+  
+    const res = await getWorkoutPlanByDay(
+      apiDays[index].toLowerCase()
+    );
+  
     if (res) {
       setSelectedWorkout(res);
     } else {
       setSelectedWorkout(null);
     }
   };
-
+  
   return (
     <div className="schedule-container">
       {showMissedBadge && (

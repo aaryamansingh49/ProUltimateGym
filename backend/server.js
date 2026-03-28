@@ -74,6 +74,7 @@ app.use("/api", userDashboardRouter);
 app.use("/api", chatbotRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api/admin", adminRoutes);
+
 app.use("/api/profile", profileRoutes);
 app.use("/api", workoutRoutes);
 app.use("/api", userWorkoutRoutes);

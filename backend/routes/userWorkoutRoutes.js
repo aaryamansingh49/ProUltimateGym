@@ -3,21 +3,21 @@ import {
   saveWorkoutProgress,
   getUserWorkoutByDay,
   getAllUserWorkouts,
-  getWorkoutByDay ,
 } from "../controller/userWorkoutController.js";
+
+import { getWorkoutByDay } from "../controller/workoutController.js";
 import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
 
 const router = express.Router();
 
-router.get("/workout/:day", getWorkoutByDay);
+/* ✅ WORKOUT PLAN */
+router.get("/workout/:day", userAuthMiddleware, getWorkoutByDay);
 
-/* SAVE */
+/* ✅ PROGRESS */
 router.post("/workout/progress", userAuthMiddleware, saveWorkoutProgress);
-
-/* PREFILL */
 router.get("/workout/progress/:day", userAuthMiddleware, getUserWorkoutByDay);
 
-/* ALL */
+/* ✅ ALL */
 router.get("/workouts", userAuthMiddleware, getAllUserWorkouts);
 
 export default router;

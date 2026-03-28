@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/dashboard/cards.css";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import BASE_URL from "../../api/config";
+
+import {
+  getWorkoutByDay,
+  getUserWorkoutProgress
+} from "../../api/workoutApi";
+
 import getCurrentDay from "../../utils/getCurrentDay";
 
 const ExerciseCard = () => {
@@ -14,50 +18,37 @@ const ExerciseCard = () => {
   const [totalCalories, setTotalCalories] = useState(0);
 
   const userId = localStorage.getItem("userKey");
+  const token = localStorage.getItem("token");
+
   const day = getCurrentDay();
+  const dayLower = day.toLowerCase(); // ✅ FIX
 
   useEffect(() => {
 
     const fetchData = async () => {
-
       try {
-
         if (!userId) return;
-
-        /* ================= WORKOUT PLAN ================= */
-
-        const workoutRes = await axios.get(
-          `${BASE_URL}/api/workout/${userId}/${day}`
-        );
-
-        const exercises = workoutRes.data?.exercises || [];
-
+    
+        /* ✅ WORKOUT PLAN */
+        const workoutRes = await getWorkoutByDay(dayLower);
+        const exercises = workoutRes?.exercises || [];
         setTotalExercises(exercises.length);
-
-        /* ================= USER PROGRESS ================= */
-
-        const progressRes = await axios.get(
-          `${BASE_URL}/api/workout/progress/${userId}/${day}`
-        );
-
-        const completedExercises = progressRes.data?.completedExercises || [];
-
+        
+        const progressRes = await getUserWorkoutProgress(dayLower);
+        
+        const completedExercises = progressRes?.completedExercises || [];
+        
         const doneCount = completedExercises.filter(ex => ex.done).length;
-
+        
         setCompletedCount(doneCount);
-
-        setTotalCalories(progressRes.data?.totalCalories || 0);
-
+        setTotalCalories(progressRes?.totalCalories || 0);
+    
       } catch (err) {
-
         console.log("Exercise card error:", err);
-
       }
-
     };
 
     /* ===== Initial fetch ===== */
-
     fetchData();
 
     /* ===== Listen for workout update ===== */
@@ -68,11 +59,11 @@ const ExerciseCard = () => {
 
     window.addEventListener("workoutUpdated", handleWorkoutUpdate);
 
-    return () => {
-      window.removeEventListener("workoutUpdated", handleWorkoutUpdate);
-    };
+return () => {
+  window.removeEventListener("workoutUpdated", handleWorkoutUpdate);
+};
 
-  }, [userId, day]);
+  }, [userId, dayLower]);
 
   return (
 

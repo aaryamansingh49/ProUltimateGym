@@ -1,69 +1,69 @@
-import mongoose from "mongoose";
+  import mongoose from "mongoose";
 
-const foodSchema = new mongoose.Schema({
+  const foodSchema = new mongoose.Schema({
 
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
+    name: {
+      type: String,
+      required: true,
+      trim: true
+    },
 
-  /* 🔥 MACROS PER 100g (IMPORTANT) */
+    /* 🔥 MACROS PER 100g (IMPORTANT) */
 
-  caloriesPer100g: {
-    type: Number,
-    default: 0
-  },
+    caloriesPer100g: {
+      type: Number,
+      default: 0
+    },
 
-  proteinPer100g: {
-    type: Number,
-    default: 0
-  },
+    proteinPer100g: {
+      type: Number,
+      default: 0
+    },
 
-  fatsPer100g: {
-    type: Number,
-    default: 0
-  },
+    fatsPer100g: {
+      type: Number,
+      default: 0
+    },
 
-  carbsPer100g: {
-    type: Number,
-    default: 0
-  },
+    carbsPer100g: {
+      type: Number,
+      default: 0
+    },
 
-  /* 🔥 MICRO NUTRIENTS */
+    /* 🔥 MICRO NUTRIENTS */
 
-  ironPer100g: {
-    type: Number,
-    default: 0
-  },
+    ironPer100g: {
+      type: Number,
+      default: 0
+    },
 
-  calciumPer100g: {
-    type: Number,
-    default: 0
-  },
+    calciumPer100g: {
+      type: Number,
+      default: 0
+    },
 
-  vitaminCPer100g: {
-    type: Number,
-    default: 0
-  },
+    vitaminCPer100g: {
+      type: Number,
+      default: 0
+    },
 
-  /* 🔥 DEFAULT SERVING */
+    /* 🔥 DEFAULT SERVING */
 
-  defaultServingGrams: {
-    type: Number,
-    default: 100
-  },
+    defaultServingGrams: {
+      type: Number,
+      default: 100
+    },
 
-  category: {
-    type: String,
-    default: "general"
-  },
+    category: {
+      type: String,
+      default: "general"
+    },
 
-  createdBy: {
-    type: String,
-    default: "admin"
-  }
+    createdBy: {
+      type: String,
+      default: "admin"
+    }
 
-},{ timestamps:true });
+  },{ timestamps:true });
 
-export default mongoose.model("Food", foodSchema);
+  export default mongoose.model("Food", foodSchema);

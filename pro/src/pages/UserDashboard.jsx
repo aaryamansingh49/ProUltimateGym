@@ -68,7 +68,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
           localStorage.setItem("userProfile", JSON.stringify(mergedProfile));
   
           // ✅ stats
-          fetchLastMonthStats(mergedProfile.userId);
+          fetchLastMonthStats();
   
         } else {
           console.warn("Profile fetch failed");
@@ -84,47 +84,53 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
 
   // 🔥 LAST MONTH STATS FETCH
 
-  const fetchLastMonthStats = async (userId) => {
+  const fetchLastMonthStats = async () => {
     try {
-      const days = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ];
-
+      const today = new Date();
+  
+      const dayName = today
+        .toLocaleDateString("en-US", { weekday: "long" })
+        .toLowerCase();
+  
       let workoutCount = 0;
       let calories = 0;
-
-      for (let i = 0; i < 30; i++) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-
-        const dayName = days[date.getDay()];
-
-        try {
-          const res = await getUserWorkoutProgress(userId, dayName);
-
-          if (res.data) {
-            workoutCount += 1;
-            calories += res.data?.totalCalories || 0;
-          }
-        } catch (err) {
-          // ignore missing progress
+  
+      try {
+        const res = await getUserWorkoutProgress(dayName);
+  
+        // ✅ SAFE RESPONSE HANDLE
+        if (res && Array.isArray(res.completedExercises)) {
+          workoutCount = res.completedExercises.length > 0 ? 1 : 0;
+          calories = res.totalCalories || 0;
+        }
+  
+      } catch (innerErr) {
+  
+        // 🔥 MEMBERSHIP ERROR IGNORE
+        if (
+          innerErr?.response?.data?.message === "Only for active members"
+        ) {
+          console.log("⚠️ Membership check ignored (dashboard)");
+        } else {
+          console.log("⚠️ Workout stats fetch error:", innerErr);
         }
       }
-
+  
       setLastMonthStats({
         workouts: workoutCount,
         calories: calories,
       });
+  
     } catch (err) {
-      console.log("Stats fetch error", err);
+      console.log("❌ Stats fetch error:", err);
+  
+      setLastMonthStats({
+        workouts: 0,
+        calories: 0,
+      });
     }
   };
+      
 
   // PROFILE SAVE
   const handleProfileSave = async (data) => {

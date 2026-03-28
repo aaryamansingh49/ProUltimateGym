@@ -272,7 +272,8 @@ const Meal = () => {
       localStorage.setItem(`dailyNutrition_${userKey}`, JSON.stringify(data));
 
       // dashboard card update
-      window.dispatchEvent(new Event("storage"));
+      // window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new Event("mealUpdated"));
     }
   }, [selectedFoods, totalNutrition, meal, macroTargets]);
 
@@ -582,21 +583,25 @@ const Meal = () => {
 
   //  SAME CODE AS YOURS — ONLY FIX APPLIED
 
-const getSectionRecommendations = (sectionKey, foods) => {
-  if (suggestionsLocked) return [];
+  const getSectionRecommendations = (sectionKey, foods) => {
 
-  if (!nutritionDeficit || !macroTargets || !microTargets) return [];
-
-  if (!isAllMealsCompleted()) return [];
-
-  //  FIXED LINE
-  if (isCaloriesProteinCompleted(totalNutrition)) return [];
-
-  const mealCalories = getMealCalories(sectionKey);
-
-  if (mealCalories > 800) return [];
-
-  const priority = getPriorityNutrient();
+    if (suggestionsLocked) return [];
+  
+    if (!nutritionDeficit || !macroTargets || !microTargets) return [];
+  
+    // 🔥 MAIN CONDITION (YOUR REQUIREMENT)
+    if (
+      totalNutrition.calories >= macroTargets.calories &&
+      totalNutrition.protein >= macroTargets.protein
+    ) {
+      return [];
+    }
+  
+    const mealCalories = getMealCalories(sectionKey);
+  
+    if (mealCalories > 800) return [];
+  
+    const priority = getPriorityNutrient();
 
   return foods
     .map((food) => {

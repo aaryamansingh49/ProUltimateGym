@@ -49,27 +49,27 @@ const UserSidebar = ({
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-  
+
     if (!file.type.startsWith("image/")) {
       alert("Please select an image file");
       return;
     }
-  
+
     try {
       const form = new FormData();
-  
+
       // ✅ FIXED (MOST IMPORTANT)
       form.append("profileImage", file);
-  
+
       // ✅ ALL PROFILE DATA
       Object.keys(profile || {}).forEach((key) => {
         if (profile[key]) {
           form.append(key, profile[key]);
         }
       });
-  
+
       const res = await saveProfile(form);
-  
+
       if (res.success) {
         setProfile((prev) => ({
           ...prev,
@@ -114,11 +114,20 @@ const UserSidebar = ({
             <img
               src={
                 profile?.profileImage
+                  ? `http://localhost:5001${
+                      profile.profileImage
+                    }?t=${Date.now()}`
+                  : "https://i.pravatar.cc/120"
+              }
+            />
+            {/* <img
+              src={
+                profile?.profileImage
                   ? `https://proultimategym.onrender.com${profile.profileImage}`
                   : "https://i.pravatar.cc/120"
               }
               alt="Profile"
-            />
+            /> */}
             <span className="edit-btn">EDIT</span>
           </div>
 
