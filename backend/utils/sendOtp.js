@@ -7,7 +7,7 @@ const sendOtpMail = async (email, otp) => {
     console.log("📧 Sending OTP via Resend...");
 
     const response = await resend.emails.send({
-        from: "onboarding@resend.dev",
+      from: "Pro Ultimate Gym <onboarding@resend.dev>", 
       to: email,
       subject: "Your Login OTP",
       html: `
