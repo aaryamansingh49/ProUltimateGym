@@ -3,7 +3,7 @@ import UserWorkoutLog from "../models/UserWorkoutLog.js";
 import User from "../models/User.js";
 import Membership from "../models/Membership.js";
 
-/* 🔥 HELPER: VALID DAY CHECK */
+/* HELPER: VALID DAY CHECK */
 const isValidDay = (day) => {
   const validDays = [
     "monday",
@@ -18,17 +18,15 @@ const isValidDay = (day) => {
   return validDays.includes(day?.toLowerCase());
 };
 
-/* =========================
-   ✅ SAVE WORKOUT PROGRESS
-========================= */
+/* SAVE WORKOUT PROGRESS*/
 export const saveWorkoutProgress = async (req, res) => {
   try {
     const { day, type, completedExercises } = req.body;
     const userId = req.userId;
 
-    console.log("🔥 SAVE WORKOUT DAY:", day);
+    // console.log(" SAVE WORKOUT DAY:", day);
 
-    /* 🔥 VALIDATE USER ID */
+    /* VALIDATE USER ID */
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({
         success: false,
@@ -38,7 +36,7 @@ export const saveWorkoutProgress = async (req, res) => {
 
     /* 🔥 VALIDATE DAY */
     if (!isValidDay(day)) {
-      console.log("❌ INVALID DAY (SAVE):", day);
+      // console.log("INVALID DAY (SAVE):", day);
       return res.status(400).json({
         success: false,
         message: "Invalid day value",
@@ -48,10 +46,10 @@ export const saveWorkoutProgress = async (req, res) => {
     const user = await User.findById(userId);
     const requestId = Math.random().toString(36).substring(7);
 
-    console.log(`🚀 REQUEST ID: ${requestId}`);
-    console.log("👉 BODY:", req.body);
-    console.log("👉 USER ID:", req.userId);
-    console.log("👉 MEMBERSHIP:", user.membershipPlan);
+    // console.log(`🚀 REQUEST ID: ${requestId}`);
+    // console.log("👉 BODY:", req.body);
+    // console.log("👉 USER ID:", req.userId);
+    // console.log("👉 MEMBERSHIP:", user.membershipPlan);
 
     if (!user) {
       return res.status(404).json({
@@ -61,11 +59,13 @@ export const saveWorkoutProgress = async (req, res) => {
     }
 
     /*  MEMBERSHIP CHECK (SAFE) */
-    console.log("🔥 USER EMAIL:", user.email);
+    // console.log(" USER EMAIL:", user.email);
     const membership = await Membership.findOne({
       email: user.email.trim().toLowerCase()
     });
-    console.log("🔥 MEMBERSHIP FOUND (SAVE):", membership);
+    
+
+    // console.log("MEMBERSHIP FOUND (SAVE):", membership);
 
     if (!membership) {
       return res.status(403).json({
@@ -73,7 +73,7 @@ export const saveWorkoutProgress = async (req, res) => {
       });
     }
     
-    /* 🔥 ACTIVE CHECK */
+    /* ACTIVE CHECK */
     const startDate = new Date(membership.startDate);
     
     let duration = 0;
@@ -119,7 +119,7 @@ export const saveWorkoutProgress = async (req, res) => {
       log,
     });
   } catch (error) {
-    console.error("SAVE WORKOUT ERROR:", error);
+    // console.error("SAVE WORKOUT ERROR:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -127,19 +127,17 @@ export const saveWorkoutProgress = async (req, res) => {
   }
 };
 
-/* =========================
-   ✅ GET USER WORKOUT
-========================= */
+/*  GET USER WORKOUT*/
 export const getUserWorkoutByDay = async (req, res) => {
   try {
     const userId = req.userId;
     const { day } = req.params;
 
-    console.log("🔥 FINAL DAY RECEIVED (PROGRESS):", day);
+    // console.log("FINAL DAY RECEIVED (PROGRESS):", day);
 
-    /* 🔥 VALIDATE DAY */
+    /* VALIDATE DAY */
     if (!isValidDay(day)) {
-      console.log("❌ INVALID DAY (PROGRESS):", day);
+      // console.log("INVALID DAY (PROGRESS):", day);
       return res.status(400).json({
         message: "Invalid day value",
       });
@@ -164,7 +162,7 @@ export const getUserWorkoutByDay = async (req, res) => {
       totalCalories: log.totalCalories || 0,
     });
   } catch (error) {
-    console.error("GET PROGRESS ERROR:", error);
+    // console.error("GET PROGRESS ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -183,7 +181,7 @@ export const getAllUserWorkouts = async (req, res) => {
       workouts,
     });
   } catch (error) {
-    console.error("GET ALL WORKOUT ERROR:", error);
+    // console.error("GET ALL WORKOUT ERROR:", error);
     res.status(500).json({
       success: false,
       message: error.message,

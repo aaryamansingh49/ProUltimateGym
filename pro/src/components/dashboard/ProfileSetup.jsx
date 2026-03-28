@@ -104,9 +104,9 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
           : undefined,
       };
   
-      console.log("SENDING DATA 👉", cleanData); // debug
+      // console.log("SENDING DATA 👉", cleanData); 
   
-      onSubmit(cleanData); // ✅ direct JSON
+      onSubmit(cleanData); 
   
       localStorage.removeItem("isNewUser");
   

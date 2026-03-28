@@ -2,7 +2,7 @@ import Meal from "../models/Meal.js";
 import UserModel from "../models/userSchema.js";
 import User from "../models/User.js"; 
 
-/* 🔥 Admin Create Meal */
+/* Admin Create Meal */
 export const createMealPlan = async (req, res) => {
   try {
 
@@ -35,13 +35,13 @@ export const getAllMeals = async (req, res) => {
 };
 
 
-/* 🔥 User Fetch Meal (WITH MEMBERSHIP CHECK) */
+/* User Fetch Meal (WITH MEMBERSHIP CHECK) */
 export const getMealByGoalLevel = async (req, res) => {
   try {
 
     const { goal, level, dietPreference } = req.params;
 
-    // 🔥 GET USER ID (frontend se bhejna padega agar nahi bhej raha)
+    // GET USER ID (frontend se bhejna padega agar nahi bhej raha)
     const userId = req.userId;
 
     if (!userId) {
@@ -50,7 +50,7 @@ export const getMealByGoalLevel = async (req, res) => {
       });
     }
 
-    // 🔥 FETCH USER
+    // FETCH USER
     let user = await UserModel.findById(userId);
 
     if (!user) {
@@ -59,10 +59,10 @@ export const getMealByGoalLevel = async (req, res) => {
       });
     }
 
-    // 🔥 DUAL MODEL MEMBERSHIP CHECK
+    // DUAL MODEL MEMBERSHIP CHECK
     let membershipPlan = user?.membershipPlan;
 
-    // 🔥 fallback check
+    // fallback check
     if (!membershipPlan) {
       const membershipUser = await User.findOne({ email: user.email });
       membershipPlan = membershipUser?.membershipPlan;
@@ -70,7 +70,7 @@ export const getMealByGoalLevel = async (req, res) => {
     
     console.log("👤 FINAL MEMBERSHIP:", membershipPlan);
     
-    // 🔥 FINAL SAFE CHECK
+    //  FINAL SAFE CHECK
     if (
       !membershipPlan ||
       membershipPlan.toLowerCase() === "none"
@@ -79,7 +79,8 @@ export const getMealByGoalLevel = async (req, res) => {
         message: "Only for active members",
       });
     }
-    // ================= NORMAL LOGIC =================
+
+    // NORMAL LOGIC 
 
     let formattedGoal = goal?.toLowerCase().trim();
     let formattedLevel = level?.toLowerCase().trim();
@@ -91,7 +92,7 @@ export const getMealByGoalLevel = async (req, res) => {
       return res.status(400).json({ message: "Invalid diet preference" });
     }
 
-    console.log("QUERY:", formattedGoal, formattedLevel, formattedDiet);
+    // console.log("QUERY:", formattedGoal, formattedLevel, formattedDiet);
 
     let meal = await Meal.findOne({
       goal: formattedGoal,
@@ -100,7 +101,7 @@ export const getMealByGoalLevel = async (req, res) => {
     }).lean();
 
     if (!meal) {
-      console.log("Exact meal not found, trying fallback...");
+      // console.log("Exact meal not found, trying fallback...");
 
       meal = await Meal.findOne({
         goal: formattedGoal,

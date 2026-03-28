@@ -13,7 +13,7 @@ const ADMIN_PASSWORD = "yeah!yeah";
 
 //  Admin Login Route
 router.post("/login", (req, res) => {
-  console.log(" /api/admin/login route hit");
+  // console.log(" /api/admin/login route hit");
   const { email, password } = req.body;
 
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {

@@ -30,19 +30,19 @@ router.get("/", userAuthMiddleware, async (req, res) => {
 });
 
 
-// ✅ CREATE / UPDATE PROFILE (WITH IMAGE)
+// CREATE / UPDATE PROFILE (WITH IMAGE)
 router.post(
   "/",
   userAuthMiddleware,
   upload.single("profileImage"),
   async (req, res) => {
     try {
-      console.log("BODY:", req.body);
-      console.log("FILE:", req.file);
+      // console.log("BODY:", req.body);
+      // console.log("FILE:", req.file);
 
       const user = await User.findById(req.userId);
 
-      // ✅ SAFE NUMBER CONVERSION
+      // SAFE NUMBER CONVERSION
       const safeNumber = (val) => {
         return val && val !== "NaN" ? Number(val) : undefined;
       };
@@ -63,21 +63,21 @@ router.post(
         focusArea,
       } = req.body;
 
-      // ✅ IMAGE PATH
+      //  IMAGE PATH
       const profileImage = req.file
         ? `/uploads/${req.file.filename}`
         : null;
 
-      // ✅ NAME HANDLE
+      //  NAME HANDLE
       let name = req.body.name;
       if (!name) {
         name = `${user.firstName || ""} ${user.lastName || ""}`.trim();
       }
 
-      // ✅ PROFILE FIND (IMPORTANT - pehle karo)
+      // PROFILE FIND (IMPORTANT - pehle karo)
       let profile = await UserProfile.findOne({ userId: req.userId });
 
-      // ✅ VALIDATION (only for new profile)
+      //  VALIDATION (only for new profile)
       if (!profile && (!age || !height || !weight || !goal)) {
         return res.status(400).json({
           success: false,
@@ -85,15 +85,13 @@ router.post(
         });
       }
 
-      // ✅ BMI SAFE CALCULATION
+      //  BMI SAFE CALCULATION
       let bmi = profile?.bmi || 0;
       if (height && weight) {
         bmi = (weight / (height / 100) ** 2).toFixed(2);
       }
 
-      // =========================
-      // 🔥 UPDATE PROFILE
-      // =========================
+      // UPDATE PROFILE
       if (profile) {
         if (profileImage) profile.profileImage = profileImage;
 
@@ -116,9 +114,9 @@ router.post(
         await profile.save();
       }
 
-      // =========================
-      // 🔥 CREATE PROFILE
-      // =========================
+     
+      //  CREATE PROFILE
+
       else {
         profile = new UserProfile({
           userId: req.userId,

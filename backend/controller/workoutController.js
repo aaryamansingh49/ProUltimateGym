@@ -3,7 +3,7 @@ import UserProfile from "../models/UserProfile.js";
 import Membership from "../models/Membership.js";
 import User from "../models/User.js";
 
-/* 🔥 HELPER: CHECK ACTIVE MEMBERSHIP */
+/* HELPER: CHECK ACTIVE MEMBERSHIP */
 const getActiveMembership = async (email) => {
   const memberships = await Membership.find({
     email: email.trim().toLowerCase(),
@@ -30,15 +30,13 @@ const getActiveMembership = async (email) => {
   return null;
 };
 
-/* =========================
-   ADMIN – CREATE WORKOUT
-========================= */
+/*  ADMIN – CREATE WORKOUT */
 export const createWorkoutPlan = async (req, res) => {
   try {
     const data = {
       ...req.body,
       day: req.body.day?.trim(),
-      level: req.body.level?.trim().toLowerCase(), // 🔥 normalize
+      level: req.body.level?.trim().toLowerCase(), 
     };
 
     const workout = await WorkoutPlan.create(data);
@@ -49,17 +47,15 @@ export const createWorkoutPlan = async (req, res) => {
   }
 };
 
-/* =========================
-   USER – GET WORKOUT
-========================= */
+/* USER – GET WORKOUT */
 export const getWorkoutByDay = async (req, res) => {
   try {
     let { day } = req.params;
     const userId = req.userId;
 
-    console.log("🔥 RAW DAY:", day);
+    // console.log(" RAW DAY:", day);
 
-    /* 🔥 VALID DAY CHECK */
+    /* VALID DAY CHECK */
     const validDays = [
       "monday","tuesday","wednesday",
       "thursday","friday","saturday","sunday"
@@ -71,12 +67,12 @@ export const getWorkoutByDay = async (req, res) => {
       });
     }
 
-    /* 🔥 NORMALIZE DAY */
+    /*  NORMALIZE DAY */
     day = day.trim();
 
-    console.log("🔥 NORMALIZED DAY:", day);
+    // console.log(" NORMALIZED DAY:", day);
 
-    /* 🔥 GET USER */
+    /*  GET USER */
     const user = await User.findById(userId);
 
     if (!user) {
@@ -85,7 +81,7 @@ export const getWorkoutByDay = async (req, res) => {
       });
     }
 
-    /* 🔥 MEMBERSHIP CHECK */
+    /* MEMBERSHIP CHECK */
     const activeMembership = await getActiveMembership(user.email);
 
     if (!activeMembership) {
@@ -94,7 +90,7 @@ export const getWorkoutByDay = async (req, res) => {
       });
     }
 
-    /* 🔥 PROFILE CHECK */
+    /* PROFILE CHECK */
     const userProfile = await UserProfile.findOne({ userId });
 
     if (!userProfile) {
@@ -103,10 +99,10 @@ export const getWorkoutByDay = async (req, res) => {
       });
     }
 
-    /* 🔥 NORMALIZE LEVEL */
+    /* NORMALIZE LEVEL */
     const level = userProfile.level?.trim().toLowerCase();
 
-    console.log("🔥 FINAL LEVEL:", level);
+    // console.log("FINAL LEVEL:", level);
 
     if (!level) {
       return res.status(400).json({
@@ -114,13 +110,13 @@ export const getWorkoutByDay = async (req, res) => {
       });
     }
 
-    /* 🔥 FINAL QUERY (CASE INSENSITIVE SAFE) */
+    /* FINAL QUERY (CASE INSENSITIVE SAFE) */
     const workout = await WorkoutPlan.findOne({
       day: { $regex: new RegExp(`^${day}$`, "i") },
       level: { $regex: new RegExp(`^${level}$`, "i") },
     });
 
-    console.log("🔥 WORKOUT FOUND:", workout);
+    // console.log("WORKOUT FOUND:", workout);
 
     if (!workout) {
       return res.status(404).json({

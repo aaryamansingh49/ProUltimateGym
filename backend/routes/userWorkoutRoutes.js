@@ -10,14 +10,14 @@ import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
 
 const router = express.Router();
 
-/* ✅ WORKOUT PLAN */
+/*  WORKOUT PLAN */
 router.get("/workout/:day", userAuthMiddleware, getWorkoutByDay);
 
-/* ✅ PROGRESS */
+/*  PROGRESS */
 router.post("/workout/progress", userAuthMiddleware, saveWorkoutProgress);
 router.get("/workout/progress/:day", userAuthMiddleware, getUserWorkoutByDay);
 
-/* ✅ ALL */
+/*  ALL */
 router.get("/workouts", userAuthMiddleware, getAllUserWorkouts);
 
 export default router;

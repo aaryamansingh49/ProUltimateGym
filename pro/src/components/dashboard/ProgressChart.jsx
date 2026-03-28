@@ -54,7 +54,7 @@ const ProgressChart = ({ profile }) => {
   
           const calories = res?.totalCalories || 0;
   
-          console.log(`📅 ${day} → Calories:`, calories);
+          // console.log(`📅 ${day} → Calories:`, calories);
   
           dataArr.push(calories);
   
@@ -67,19 +67,19 @@ const ProgressChart = ({ profile }) => {
   
       }
   
-      console.log("✅ FINAL WEEK DATA:", dataArr);
+      console.log(" FINAL WEEK DATA:", dataArr);
   
       setExerciseData(dataArr);
   
     } catch (error) {
   
-      console.log("❌ Main fetch error:", error);
+      console.log(" Main fetch error:", error);
   
       setExerciseData([0,0,0,0,0,0,0]);
     }
   };
 
-  
+
   /* 🔥 CHART DATA */
   const data = {
     labels: days,

@@ -91,7 +91,7 @@ class UserController {
       );
 
       const userResponse = {
-        _id: user._id,   // 🔥 IMPORTANT
+        _id: user._id,  
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,

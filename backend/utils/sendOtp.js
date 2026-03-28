@@ -20,10 +20,10 @@ const sendOtpMail = async (email, otp) => {
       `,
     });
 
-    console.log("✅ OTP sent:", response);
+    console.log(" OTP sent:", response);
 
   } catch (error) {
-    console.log("❌ Resend Error:", error?.response?.data || error.message);
+    console.log(" Resend Error:", error?.response?.data || error.message);
     throw new Error("Failed to send OTP email");
   }
 };
