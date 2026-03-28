@@ -2,13 +2,13 @@ import UserModel from "../models/userSchema.js";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-// import sendOtpMail from "../utils/sendOtp.js";
+import sendOtpMail from "../utils/sendOtp.js";
 const otpStore = {};
 dotenv.config(); 
 
 class UserController {
   static createUserDoc = async (req, res) => {
-    const {
+    const { 
       firstName,
       lastName,
       email,

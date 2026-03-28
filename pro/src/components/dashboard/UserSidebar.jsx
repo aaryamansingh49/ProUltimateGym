@@ -111,7 +111,7 @@ const UserSidebar = ({
         {/* PROFILE CARD */}
         <div className="profile-card">
           <div className="avatar" onClick={openGallery}>
-            <img
+            {/* <img
               src={
                 profile?.profileImage
                   ? `http://localhost:5001${
@@ -119,15 +119,16 @@ const UserSidebar = ({
                     }?t=${Date.now()}`
                   : "https://i.pravatar.cc/120"
               }
-            />
-            {/* <img
+            /> */}
+
+            <img
               src={
                 profile?.profileImage
                   ? `https://proultimategym.onrender.com${profile.profileImage}`
                   : "https://i.pravatar.cc/120"
               }
               alt="Profile"
-            /> */}
+            />
             <span className="edit-btn">EDIT</span>
           </div>
 
