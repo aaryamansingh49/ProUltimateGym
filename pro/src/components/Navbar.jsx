@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import { useLocation } from "react-router-dom";
@@ -9,6 +9,24 @@ const Navbar = ({ setSidebarOpen }) => {
   const dropdownRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // ✅ AUTO CLOSE DROPDOWN WHEN CLICK OUTSIDE
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target)
+    ) {
+      setDropdownOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
 
   // ✅ CHECK LOGIN STATUS
   const isLoggedIn = !!localStorage.getItem("token");

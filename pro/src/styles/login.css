@@ -95,6 +95,31 @@
   background-color: #218838;
 }
 
+.input-group {
+  width: 100%;   /* 🔥 important */
+}
+
+.forgot-wrapper {
+  width: 100%;   /* 🔥 ye bhi important */
+  display: flex;
+  justify-content: flex-end;
+}
+
+.forgot-link {
+  width: 80%;
+  text-align: right;
+  font-size: 13px;
+  color: #ef4444;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.forgot-link:hover {
+  text-decoration: underline;
+  color: #dc2626;
+}
+
+
+
 /* Responsive */
 @media (max-width: 768px) {
   .login-box {

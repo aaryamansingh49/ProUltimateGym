@@ -1,4 +1,4 @@
-import API from "./profileApi"; // 🔥 IMPORTANT
+import API from "./profileApi"; 
 
 export const getMealByGoalLevel = (goal, level, dietPreference) => {
   return API.get(

@@ -92,8 +92,13 @@ const Login = () => {
               onChange={handleChange}
               required
             />
+              <span className="forgot-link" onClick={handleForgotPassword}>
+                Forgot Password?
+              </span>
+            </div>
+    
 
-          </div>
+          
 
           <button type="submit" className="login-btn" disabled={loading}>
             {loading ? "Logging in..." : "Login"}

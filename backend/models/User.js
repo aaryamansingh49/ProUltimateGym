@@ -10,6 +10,26 @@ const userSchema = new mongoose.Schema({
   state: String,
   city: String,
   password: String,
+  // otp: {
+  //   type: String,
+  //   default: null,
+  // },
+  
+  // otpExpiry: {
+  //   type: Date,
+  //   default: null,
+  // },
+  
+  // resetOtp: {
+  //   type: String,
+  //   default: null,
+  // },
+  
+  // resetOtpExpiry: {
+  //   type: Date,
+  //   default: null,
+  // },      
+
   membershipPlan: String, 
   membershipStartDate: Date,
   assignedCoach: String,

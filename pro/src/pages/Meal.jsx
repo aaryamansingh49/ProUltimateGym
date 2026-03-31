@@ -17,6 +17,8 @@ const Meal = () => {
   const [recommendationUsedSections, setRecommendationUsedSections] = useState(
     []
   );
+  const [suggestionTriggered, setSuggestionTriggered] = useState(false);
+
   // ⭐ NEW - track specific suggested foods
   const [usedSuggestedFoods, setUsedSuggestedFoods] = useState([]);
   const [suggestionsLocked, setSuggestionsLocked] = useState(false);
@@ -32,19 +34,21 @@ const Meal = () => {
   useEffect(() => {
     const loadData = async () => {
       const userKey = localStorage.getItem("userKey");
-  
+
       if (!userKey) return;
-  
+
       // ✅ HYBRID LOGIC
-      let userProfile = JSON.parse(localStorage.getItem("userProfile") || "null");
-  
+      let userProfile = JSON.parse(
+        localStorage.getItem("userProfile") || "null"
+      );
+
       if (!userProfile || !userProfile.goal || !userProfile.level) {
         try {
           const res = await getProfile();
-  
+
           if (res.success && res.profile) {
             userProfile = res.profile;
-  
+
             // 🔥 cache update
             localStorage.setItem("userProfile", JSON.stringify(userProfile));
           }
@@ -53,69 +57,69 @@ const Meal = () => {
           return;
         }
       }
-  
+
       if (!userProfile) return;
-  
+
       // ================= SAME CODE =================
-  
+
       const dateKey = `mealDate_${userKey}`;
       const suggestionKey = `suggestionsLocked_${userKey}`;
-  
+
       const today = new Date().toISOString().split("T")[0];
       const lastSavedDate = localStorage.getItem(dateKey);
-  
+
       setSelectedFoods([]);
       setUsedSuggestedFoods([]);
       setSuggestionsLocked(false);
-  
+
       if (lastSavedDate !== today) {
         localStorage.removeItem(`savedMealSelection_${userKey}`);
         localStorage.removeItem(suggestionKey);
         localStorage.setItem(dateKey, today);
       }
-  
+
       const targets = calculateNutritionTargets(userProfile);
-  
+
       setMacroTargets(targets);
-  
+
       setMicroTargets({
         iron: targets?.iron || 18,
         calcium: targets?.calcium || 1000,
         vitaminC: targets?.vitaminC || 90,
       });
-  
+
       const goal = userProfile?.goal?.toLowerCase().trim();
       const level = userProfile?.level?.toLowerCase().trim();
       const dietPreference = userProfile?.dietPreference?.toLowerCase().trim();
-  
+
       if (!goal || !level || !dietPreference) {
         console.warn("User profile incomplete:", userProfile);
         return;
       }
-  
+
       console.log("Fetching meal:", goal, level, dietPreference);
-  
+
       getMealByGoalLevel(goal, level, dietPreference)
         .then((res) => setMeal(res.data))
         .catch((err) => console.error("Meal fetch error:", err));
-  
+
       searchFood("").then((res) => {
         setRecommendationFoods(res.data);
       });
-  
+
       const saved = JSON.parse(
         localStorage.getItem(`savedMealSelection_${userKey}`)
       );
-  
+
       if (saved) setSelectedFoods(saved);
-  
+
       const savedLock = localStorage.getItem(suggestionKey);
-  
+
       if (savedLock === "true") {
         setSuggestionsLocked(true);
       }
     };
-  
+
     loadData();
   }, []);
   /* ================= SEARCH ================= */
@@ -155,56 +159,40 @@ const Meal = () => {
   const scale = (food) => {
     const grams = food.grams || food.quantity || 100;
     const factor = grams / 100;
-  
+
     // 🔥 DEBUG (ek baar check kar)
     console.log("FOOD DATA 👉", food);
-  
+
     const getVal = (...keys) => {
       for (let key of keys) {
         if (key !== undefined && key !== null) return key;
       }
       return 0;
     };
-  
+
     return {
       calories: getVal(food.calories, food.caloriesPer100g) * factor,
-  
-      protein: getVal(
-        food.protein,
-        food.proteinPer100g,
-        food.proteins
-      ) * factor,
-  
-      carbs: getVal(
-        food.carbs,
-        food.carbsPer100g,
-        food.carbohydrates
-      ) * factor,
-  
-      fats: getVal(
-        food.fats,
-        food.fatsPer100g,
-        food.fat
-      ) * factor,
-  
-      iron: getVal(
-        food.iron,
-        food.ironPer100g,
-        food.minerals?.iron
-      ) * factor,
-  
-      calcium: getVal(
-        food.calcium,
-        food.calciumPer100g,
-        food.minerals?.calcium
-      ) * factor,
-  
-      vitaminC: getVal(
-        food.vitaminC,
-        food.vitaminCPer100g,
-        food.vitamins?.vitaminC,
-        food.vitamin_c
-      ) * factor,
+
+      protein:
+        getVal(food.protein, food.proteinPer100g, food.proteins) * factor,
+
+      carbs: getVal(food.carbs, food.carbsPer100g, food.carbohydrates) * factor,
+
+      fats: getVal(food.fats, food.fatsPer100g, food.fat) * factor,
+
+      iron: getVal(food.iron, food.ironPer100g, food.minerals?.iron) * factor,
+
+      calcium:
+        getVal(food.calcium, food.calciumPer100g, food.minerals?.calcium) *
+        factor,
+
+      vitaminC:
+        getVal(
+          food.vitaminC,
+          food.vitaminCPer100g,
+          food.vitamins?.vitaminC,
+          food.vitamin_c
+        ) * factor,
     };
   };
 
@@ -334,7 +322,7 @@ const Meal = () => {
 
   const addFoodToSection = (food, sectionKey = null) => {
     const finalSection = sectionKey || activeSection;
-  
+
     const newFoodItem = {
       ...food,
       grams: Number(tempGrams),
@@ -342,10 +330,10 @@ const Meal = () => {
       instanceId: Date.now() + Math.random(),
       isCustom: true,
     };
-  
+
     setSelectedFoods((prev) => {
       const updatedFoods = [...prev, newFoodItem];
-    
+
       const newTotals = updatedFoods.reduce(
         (acc, f) => {
           const s = scale(f);
@@ -357,7 +345,7 @@ const Meal = () => {
         },
         { calories: 0, protein: 0, carbs: 0, fats: 0 }
       );
-    
+
       if (isMacrosCompleted(newTotals)) {
         const allIds = recommendationFoods.map((f) => f._id);
         setUsedSuggestedFoods(allIds);
@@ -366,15 +354,15 @@ const Meal = () => {
           setUsedSuggestedFoods((prevUsed) => [...prevUsed, food._id]);
         }
       }
-    
+
       return updatedFoods;
     });
-  
+
     // ⭐ OLD logic (optional - rehne de)
     if (finalSection && !recommendationUsedSections.includes(finalSection)) {
       setRecommendationUsedSections((prev) => [...prev, finalSection]);
     }
-  
+
     setShowPopup(false);
     setSearchQuery("");
     setTempGrams(100);
@@ -393,9 +381,9 @@ const Meal = () => {
   const removeFood = (id) => {
     setSelectedFoods((prev) => {
       const foodToRemove = prev.find((f) => f.instanceId === id);
-  
+
       const updatedFoods = prev.filter((f) => f.instanceId !== id);
-  
+
       if (foodToRemove?._id) {
         const newTotals = updatedFoods.reduce(
           (acc, food) => {
@@ -408,9 +396,9 @@ const Meal = () => {
           },
           { calories: 0, protein: 0, carbs: 0, fats: 0 }
         );
-  
+
         const macrosCompleted = isMacrosCompleted(newTotals);
-  
+
         if (!macrosCompleted) {
           setUsedSuggestedFoods((prevUsed) =>
             prevUsed.filter((fid) => fid !== foodToRemove._id)
@@ -419,15 +407,15 @@ const Meal = () => {
           setUsedSuggestedFoods(recommendationFoods.map((f) => f._id));
         }
       }
-  
+
       const userKey = localStorage.getItem("userKey");
-  
+
       if (userKey) {
         localStorage.removeItem(`suggestionsLocked_${userKey}`);
       }
-  
+
       setSuggestionsLocked(false);
-  
+
       return updatedFoods;
     });
   };
@@ -436,7 +424,7 @@ const Meal = () => {
     const selected = selectedFoods.find(
       (f) => !f.isCustom && f.sectionKey === sectionKey && f.name === item.name
     );
-  
+
     if (selected) {
       removeFood(selected.instanceId);
     } else {
@@ -444,39 +432,24 @@ const Meal = () => {
         ...prev,
         {
           ...item,
-  
+
           // 🔥 FIX: fallback nutrition values (jab API me 0 aaye)
-          carbs:
-            item.carbs ||
-            item.carbsPer100g ||
-            item.carbohydrates ||
-            0,
-  
-          fats:
-            item.fats ||
-            item.fatsPer100g ||
-            item.fat ||
-            0,
-  
-          iron:
-            item.iron ||
-            item.ironPer100g ||
-            item.minerals?.iron ||
-            0,
-  
+          carbs: item.carbs || item.carbsPer100g || item.carbohydrates || 0,
+
+          fats: item.fats || item.fatsPer100g || item.fat || 0,
+
+          iron: item.iron || item.ironPer100g || item.minerals?.iron || 0,
+
           calcium:
-            item.calcium ||
-            item.calciumPer100g ||
-            item.minerals?.calcium ||
-            0,
-  
+            item.calcium || item.calciumPer100g || item.minerals?.calcium || 0,
+
           vitaminC:
             item.vitaminC ||
             item.vitaminCPer100g ||
             item.vitamins?.vitaminC ||
             item.vitamin_c ||
             0,
-  
+
           grams: item.quantity || 100,
           sectionKey,
           instanceId: Date.now() + Math.random(),
@@ -489,23 +462,23 @@ const Meal = () => {
   const handleSubmit = () => {
     const userKey = localStorage.getItem("userKey");
     const suggestionKey = `suggestionsLocked_${userKey}`;
-  
+
     localStorage.setItem(
       `savedMealSelection_${userKey}`,
       JSON.stringify(selectedFoods)
     );
-  
+
     localStorage.setItem(suggestionKey, "true");
-  
+
     updateGoalProgress();
-  
+
     setSuggestionsLocked(true);
-  
+
     if (isMacrosCompleted(totalNutrition)) {
       const allSuggestedIds = recommendationFoods.map((f) => f._id);
       setUsedSuggestedFoods(allSuggestedIds);
     }
-  
+
     alert("Meal Saved ✅");
     navigate("/dashboard");
   };
@@ -514,6 +487,7 @@ const Meal = () => {
     setSelectedFoods([]);
     setRecommendationUsedSections([]);
     setUsedSuggestedFoods([]);
+    setSuggestionTriggered(false);
 
     const userKey = localStorage.getItem("userKey");
 
@@ -584,11 +558,10 @@ const Meal = () => {
   //  SAME CODE AS YOURS — ONLY FIX APPLIED
 
   const getSectionRecommendations = (sectionKey, foods) => {
-
     if (suggestionsLocked) return [];
-  
+
     if (!nutritionDeficit || !macroTargets || !microTargets) return [];
-  
+
     // 🔥 MAIN CONDITION (YOUR REQUIREMENT)
     if (
       totalNutrition.calories >= macroTargets.calories &&
@@ -596,60 +569,58 @@ const Meal = () => {
     ) {
       return [];
     }
-  
+
     const mealCalories = getMealCalories(sectionKey);
-  
+
     if (mealCalories > 800) return [];
-  
+
     const priority = getPriorityNutrient();
 
-  return foods
-    .map((food) => {
-      if (usedSuggestedFoods.includes(food._id)) return null;
+    return foods
+      .map((food) => {
+        if (usedSuggestedFoods.includes(food._id)) return null;
 
-      const protein = food.protein ?? food.proteinPer100g ?? 0;
-      const carbs = food.carbs ?? food.carbsPer100g ?? 0;
-      const fats = food.fats ?? food.fatsPer100g ?? 0;
-      const calories = food.calories ?? food.caloriesPer100g ?? 0;
-      const iron = food.iron ?? food.ironPer100g ?? 0;
-      const calcium = food.calcium ?? food.calciumPer100g ?? 0;
-      const vitaminC = food.vitaminC ?? food.vitaminCPer100g ?? 0;
+        const protein = food.protein ?? food.proteinPer100g ?? 0;
+        const carbs = food.carbs ?? food.carbsPer100g ?? 0;
+        const fats = food.fats ?? food.fatsPer100g ?? 0;
+        const calories = food.calories ?? food.caloriesPer100g ?? 0;
+        const iron = food.iron ?? food.ironPer100g ?? 0;
+        const calcium = food.calcium ?? food.calciumPer100g ?? 0;
+        const vitaminC = food.vitaminC ?? food.vitaminCPer100g ?? 0;
 
-      let score = 0;
+        let score = 0;
 
-      if (priority === "protein" && nutritionDeficit.protein > 0)
-        score += protein * 6;
+        if (priority === "protein" && nutritionDeficit.protein > 0)
+          score += protein * 6;
 
-      if (priority === "carbs" && nutritionDeficit.carbs > 0)
-        score += carbs * 4;
+        if (priority === "carbs" && nutritionDeficit.carbs > 0)
+          score += carbs * 4;
 
-      if (priority === "fats" && nutritionDeficit.fats > 0)
-        score += fats * 4;
+        if (priority === "fats" && nutritionDeficit.fats > 0) score += fats * 4;
 
-      if (priority === "iron" && nutritionDeficit.iron > 0)
-        score += iron * 3;
+        if (priority === "iron" && nutritionDeficit.iron > 0) score += iron * 3;
 
-      if (priority === "calcium" && nutritionDeficit.calcium > 0)
-        score += calcium * 3;
+        if (priority === "calcium" && nutritionDeficit.calcium > 0)
+          score += calcium * 3;
 
-      if (priority === "vitaminC" && nutritionDeficit.vitaminC > 0)
-        score += vitaminC * 3;
+        if (priority === "vitaminC" && nutritionDeficit.vitaminC > 0)
+          score += vitaminC * 3;
 
-      if (nutritionDeficit.protein > 0) score += protein * 1.5;
-      if (nutritionDeficit.carbs > 0) score += carbs * 0.5;
-      if (nutritionDeficit.fats > 0) score += fats * 0.3;
+        if (nutritionDeficit.protein > 0) score += protein * 1.5;
+        if (nutritionDeficit.carbs > 0) score += carbs * 0.5;
+        if (nutritionDeficit.fats > 0) score += fats * 0.3;
 
-      if (nutritionDeficit.calories > 0)
-        score += Math.min(calories, nutritionDeficit.calories) * 0.05;
+        if (nutritionDeficit.calories > 0)
+          score += Math.min(calories, nutritionDeficit.calories) * 0.05;
 
-      return { ...food, score };
-    })
-    .filter((food) => food && food.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 8)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 3);
-};
+        return { ...food, score };
+      })
+      .filter((food) => food && food.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+  };
 
   /* ================= SMART GRAMS ================= */
 
@@ -693,10 +664,9 @@ const Meal = () => {
       <h1>Daily Meal Plan</h1>
 
       {sections.map((section) => {
-        const recommendations = getSectionRecommendations(
-          section.key,
-          recommendationFoods
-        );
+        const recommendations = suggestionTriggered
+        ? getSectionRecommendations(section.key, recommendationFoods)
+        : [];
 
         return (
           <div key={section.key} className="meal-section">
@@ -726,16 +696,16 @@ const Meal = () => {
 
               return (
                 <div
-  key={index}
-  className="meal-box"
-  onClick={() => toggleDefaultFood(item, section.key)}
->
-  <input
-    type="checkbox"
-    checked={!!selected}
-    onChange={() => toggleDefaultFood(item, section.key)}
-    onClick={(e) => e.stopPropagation()}  // 🔥 IMPORTANT
-  />
+                  key={index}
+                  className="meal-box"
+                  onClick={() => toggleDefaultFood(item, section.key)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={!!selected}
+                    onChange={() => toggleDefaultFood(item, section.key)}
+                    onClick={(e) => e.stopPropagation()} // 🔥 IMPORTANT
+                  />
 
                   <div>
                     <strong>{item.name}</strong>
@@ -893,6 +863,15 @@ const Meal = () => {
         >
           Reset
         </button>
+
+        <button
+    className="submit-btn"
+    style={{ background: "orange" }}
+    onClick={() => setSuggestionTriggered(true)}
+  >
+    Check Recommendation
+  </button>
+
       </div>
 
       {/* NUTRITION SUMMARY */}

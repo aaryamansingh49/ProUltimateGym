@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
 import connectDB from "./db/connectDB.js";
 
 import userRoutes from "./routes/userRoutes.js";
@@ -20,7 +21,6 @@ import mealRoutes from "./routes/mealRoutes.js";
 import foodRoutes from "./routes/foodRoutes.js";
 import Stripe from "stripe";
 
-dotenv.config();
 
 const app = express();
 

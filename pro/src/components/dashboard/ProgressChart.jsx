@@ -40,7 +40,7 @@ const ProgressChart = ({ profile }) => {
 
   }, [profile]);
 
-  /* 🔥 FETCH DATA */
+  /*  FETCH DATA */
   const fetchWorkoutData = async () => {
     try {
   
@@ -60,20 +60,20 @@ const ProgressChart = ({ profile }) => {
   
         } catch (err) {
   
-          console.log(`❌ Error for ${day}:`, err?.response?.data || err.message);
+          // console.log(`❌ Error for ${day}:`, err?.response?.data || err.message);
   
           dataArr.push(0);
         }
   
       }
   
-      console.log(" FINAL WEEK DATA:", dataArr);
+      // console.log(" FINAL WEEK DATA:", dataArr);
   
       setExerciseData(dataArr);
   
     } catch (error) {
   
-      console.log(" Main fetch error:", error);
+      // console.log(" Main fetch error:", error);
   
       setExerciseData([0,0,0,0,0,0,0]);
     }
