@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import "../styles/otpLogin.css";
+import { Eye, EyeOff } from "lucide-react";
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1);
@@ -19,6 +20,9 @@ const ForgotPassword = () => {
   const [notification, setNotification] = useState(null);
 
   const inputsRef = useRef([]);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   // ================= NOTIFICATION =================
   const showNotification = (type, message) => {
@@ -39,14 +43,14 @@ const ForgotPassword = () => {
     try {
       setSendingOtp(true);
 
-      // console.log("SEND OTP BUTTON CLICKED"); // DEBUG
-      // console.log("EMAIL VALUE:", email); // DEBUG
-
       await axios.post(`${BASE_URL}/api/send-reset-otp`, { email });
 
       setOtpSent(true);
       setTimer(30);
       setStep(2);
+
+      // 🔥 NEW: clear old OTP
+      setOtp(new Array(6).fill(""));
 
       showNotification("success", "OTP sent to your email");
     } catch (err) {
@@ -89,11 +93,11 @@ const ForgotPassword = () => {
         password,
       });
 
-      showNotification("success", "Password reset successful");
+      setSuccess(true);
 
       setTimeout(() => {
         window.location = "/login";
-      }, 1000);
+      }, 1500);
     } catch (err) {
       showNotification("error", "Reset failed");
     } finally {
@@ -153,6 +157,15 @@ const ForgotPassword = () => {
   return (
     <div className="otp-page">
       <div className="otp-card">
+
+        {/* ✅ SUCCESS ANIMATION */}
+        {success && (
+          <div className="success-animation">
+            ✔️ Password Reset Successful
+          </div>
+        )}
+
+        {/* ✅ NOTIFICATION */}
         {notification && (
           <div className={`otp-notification otp-${notification.type}`}>
             {notification.message}
@@ -160,7 +173,6 @@ const ForgotPassword = () => {
         )}
 
         <h2 className="otp-title">Reset Your Password</h2>
-        {/* <p className="otp-subtext">Enter your email to receive OTP</p> */}
 
         {/* STEP 1 */}
         {step === 1 && (
@@ -176,7 +188,6 @@ const ForgotPassword = () => {
             <button
               className="otp-btn"
               onClick={() => {
-                console.log("BUTTON CLICKED");
                 sendOtp();
               }}
               disabled={sendingOtp}
@@ -213,13 +224,16 @@ const ForgotPassword = () => {
               {loading ? <div className="spinner"></div> : "Verify OTP"}
             </button>
 
+            {/* 🔥 UPDATED TIMER UI */}
             <p className="resend-text">
               {timer > 0 ? (
-                <>Resend OTP in {timer}s</>
-              ) : (
-                <span onClick={resendOtp} className="resend-btn">
-                  Resend OTP
+                <span className="timer-text">
+                  OTP expires in {timer}s
                 </span>
+              ) : (
+                <button className="resend-btn active" onClick={resendOtp}>
+                  Resend OTP
+                </button>
               )}
             </p>
           </>
@@ -228,13 +242,22 @@ const ForgotPassword = () => {
         {/* STEP 3 PASSWORD */}
         {step === 3 && (
           <>
-            <input
-              type="password"
-              placeholder="Enter your new password"
-              className="otp-email"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your new password"
+                className="otp-email"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+              <span
+                className="eye-icon"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </span>
+            </div>
 
             <button className="otp-btn" onClick={resetPassword}>
               {loading ? <div className="spinner"></div> : "Reset Password"}

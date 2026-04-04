@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/signup.css";
 import BASE_URL from "../api/config.js";
+import { Eye, EyeOff } from "lucide-react";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +17,12 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
+
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const navigate = useNavigate();
 
@@ -31,19 +37,20 @@ const Signup = () => {
       alert("Passwords do not match!");
       return;
     }
+
     setLoading(true);
 
     try {
       const res = await axios.post(`${BASE_URL}/api/signup`, formData, {
-        
         headers: { "Content-Type": "application/json" },
       });
 
-      console.log("Signup Response:", res.data);
+      setSuccess(true);
 
-      alert(res.data.message);    
-      navigate("/login");         
-    
+      setTimeout(() => {
+        navigate("/login");
+      }, 1200);
+
     } catch (error) {
       alert(error.response?.data?.message || "Signup Failed!");
     } finally {
@@ -53,92 +60,60 @@ const Signup = () => {
 
   return (
     <div className="signup-section">
-      {/* Left side logo/image */}
-
-      {/* Right side signup form */}
       <div className="signup-right">
         <div className="signup-container">
-          <h2 className="signpro">
-            Pro <span className="prohighlight">Ultimate Gyms</span>
-          </h2>
-          <h2>Signup</h2>
+
+          {success && <div className="success-animation">✔️ Account Created</div>}
+
+          {/* <h2 className="brand"><span>Pro Ultimate Gym</span></h2> */}
+          <h1>Create Account</h1>
+          <p className="subtitle">Join and start your transformation journey</p>
+
           <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="firstName"
-              placeholder="First Name"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              name="phone"
-              placeholder="Phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              name="address"
-              placeholder="Address"
-              value={formData.address}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              name="state"
-              placeholder="State"
-              value={formData.state}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              name="city"
-              placeholder="City"
-              value={formData.city}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-            <button type="submit" disabled={loading}>
-              {loading ? "Signing up..." : "Signup"}
+            <input type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} required />
+            <input type="text" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} required />
+            <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+            <input type="text" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} required />
+            <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} required />
+            <input type="text" name="state" placeholder="State" value={formData.state} onChange={handleChange} required />
+            <input type="text" name="city" placeholder="City" value={formData.city} onChange={handleChange} required />
+
+            {/* PASSWORD */}
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <span onClick={() => setShowPassword(!showPassword)} className="eye-icon">
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </span>
+            </div>
+
+            {/* CONFIRM PASSWORD */}
+            <div className="password-wrapper">
+              <input
+                type={showConfirm ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+              <span onClick={() => setShowConfirm(!showConfirm)} className="eye-icon">
+                {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
+              </span>
+            </div>
+
+            <button type="submit" disabled={loading || success}>
+              {loading ? "Creating..." : success ? "✔️ Done" : "Sign up"}
             </button>
+
           </form>
+
         </div>
       </div>
     </div>

@@ -8,35 +8,49 @@
   position: relative;
 }
 
-/* Overlay for blur & readability */
+/* DARK OVERLAY (UPDATED) */
 .login-section::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(255,255,255,0.3);
-  backdrop-filter: blur(5px);
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
   z-index: 0;
 }
 
-/* Login form container */
+/* LOGIN BOX (UPDATED - GLASS EFFECT) */
 .login-box {
   position: relative;
   z-index: 1;
-  width: 350px;
-  padding: 30px;
-  border-radius: 10px;
-  background-color: rgba(255,255,255,0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  width: 380px;
+  padding: 35px 30px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04); 
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  box-shadow: 
+    0 0 40px rgba(255, 0, 0, 0.25),
+    inset 0 0 20px rgba(255, 0, 0, 0.1);
   text-align: center;
+  color: white;
 }
 
-/* Headings */
+/* Headings (UPDATED) */
 .login-box h2 {
-  margin-bottom: 25px;
-  font-size: 24px;
-  color: #333;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #fff;
+}
+
+.login-box h1 {
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #bbb;
+  margin-bottom: 20px;
 }
 
 /* Inputs */
@@ -49,21 +63,33 @@
   margin-bottom: 20px;
 }
 
+/* INPUT FIELD (UPDATED) */
 .input-group input {
   width: 80%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-  transition: 0.3s;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  background: transparent;
+  color: white;
+  font-size: 15px;
 }
 
 .input-group input:focus {
-  border-color: #28a745;
-  outline: none;
+  border-color: #ffcc00;
+  box-shadow: 0 0 12px rgba(255, 204, 0, 0.6);
 }
 
-/* Forgot password */
+.input-group input::placeholder {
+  color: #aaa;
+}
+
+.input-group input:focus {
+  border-color: #ffcc00;
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.6);
+}
+
+/* 🔥 KEEP THIS SAME (UNCHANGED) */
 .forgot-password {
   position: absolute;
   right: 10%;
@@ -78,33 +104,56 @@
   text-decoration: underline;
 }
 
-/* Login button */
+/* LOGIN BUTTON (UPDATED) */
 .login-btn {
   width: 80%;
-  padding: 12px;
-  background-color: #28a745;
-  color: white;
+  padding: 13px;
+  border-radius: 30px;
+  /* margin-bottom: 30px; */
   border: none;
-  border-radius: 6px;
+  background: linear-gradient(90deg, #ff3131, #ffb300);
+  color: black;
   font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .login-btn:hover {
-  background-color: #218838;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
 }
 
+/* 🔥 KEEP THIS SAME */
 .input-group {
-  width: 100%;   /* 🔥 important */
+  width: 100%;
 }
 
+/* Loader */
+.btn-loader {
+  width: 18px;
+  height: 18px;
+  border: 2px solid white;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 🔥 KEEP SAME */
 .forgot-wrapper {
-  width: 100%;   /* 🔥 ye bhi important */
+  width: 100%;
   display: flex;
   justify-content: flex-end;
 }
 
+/* 🔥 KEEP SAME */
 .forgot-link {
   width: 80%;
   text-align: right;
@@ -113,11 +162,101 @@
   cursor: pointer;
   margin-top: 5px;
 }
+
 .forgot-link:hover {
   text-decoration: underline;
   color: #dc2626;
 }
 
+/* PASSWORD WRAPPER (UPDATED) */
+.password-wrapper {
+  position: relative;
+  width: 80%;
+  margin: auto;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding: 12px;
+  padding-right: 45px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,0,0,0.6);
+  background: transparent;
+  color: white;
+}
+
+/* EYE ICON (UPDATED) */
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #ccc;
+  z-index: 10;
+}
+
+.eye-icon:hover {
+  color: #fff;
+}
+
+/* 🔥 KEEP SAME */
+.success-animation {
+  background: #22c55e;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: bold;
+  animation: pop 0.4s ease;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 🔥 KEEP SAME */
+.timer-text {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 14px;
+  cursor: not-allowed;
+}
+
+.resend-btn.active {
+  color: #22c55e;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.resend-btn.active:hover {
+  text-decoration: underline;
+}
+
+
+.divider {
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+  margin: 15px 0;
+}
 
 
 /* Responsive */
@@ -126,15 +265,27 @@
     width: 90%;
     padding: 20px;
   }
+
   .input-group input,
   .login-btn {
     width: 90%;
-    font-size: 15px;
   }
-  .forgot-password {
-    right: 5%;
-    bottom: -25px;
-    font-size: 12px;
+
+  /* 🔥 FIX */
+  .password-wrapper {
+    width: 100%;
+  }
+
+  .eye-icon{
+    right: 50px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #ccc;
+    z-index: 10;
   }
 }
 
@@ -142,13 +293,18 @@
   .login-box h2 {
     font-size: 1.5rem;
   }
-  .input-group input,
-  .login-btn {
-    font-size: 14px;
-    padding: 8px;
+  .password-wrapper {
+    width: 100%;
   }
-  .forgot-password {
-    font-size: 11px;
-    bottom: -20px;
+  .eye-icon{
+    right: 30px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #ccc;
+    z-index: 10;
   }
 }

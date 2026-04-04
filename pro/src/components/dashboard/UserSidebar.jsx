@@ -10,6 +10,8 @@ import {
   FiTrendingUp,
   FiSettings,
   FiLogOut,
+  FiUser,
+  FiSmile,
 } from "react-icons/fi";
 
 const UserSidebar = ({
@@ -31,7 +33,6 @@ const UserSidebar = ({
 
   /* LOGOUT */
   const handleLogout = () => {
-    // session clear
     localStorage.removeItem("token");
     localStorage.removeItem("userKey");
     localStorage.removeItem("userProfile");
@@ -41,7 +42,6 @@ const UserSidebar = ({
     localStorage.removeItem("activeTab");
 
     setProfile(null);
-
     navigate("/login");
   };
 
@@ -57,11 +57,8 @@ const UserSidebar = ({
 
     try {
       const form = new FormData();
-
-      // ✅ FIXED (MOST IMPORTANT)
       form.append("profileImage", file);
 
-      // ✅ ALL PROFILE DATA
       Object.keys(profile || {}).forEach((key) => {
         if (profile[key]) {
           form.append(key, profile[key]);
@@ -83,12 +80,11 @@ const UserSidebar = ({
   };
 
   const getBmiStatus = (bmi) => {
-    if (!bmi) return { text: "-", color: "#aaa" };
+    if (!bmi) return { text: "-", color: "#64748b" };
 
     if (bmi < 18.5) return { text: "Underweight", color: "#3498db" };
     if (bmi >= 18.5 && bmi < 24.9) return { text: "Normal", color: "#2ecc71" };
-    if (bmi >= 25 && bmi < 29.9)
-      return { text: "Overweight", color: "#f39c12" };
+    if (bmi >= 25 && bmi < 29.9) return { text: "Overweight", color: "#f39c12" };
 
     return { text: "Obese", color: "#e74c3c" };
   };
@@ -97,40 +93,30 @@ const UserSidebar = ({
 
   return (
     <>
-      {/* 🔥 OVERLAY (mobile ke liye) */}
+      {/* OVERLAY */}
       <div
         className={`sidebar-overlay ${sidebarOpen ? "show" : ""}`}
         onClick={() => {
           setSidebarOpen(false);
-          document.body.classList.remove("sidebar-open"); // 🔥 add this
+          document.body.classList.remove("sidebar-open");
         }}
       ></div>
 
-      {/* 🔥 SIDEBAR */}
+      {/* SIDEBAR */}
       <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-        {/* PROFILE CARD */}
-        <div className="profile-card">
-          <div className="avatar" onClick={openGallery}>
+        {/* PROFILE SECTION */}
+        <div className="profile-section">
+          <div className="avatar-wrapper" onClick={openGallery}>
             <img
               src={
                 profile?.profileImage
-                  ? `http://localhost:5001${
-                      profile.profileImage
-                    }?t=${Date.now()}`
-                  : "https://i.pravatar.cc/120"
-              }
-                   alt="Profile"
-            />
-
-            {/* <img
-              src={
-                profile?.profileImage
-                  ? `https://proultimategym.onrender.com${profile.profileImage}`
+                  ? `http://localhost:5001${profile.profileImage}?t=${Date.now()}`
                   : "https://i.pravatar.cc/120"
               }
               alt="Profile"
-            /> */}
-            <span className="edit-btn">EDIT</span>
+              className="avatar-img"
+            />
+            <span className="edit-badge">EDIT</span>
           </div>
 
           <input
@@ -141,53 +127,58 @@ const UserSidebar = ({
             onChange={handleFileChange}
           />
 
-          <h3 className="username">{name || "User"}</h3>
-
+          <h3 className="username">{name || "Aaryaman Singh"}</h3>
           <p className="user-meta">
-            {profile?.gender || "Male"}, {profile?.age || "--"} years
+            {profile?.gender || "Male"}, {profile?.age || "21"} years
           </p>
-
-          {profile && (
-            <div className="stats-row">
-              <div className="stat">
-                <span className="stat-title">HEIGHT</span>
-                <span className="stat-number">{profile.height} cm</span>
-                <span className="stat-placeholder"></span>
-              </div>
-
-              <div className="divider" />
-
-              <div className="stat">
-                <span className="stat-title">WEIGHT</span>
-                <span className="stat-number">{profile.weight} kg</span>
-                <span className="stat-placeholder"></span>
-              </div>
-
-              <div className="divider" />
-
-              <div className="stat">
-                <span className="stat-title">BMI</span>
-
-                <span className="stat-number">{profile?.bmi?.toFixed(1)}</span>
-
-                <span
-                  className="bmi-indicator"
-                  style={{ color: bmiStatus.color }}
-                >
-                  {bmiStatus.text}
-                </span>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* MENU */}
-        <ul className="menu">
+        {/* USER STATS */}
+        <div className="stats-container">
+
+{/* HEIGHT */}
+<div className="stat-row">
+  <div className="stat-icon-bg light-red">
+    <FiTrendingUp size={14} />
+  </div>
+  <span className="stat-label">Height:</span>
+  <span className="stat-value">{profile?.height || "180"} cm</span>
+</div>
+
+{/* WEIGHT */}
+<div className="stat-row">
+  <div className="stat-icon-bg light-orange">
+    <FiTarget size={14} />
+  </div>
+  <span className="stat-label">Weight:</span>
+  <span className="stat-value">{profile?.weight || "72"} kg</span>
+</div>
+
+{/* BMI */}
+<div className="stat-row">
+  <div className="stat-icon-bg light-yellow">
+    <span className="bmi-badge">BMI</span>
+  </div>
+  <span className="stat-label">BMI:</span>
+
+  <span className="stat-value">
+    {profile?.bmi ? profile.bmi.toFixed(1) : "22.2"}
+    <span className="bmi-text">
+      {" "}
+      ({profile?.bmi ? bmiStatus.text : "Normal"})
+    </span>
+  </span>
+</div>
+
+</div>
+
+        {/* NAVIGATION MENU */}
+        <ul className="nav-menu">
           <li
             onClick={() => onSelect("dashboard")}
             className={activeTab === "dashboard" ? "active" : ""}
           >
-            <FiHome size={18} />
+            <FiHome size={20} />
             <span>Home</span>
           </li>
 
@@ -195,15 +186,15 @@ const UserSidebar = ({
             onClick={() => onSelect("goals")}
             className={activeTab === "goals" ? "active" : ""}
           >
-            <FiTarget size={18} />
-            <span>My goals</span>
+            <FiTarget size={20} />
+            <span>My Goals</span>
           </li>
 
           <li
             onClick={() => onSelect("schedule")}
             className={activeTab === "schedule" ? "active" : ""}
           >
-            <FiCalendar size={18} />
+            <FiCalendar size={20} />
             <span>Schedule</span>
           </li>
 
@@ -211,7 +202,7 @@ const UserSidebar = ({
             onClick={() => onSelect("achievements")}
             className={activeTab === "achievements" ? "active" : ""}
           >
-            <FiAward size={18} />
+            <FiAward size={20} />
             <span>Achievements</span>
           </li>
 
@@ -219,7 +210,7 @@ const UserSidebar = ({
             onClick={() => onSelect("statistics")}
             className={activeTab === "statistics" ? "active" : ""}
           >
-            <FiTrendingUp size={18} />
+            <FiTrendingUp size={20} />
             <span>Statistics</span>
           </li>
 
@@ -227,13 +218,12 @@ const UserSidebar = ({
             onClick={() => onSelect("profile")}
             className={activeTab === "profile" ? "active" : ""}
           >
-            <FiSettings size={18} />
+            <FiSettings size={20} />
             <span>Edit Profile</span>
           </li>
 
-          {/* LOGOUT */}
-          <li className="logout-btn" onClick={handleLogout}>
-            <FiLogOut size={18} />
+          <li className="logout-item" onClick={handleLogout}>
+            <FiLogOut size={20} />
             <span>Logout</span>
           </li>
         </ul>

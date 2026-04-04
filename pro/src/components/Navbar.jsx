@@ -61,9 +61,9 @@ useEffect(() => {
       {/* LOGO */}
       <div className="logo-wrapper">
         <div className="logo">
-          <span className="pro">PRO</span>&nbsp;
-          <span className="ultimate">ULTIMATE</span>&nbsp;
-          <span className="gyms">GYMS</span>
+          <span className="pro">ULTIMATE</span>&nbsp;
+          <span className="ultimate">FITNESS</span>&nbsp;
+          <span className="gyms">CLUB </span>
         </div>
       </div>
 
@@ -104,7 +104,8 @@ useEffect(() => {
               padding: "8px 12px",
               cursor: "pointer",
               borderRadius: "5px",
-              marginLeft: "10px"
+              marginLeft: "10px",
+              marginBottom: "25px",
             }}
           >
             Logout

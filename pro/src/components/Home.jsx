@@ -118,13 +118,13 @@ const Home = () => {
             className="highlight"
             variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
           >
-            Pro Ultimate Gyms
+          Ultimate Fitness Club
           </motion.h2>
 
           <motion.p
             variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
           >
-            Pro Ultimate Gyms is a rapidly growing gym franchise that is
+            Ultimate Fitness Club is a rapidly growing gym franchise that is
             dedicated to helping individuals achieve their fitness goals. With
             45+ branches across the country, Pro Ultimate Gyms provides
             state-of-the-art equipment, knowledgeable trainers, and a supportive

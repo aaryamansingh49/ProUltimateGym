@@ -87,10 +87,35 @@ const ProgressChart = ({ profile }) => {
       {
         label: "Calories Burned",
         data: exerciseData,
-        borderColor: "#3b82f6",
-        backgroundColor: "#3b82f6",
-        tension: 0.4, // smooth curve
-        fill: false
+  
+        borderWidth: 4,
+        pointRadius: 0,
+        tension: 0.5,
+        fill: true,
+  
+        borderColor: (ctx) => {
+          const chart = ctx.chart;
+          const { ctx: canvas } = chart;
+          const gradient = canvas.createLinearGradient(0, 0, chart.width, 0);
+  
+          gradient.addColorStop(0, "#ef4444"); // red
+          gradient.addColorStop(0.5, "#f97316"); // orange
+          gradient.addColorStop(1, "#facc15"); // yellow
+  
+          return gradient;
+        },
+  
+        backgroundColor: (ctx) => {
+          const chart = ctx.chart;
+          const { ctx: canvas } = chart;
+          const gradient = canvas.createLinearGradient(0, 0, 0, 300);
+  
+          gradient.addColorStop(0, "rgba(249,115,22,0.4)");
+          gradient.addColorStop(0.5, "rgba(239,68,68,0.25)");
+          gradient.addColorStop(1, "rgba(250,204,21,0.15)");
+  
+          return gradient;
+        }
       }
     ]
   };
@@ -99,18 +124,29 @@ const ProgressChart = ({ profile }) => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    },
+  
     plugins: {
       legend: {
         display: false
       }
+    },
+  
+    scales: {
+      x: {
+        grid: {
+          color: "rgba(0,0,0,0.08)"
+        }
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: "rgba(0,0,0,0.08)"
+        }
+      }
     }
   };
 
+  
   return (
     <div className="progress-chart-card" style={{ height: "300px" }}>
 

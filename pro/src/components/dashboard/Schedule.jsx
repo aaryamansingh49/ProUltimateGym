@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/dashboard/schedule.css";
 import { getWorkoutPlanByDay, getUserWorkouts } from "../../api/profileApi";
+import { FiAlertTriangle } from "react-icons/fi";
+import { GiFire } from "react-icons/gi";
+import { IoBarbellOutline } from "react-icons/io5";
+import { FiClock } from "react-icons/fi";
+import { FiCalendar } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const Schedule = ({ profile }) => {
   const [workouts, setWorkouts] = useState([]);
@@ -10,6 +16,7 @@ const Schedule = ({ profile }) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [showMissedBadge, setShowMissedBadge] = useState(false);
+  const navigate = useNavigate();
 
   const displayDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -28,33 +35,32 @@ const Schedule = ({ profile }) => {
   const todayName = displayDays[todayIndex];
 
   useEffect(() => {
-
     const fetchSchedule = async () => {
       const userKey = localStorage.getItem("userKey");
-  
+
       const res = await getUserWorkouts(userKey);
       if (!res?.success) return;
-  
+
       const data = res.workouts || [];
       setWorkouts(data);
-  
+
       const todayDate = new Date();
       todayDate.setHours(0, 0, 0, 0);
-  
+
       const todayIndex = todayDate.getDay();
       const todayName = displayDays[todayIndex];
-  
+
       /* ================= TODAY WORKOUT ================= */
-  
+
       const todayData = data.find((w) => {
         const workoutDate = new Date(w.date);
         workoutDate.setHours(0, 0, 0, 0);
-  
+
         return workoutDate.getTime() === todayDate.getTime();
       });
-  
+
       let finalTodayWorkout = null;
-  
+
       if (todayData) {
         finalTodayWorkout = {
           muscle: todayData.day || "Workout",
@@ -65,16 +71,16 @@ const Schedule = ({ profile }) => {
           calories: todayData.totalCalories || 0,
         };
       }
-  
+
       /* 🔥 LOCAL STORAGE FALLBACK */
-  
+
       const localData = localStorage.getItem(
         `todayWorkoutData_${todayName}_${userKey}`
       );
-  
+
       if (localData) {
         const parsed = JSON.parse(localData);
-  
+
         finalTodayWorkout = {
           muscle: "Workout",
           dayName: todayName,
@@ -82,145 +88,208 @@ const Schedule = ({ profile }) => {
           calories: parsed.calories,
         };
       }
-  
+
       setTodayWorkout(finalTodayWorkout);
-  
+
       /* ================= COMPLETED ================= */
-  
+
       const completedSet = new Set();
-  
+
       data.forEach((w) => {
         const workoutDate = new Date(w.date);
         workoutDate.setHours(0, 0, 0, 0);
-  
+
         const diffDays = Math.floor(
           (todayDate - workoutDate) / (1000 * 60 * 60 * 24)
         );
-  
+
         if (diffDays >= 0 && diffDays < 7) {
           completedSet.add(displayDays[workoutDate.getDay()]);
         }
       });
-  
+
       const todayCompleted = localStorage.getItem(
         `workoutCompleted_${todayName}_${userKey}`
       );
-  
+
       if (todayCompleted) {
         completedSet.add(todayName);
       }
-  
+
+      /* ================= MISSED ================= */
+
       const missedSet = new Set();
-  
+
       displayDays.forEach((d, index) => {
         if (d === "Sun") return;
-  
+
         if (index < todayIndex && !completedSet.has(d)) {
           missedSet.add(d);
         }
       });
-  
+
       setCompletedDays([...completedSet]);
       setMissedDays([...missedSet]);
+
+      /* ================= 🔥 YESTERDAY WARNING LOGIC ================= */
+
+      const yesterdayIndex = todayIndex - 1;
+
+      if (yesterdayIndex >= 0) {
+        const yesterday = displayDays[yesterdayIndex];
+
+        if (!completedSet.has(yesterday)) {
+          setShowMissedBadge(true);
+        } else {
+          setShowMissedBadge(false);
+        }
+      } else {
+        setShowMissedBadge(false);
+      }
     };
-  
+
     // 🔥 CALL
     fetchSchedule();
-  
+
     // 🔥 EVENT LISTENER
     const handleUpdate = () => {
       fetchSchedule();
     };
-  
+
     window.addEventListener("workoutUpdated", handleUpdate);
-  
+
     return () => {
       window.removeEventListener("workoutUpdated", handleUpdate);
     };
-  
   }, [profile]);
 
   const getWorkoutStatus = (day) => {
     const dayIndex = displayDays.indexOf(day);
-  
+
     // ⭐ TODAY
     if (dayIndex === todayIndex) {
-      if (completedDays.includes(day)) return "done"; 
-      return "today"; // highlight
+      if (completedDays.includes(day)) return "done";
+      return "today";
     }
-  
+
     // FUTURE
     if (dayIndex > todayIndex) {
       return "future";
     }
-  
+
     // DONE
     if (completedDays.includes(day)) {
       return "done";
     }
-  
+
     // MISSED
     if (missedDays.includes(day)) {
       return "missed";
     }
-  
+
     return "white";
   };
 
   const handleDayClick = async (index) => {
     const clickedDay = displayDays[index];
-  
+
     if (selectedDay === clickedDay) {
       setSelectedDay(null);
       setSelectedWorkout(null);
       return;
     }
-  
+
     setSelectedDay(clickedDay);
-  
-    const res = await getWorkoutPlanByDay(
-      apiDays[index].toLowerCase()
-    );
-  
+
+    const res = await getWorkoutPlanByDay(apiDays[index].toLowerCase());
+
     if (res) {
       setSelectedWorkout(res);
     } else {
       setSelectedWorkout(null);
     }
   };
-  
+
   return (
     <div className="schedule-container">
-      {showMissedBadge && (
-        <div className="missed-reminder">
-          ⚠️ You missed yesterday's workout!
-        </div>
-      )}
-
-      {/* TODAY CARD */}
+      {/* ================= TODAY CARD ================= */}
 
       <div className="today-focus-card">
-        <h3>🔥 Today’s Workout</h3>
+        {/* 🔥 WARNING */}
+        {showMissedBadge && (
+          <div className="today-header">
+            <FiAlertTriangle />
+            <span>
+              You missed yesterday's workout! Check your schedule and stay on
+              track today.
+            </span>
+          </div>
+        )}
 
-        <div className="today-info">
-          <h2>
-            {todayName === "Sun"
-              ? "Sunday Rest Day"
-              : todayWorkout
-              ? `${todayWorkout.dayName} Workout`
-              : `${todayName} Workout`}
-          </h2>
+        {/* 🔥 TITLE (MISSING IN YOUR UI) */}
+        <div className="today-title">🔥 Today’s Workout</div>
 
-          <p>Exercises: {todayWorkout?.exerciseCount || 0}</p>
-          <p>Target Calories: {todayWorkout?.calories || 0} kcal</p>
+        <div className="today-card-main">
+          {/* LEFT ICON */}
+          <div className="today-icon">
+            <IoBarbellOutline />
+          </div>
+
+          {/* CENTER */}
+          <div className="today-center">
+            <div className="today-top-row">
+              <h2>
+                <GiFire className="fire-icon" />
+                {todayName === "Sun"
+                  ? "Sunday Rest Day"
+                  : todayWorkout
+                  ? `${todayWorkout.dayName} Workout`
+                  : `${todayName} Workout`}
+                <GiFire className="fire-icon" />
+              </h2>
+
+              <div className="today-stats">
+                <span>
+                  <IoBarbellOutline /> {todayWorkout?.exerciseCount || 0}{" "}
+                  Exercises
+                </span>
+
+                <span>
+                  <GiFire /> {todayWorkout?.calories || 0} kcal
+                </span>
+              </div>
+            </div>
+
+            <div className="today-bottom-row">
+              <button
+                className="start-workout-btn"
+                onClick={() => navigate("/workout/today")}
+              >
+                START TODAY'S WORKOUT
+              </button>
+
+              <div className="today-timer">
+                <FiClock />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* WEEK CALENDAR */}
+      {/* ================= WEEKLY ================= */}
 
       <div className="weekly-calendar">
         {displayDays.map((d, index) => {
           const status = getWorkoutStatus(d);
+
+          const today = new Date();
+          const firstDayOfWeek = new Date(today);
+          firstDayOfWeek.setDate(today.getDate() - today.getDay());
+
+          const currentDayDate = new Date(firstDayOfWeek);
+          currentDayDate.setDate(firstDayOfWeek.getDate() + index);
+
+          const dateNumber = currentDayDate.getDate();
 
           return (
             <div
@@ -228,30 +297,71 @@ const Schedule = ({ profile }) => {
               className={`day-card ${status}`}
               onClick={() => handleDayClick(index)}
             >
-              {d}
+              <div className="day-top">
+                <span className="day-name">{d}</span>
+
+                {status === "missed" && (
+                  <div className="status-icon missed">
+                    <FiAlertTriangle />
+                  </div>
+                )}
+
+                {status === "today" && (
+                  <div className="status-icon today">●</div>
+                )}
+
+                {status === "done" && <div className="status-icon done">✓</div>}
+              </div>
+
+              <div className="day-date">{dateNumber}</div>
+
+              <div className="day-status">
+                {status === "missed" && "Missed"}
+                {status === "today" && "Today"}
+                {status === "future" && "Future"}
+                {status === "done" && "Completed"}
+              </div>
             </div>
           );
         })}
       </div>
 
-      {/* WORKOUT DETAIL */}
+      {/* ================= DETAILS ================= */}
 
       {selectedDay && (
         <div className="workout-detail-card">
           <div className="workout-header">
-            <h3>
-              📅 {selectedDay} • {selectedWorkout?.muscleGroup || "Rest"} Day
-            </h3>
+            <h2>Workout Details</h2>
+
+            <div className="workout-subheader">
+            <FiCalendar /> {selectedDay} • {selectedWorkout?.muscleGroup || "Rest"} Day
+            </div>
           </div>
 
           {selectedWorkout?.exercises?.length > 0 ? (
-            <div className="exercise-list">
+            <div className="exercise-grid">
               {selectedWorkout.exercises.map((ex, i) => (
-                <div className="exercise-item" key={i}>
-                  <div className="exercise-name">🏋️ {ex.name}</div>
+                <div className="exercise-card" key={i}>
+                  <div className="exercise-img">
+                    <IoBarbellOutline />
+                  </div>
 
-                  <div className="exercise-badge">
-                    {ex.sets} x {ex.reps}
+                  <div className="exercise-middle">
+                    <div className="exercise-title">{ex.name}</div>
+                    <div className="exercise-sub">
+                      {ex.sets} x {ex.reps}
+                    </div>
+
+                    <div className="progress-bars">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </div>
+
+                  <div className="exercise-right">
+                    <button className="guide-btn">VIEW GUIDE</button>
+                    {/* <button className="log-btn">LOG SETS</button> */}
                   </div>
                 </div>
               ))}

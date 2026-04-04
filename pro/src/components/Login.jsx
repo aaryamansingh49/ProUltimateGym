@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/login.css";
 import BASE_URL from "../api/config.js";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ const Login = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
 
@@ -23,13 +26,11 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // 🔐 Login request
       const res = await axios.post(`${BASE_URL}/api/login`, formData);
 
       const user = res.data.user;
       const token = res.data.token;
 
-      // Save auth data
       localStorage.setItem("token", token);
       localStorage.setItem("userKey", user._id);
       localStorage.setItem("userId", user._id);
@@ -37,7 +38,6 @@ const Login = () => {
       let userProfile = user;
 
       try {
-        // ✅ Get profile using token
         const profileRes = await axios.get(`${BASE_URL}/api/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -49,19 +49,23 @@ const Login = () => {
           ...profileRes.data.profile,
         };
       } catch (err) {
-        console.log("Profile fetch failed or not created yet");
+        console.log("Profile fetch failed");
       }
 
-      // Save full profile
       localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
-      navigate("/dashboard");
+      setSuccess(true);
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1200);
     } catch (error) {
       alert(error.response?.data?.message || "Login failed!");
     } finally {
       setLoading(false);
     }
   };
+
   const handleForgotPassword = () => {
     navigate("/forgot-password");
   };
@@ -69,7 +73,13 @@ const Login = () => {
   return (
     <div className="login-section">
       <div className="login-box">
-        <h2>Login</h2>
+
+        {/* <h2 className="brand"><span>Pro Ultimate Gym</span></h2> */}
+
+        <h1>Log In</h1>
+        <p className="subtitle">
+          Enter your member credentials to access your ultimate training portal.
+        </p>
 
         <form onSubmit={handleSubmit}>
           <div className="input-group">
@@ -84,32 +94,47 @@ const Login = () => {
           </div>
 
           <div className="input-group">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-              <span className="forgot-link" onClick={handleForgotPassword}>
-                Forgot Password?
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+
+              <span
+                className="eye-icon"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </span>
             </div>
-    
 
-          
+            <span className="forgot-link" onClick={handleForgotPassword}>
+              Forgot Password?
+            </span>
+          </div>
 
-          <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+          <button type="submit" className="login-btn" disabled={loading || success}>
+            {loading ? (
+              <span className="btn-loader"></span>
+            ) : success ? (
+              "✔ Success"
+            ) : (
+              "Log in"
+            )}
           </button>
+
+          <div className="divider">or</div>
 
           <button
             type="button"
-            className="login-btn"
+            className="otp-btn"
             onClick={() => navigate("/otp-login")}
           >
-            Login via OTP
+            Log in via OTP
           </button>
         </form>
       </div>

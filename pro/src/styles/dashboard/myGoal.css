@@ -1,178 +1,162 @@
 .mygoal-container{
-    flex:1;
-    width:100%;
-    padding:25px;
-    box-sizing:border-box;
-  }
-  
-  .mygoal-title{
-    font-size:22px;
-    font-weight:600;
-    margin-bottom:20px;
-    color:#0f172a;
-  }
-  
+  flex:1;
+  width:100%;
+  padding:25px;
+  box-sizing:border-box;
+}
+
+.mygoal-title{
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:20px;
+  color:#0f172a;
+}
+
+/* CARD */
+.goal-card{
+  background:white;
+  padding:25px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+width:70vw;
+  /* max-width:800px; */
+  margin:auto;
+}
+
+/* HEADER */
+.progress-header{
+  display:flex;
+  justify-content:flex-end;
+}
+
+/* STATUS */
+.goal-status{
+  padding:6px 14px;
+  border-radius:20px;
+  font-weight:600;
+  font-size:13px;
+}
+
+.status-red{ background:#fee2e2; color:#dc2626; }
+.status-yellow{ background:#fef9c3; color:#ca8a04; }
+.status-green{ background:#dcfce7; color:#16a34a; }
+
+/* 🔥 STACK SECTION */
+.progress-section{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+/* CIRCLE */
+.circle-progress{
+  position:relative;
+  width:140px;
+  aspect-ratio:1/1;   /* 🔥 IMPORTANT FIX */
+}
+
+.circle-progress svg{
+  width:100%;
+  height:100%;
+  transform:rotate(-90deg);
+}
+
+.circle-progress circle{
+  fill:none;
+  stroke-width:10;
+  stroke-linecap:round;
+}
+
+
+.circle-progress .bg{
+  stroke:#e5e7eb;
+}
+
+.circle-progress .progress{
+  stroke-dasharray:377;
+  stroke-dashoffset:377;
+  transition:stroke-dashoffset 1s ease;
+}
+
+/* COLORS */
+.progress-red{ stroke:#ef4444; }
+.progress-yellow{ stroke:#f59e0b; }
+.progress-green{ stroke:#22c55e; }
+
+/* TEXT CENTER */
+.circle-text{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:22px;
+  font-weight:700;
+  color:#0f172a;
+}
+
+/* REMAINING */
+.goal-remaining{
+  text-align:center;
+}
+
+.goal-remaining strong{
+  font-size:24px;
+  color:#0f172a;
+}
+
+.goal-remaining span{
+  display:block;
+  font-size:14px;
+  color:#64748b;
+}
+
+/* DETAILS */
+.goal-item{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid #f1f5f9;
+  padding:10px 0;
+}
+
+.goal-label{
+  font-weight:500;
+  color:#64748b;
+}
+
+.goal-value{
+  font-weight:600;
+  color:#0f172a;
+}
+
+/* 📱 MOBILE */
+@media(max-width:768px){
+
   .goal-card{
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
-  
-    display:flex;
-    flex-direction:column;
-    gap:14px;
+    max-width:100%;
+    padding:20px;
   }
-  
-  .goal-item{
-    display:flex;
-    justify-content:space-between;
-    border-bottom:1px solid #f1f5f9;
-    padding-bottom:6px;
-  }
-  
-  .goal-label{
-    font-weight:500;
-    color:#475569;
-  }
-  
-  .goal-value{
-    font-weight:600;
-    color:#0f172a;
-  }
-  
-  /* 🔥 PROGRESS SECTION */
 
-  .progress-section{
-    margin-top:20px;
+  .circle-progress{
+    width:120px;
+    height:120px;
   }
-  
-  .progress-header{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:8px;
-    font-weight:600;
-  
-    color:#0f172a;   /* ⭐ IMPORTANT */
-    z-index:2;
-  }
-  
-  .progress-bar{
-    width:100%;
-    height:14px;
-    background:#e2e8f0;
-    border-radius:20px;
-    overflow:hidden;
-    position:relative;
-  }
-  
-  /* BASE FILL */
-  .progress-fill{
-    height:100%;
-    border-radius:20px;
-    position:relative;
-  
-    transition:width 1s ease;
-  
-    background-size:200% 100%;
-  
-    animation: gradientMove 3s linear infinite;
-  }
-  
-  /* 🔴 LOW */
-  .progress-red{
-    background:linear-gradient(90deg,#ef4444,#f97316,#ef4444);
-  }
-  
-  /* 🟡 MEDIUM */
-  .progress-yellow{
-    background:linear-gradient(90deg,#facc15,#f59e0b,#facc15);
-  }
-  
-  /* 🟢 HIGH */
-  .progress-green{
-    background:linear-gradient(90deg,#22c55e,#06b6d4,#22c55e);
-  }
-  
-  /* 🔥 GRADIENT MOVING ANIMATION */
-  @keyframes gradientMove{
-    0%{background-position:0%;}
-    100%{background-position:200%;}
-  }
-  
-  /* ✨ SHINE EFFECT */
-  .progress-fill::after{
-    content:"";
-    position:absolute;
-    top:0;
-    left:-50%;
-    width:50%;
-    height:100%;
-  
-    background:linear-gradient(
-      120deg,
-      rgba(255,255,255,0) 0%,
-      rgba(255,255,255,0.5) 50%,
-      rgba(255,255,255,0) 100%
-    );
-  
-    animation: shineMove 2.5s infinite;
-  }
-  
-  @keyframes shineMove{
-    0%{left:-50%;}
-    100%{left:120%;}
-  }
-  
-  /* 🔥 COMPLETE GLOW + PULSE */
-  .progress-complete{
-    box-shadow:
-      0 0 10px #22c55e,
-      0 0 20px #22c55e,
-      0 0 30px #22c55e;
-  
-    animation:pulseGlow 1.5s infinite alternate;
-  }
-  
-  @keyframes pulseGlow{
-    from{
-      box-shadow:0 0 5px #22c55e;
-    }
-    to{
-      box-shadow:
-        0 0 15px #22c55e,
-        0 0 25px #22c55e;
-    }
-  }
-  
 
-  .goal-status{
-    padding:6px 14px;
-    border-radius:20px;
-    font-weight:600;
-    font-size:14px;
-    margin-bottom:10px;
-    align-self:flex-start;
+  .circle-progress svg{
+    width:120px;
+    height:120px;
   }
-  
-  .status-red{
-    background:#fee2e2;
-    color:#dc2626;
+
+  .circle-text{
+    font-size:18px;
   }
-  
-  .status-yellow{
-    background:#fef9c3;
-    color:#ca8a04;
+
+  .goal-remaining strong{
+    font-size:20px;
   }
-  
-  .status-green{
-    background:#dcfce7;
-    color:#16a34a;
-  }
-  
-  .goal-remaining{
-    margin-top:5px;
-    font-weight:600;
-    color:#0f172a;
-  }
-  
-  
+}

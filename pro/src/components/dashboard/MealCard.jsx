@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/dashboard/cards.css";
+import { Dumbbell, Flame, CheckCircle, Utensils, BarChart3 } from "lucide-react";
 
 const MealCard = () => {
 
@@ -51,34 +52,53 @@ const MealCard = () => {
   };
 
   return (
-
-    <div
-      className={`fitness-card pink ${nutrition.level}`}
-      onClick={goToMealPage}
-    >
-
-      <div className="card-left">
-
-        <div className="card-icon">🍽️</div>
-
-        <h3>{nutrition.totalMeals} Meals</h3>
-
-        <p>{nutrition.calories} kcal</p>
-
+    <div className="simple-card" onClick={goToMealPage}>
+  
+      <div className="card-header">
+        <div className="pg-badge">UF</div>
+        <span className="sub">ULTIMATE FITNESS CLUB</span>
+        <h2>Meals</h2>
       </div>
-
-      <div className="progress-circle">
-
-        <span>
-          {nutrition.mealsCompleted}/{nutrition.totalMeals}
-        </span>
-
+  
+      <div className="card-box">
+  
+        <div className="row">
+          <div className="left">
+            <div className="icon red">
+              <Utensils size={16} />
+            </div>
+            <span>{nutrition.totalMeals} Meals</span>
+          </div>
+          <span className="right">Daily Plan</span>
+        </div>
+  
+        <div className="row">
+          <div className="left">
+            <div className="icon orange">
+              <Flame size={16} />
+            </div>
+            <span>{nutrition.calories} kcal</span>
+          </div>
+          <span className="right red-text">
+            {nutrition.calories} kcal
+          </span>
+        </div>
+  
+        <div className="row">
+          <div className="left">
+            <div className="icon gray">
+              <BarChart3 size={16} />
+            </div>
+            <span>Meals Logged</span>
+          </div>
+          <span className="right">
+            {nutrition.mealsCompleted}/{nutrition.totalMeals}
+          </span>
+        </div>
+  
       </div>
-
     </div>
-
   );
-
 };
 
 export default MealCard;
