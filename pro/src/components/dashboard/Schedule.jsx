@@ -6,7 +6,11 @@ import { GiFire } from "react-icons/gi";
 import { IoBarbellOutline } from "react-icons/io5";
 import { FiClock } from "react-icons/fi";
 import { FiCalendar } from "react-icons/fi";
+import { GiBiceps, GiChestArmor, GiShoulderArmor } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
+import Lottie from "lottie-react";
+import sleepAnimation from "../../assets/sleep.json";
+
 
 const Schedule = ({ profile }) => {
   const [workouts, setWorkouts] = useState([]);
@@ -191,6 +195,28 @@ const Schedule = ({ profile }) => {
   };
 
   const handleDayClick = async (index) => {
+    const getMuscleIcon = (name) => {
+      const n = name.toLowerCase();
+
+      if (n.includes("bench") || n.includes("chest") || n.includes("fly")) {
+        return <GiChestArmor />;
+      }
+
+      if (n.includes("row") || n.includes("pull") || n.includes("back")) {
+        return <GiBackPain />;
+      }
+
+      if (n.includes("shoulder") || n.includes("press")) {
+        return <GiShoulderArmor />;
+      }
+
+      if (n.includes("curl") || n.includes("bicep")) {
+        return <GiBiceps />;
+      }
+
+      return <GiBiceps />;
+    };
+
     const clickedDay = displayDays[index];
 
     if (selectedDay === clickedDay) {
@@ -334,7 +360,8 @@ const Schedule = ({ profile }) => {
             <h2>Workout Details</h2>
 
             <div className="workout-subheader">
-            <FiCalendar /> {selectedDay} • {selectedWorkout?.muscleGroup || "Rest"} Day
+              <FiCalendar /> {selectedDay} •{" "}
+              {selectedWorkout?.muscleGroup || "Rest"} Day
             </div>
           </div>
 
@@ -342,6 +369,12 @@ const Schedule = ({ profile }) => {
             <div className="exercise-grid">
               {selectedWorkout.exercises.map((ex, i) => (
                 <div className="exercise-card" key={i}>
+                  {/* TOP RIGHT ICONS */}
+                  <div className="exercise-icons">
+                    <GiBiceps />
+                    <GiChestArmor />
+                    <GiShoulderArmor />
+                  </div>
                   <div className="exercise-img">
                     <IoBarbellOutline />
                   </div>
@@ -353,21 +386,33 @@ const Schedule = ({ profile }) => {
                     </div>
 
                     <div className="progress-bars">
-                      <span></span>
-                      <span></span>
-                      <span></span>
+                      {[...Array(ex.sets)].map((_, i) => (
+                        <span key={i}></span>
+                      ))}
                     </div>
                   </div>
 
                   <div className="exercise-right">
-                    <button className="guide-btn">VIEW GUIDE</button>
+                    {/* <button className="guide-btn">VIEW GUIDE</button> */}
                     {/* <button className="log-btn">LOG SETS</button> */}
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="rest-text">😴 It's a Rest Day</p>
+            <div className="rest-day-card">
+  <div className="rest-animation-box">
+    <Lottie animationData={sleepAnimation} style={{ height: 220 }} />
+  </div>
+
+  <h2>Rest Day 😴</h2>
+
+  <p className="rest-msg">
+    Muscles grow when you rest, not when you lift
+  </p>
+
+  <div className="rest-badge">Recovery Mode ON</div>
+</div>
           )}
         </div>
       )}

@@ -2,19 +2,24 @@ import express from "express";
 import userAuthMiddleware from "../middleware/userAuthMiddleware.js";
 import upload from "../middleware/uploadPhoto.js";
 import UserProfile from "../models/UserProfile.js";
-import User from "../models/User.js";
+// import User from "../models/User.js";
+import UserModel from "../models/userSchema.js";
 
 const router = express.Router();
-
 
 // ✅ GET PROFILE
 router.get("/", userAuthMiddleware, async (req, res) => {
   try {
+    console.log("👉 TOKEN USER ID:", req.userId);
     const profile = await UserProfile.findOne({ userId: req.userId });
+    console.log("👉 PROFILE FOUND:", profile);
 
-    const user = await User.findById(req.userId).select(
+    const user = await UserModel.findById(req.userId).select(
+      
       "firstName lastName"
+      
     );
+    console.log("👉 USER FOUND:", user);
 
     res.json({
       success: true,
@@ -40,7 +45,7 @@ router.post(
       // console.log("BODY:", req.body);
       // console.log("FILE:", req.file);
 
-      const user = await User.findById(req.userId);
+      const user = await UserModel.findById(req.userId);
 
       // SAFE NUMBER CONVERSION
       const safeNumber = (val) => {

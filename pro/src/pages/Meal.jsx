@@ -28,6 +28,7 @@ const Meal = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [tempGrams, setTempGrams] = useState(100);
+  const [profileMissing, setProfileMissing] = useState(false);
 
   /* ================= LOAD ================= */
 
@@ -58,7 +59,10 @@ const Meal = () => {
         }
       }
 
-      if (!userProfile) return;
+      if (!userProfile || !userProfile.goal || !userProfile.level) {
+        setProfileMissing(true);
+        return;
+      }
 
       // ================= SAME CODE =================
 
@@ -649,6 +653,23 @@ const Meal = () => {
     return Math.max(10, Math.min(Math.round(grams), 250));
   };
 
+  if (profileMissing) {
+    return (
+      <div className="profile-warning-wrapper">
+        <div className="profile-warning-card">
+          <h2>⚠️ Complete Your Profile</h2>
+          <p>
+            Get your personalized meal plan by completing your profile.
+          </p>
+  
+          <button onClick={() => navigate("/profile-edit")}>
+            Complete Profile
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
   if (!meal || !macroTargets) return null;
 
   const sections = [

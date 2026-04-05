@@ -14,6 +14,7 @@ const TodayWorkout = () => {
   const [workout, setWorkout] = useState(null);
   const [completed, setCompleted] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [profileIncomplete, setProfileIncomplete] = useState(false);
 
   const userId = localStorage.getItem("userKey");
 
@@ -23,9 +24,30 @@ const TodayWorkout = () => {
   const isSunday = dayLower === "sunday";
   const navigate = useNavigate();
 
-  if (!userId) {
-    return <p>Please login again</p>;
-  }
+  // if (!userId) {
+  //   return <p>Please login again</p>;
+  // }
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userKey");
+
+    if (!userId) {
+      navigate("/login");
+    }
+  }, []);
+
+  useEffect(() => {
+    const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+
+    if (!userProfile) {
+      console.log("User profile not found yet");
+      return;
+    }
+
+    if (!userProfile.profileCompleted) {
+      setProfileIncomplete(true);
+    }
+  }, []);
 
   /* ================= FETCH WORKOUT ================= */
   useEffect(() => {
@@ -34,7 +56,7 @@ const TodayWorkout = () => {
         setLoading(true);
 
         const workoutData = await getWorkoutByDay(dayLower);
-        console.log("🧠 DAY VALUE:", dayLower);
+        // console.log("🧠 DAY VALUE:", dayLower);
         // const workoutData = workoutRes.data;
 
         setWorkout(workoutData);
@@ -54,10 +76,9 @@ const TodayWorkout = () => {
         });
 
         setCompleted(initialCompleted);
-
       } catch (error) {
         console.error("FETCH WORKOUT ERROR:", error);
-        alert(error.response?.data?.message || "Failed to load workout");
+        // alert(error.response?.data?.message || "Failed to load workout");
       } finally {
         setLoading(false);
       }
@@ -69,9 +90,7 @@ const TodayWorkout = () => {
   /* ================= TOGGLE ================= */
   const toggleExercise = (index) => {
     setCompleted((prev) =>
-      prev.map((ex, i) =>
-        i === index ? { ...ex, done: !ex.done } : ex
-      )
+      prev.map((ex, i) => (i === index ? { ...ex, done: !ex.done } : ex))
     );
   };
 
@@ -84,57 +103,67 @@ const TodayWorkout = () => {
   /* ================= SAVE ================= */
   const saveProgress = async () => {
     if (loading) return; // 🔥 FIX
-  
+
     try {
       setLoading(true);
-  
+
       const res = await saveWorkoutProgress({
         day: dayLower,
         type: workout.muscleGroup,
         completedExercises: completed,
       });
-  
-      console.log("✅ SAVE RESPONSE:", res);
-  
+
+      // console.log("✅ SAVE RESPONSE:", res);
+
       if (!res || res.success === false) {
         throw new Error(res?.message || "Save failed");
       }
-  
+
       const todayName = new Date().toLocaleDateString("en-US", {
         weekday: "short",
       });
-  
-      localStorage.setItem(
-        `workoutCompleted_${todayName}_${userId}`,
-        true
-      );
-  
+
+      localStorage.setItem(`workoutCompleted_${todayName}_${userId}`, true);
+
       updateGoalProgress();
-  
+
       window.dispatchEvent(new Event("workoutUpdated"));
-  
+
       setTimeout(() => {
         navigate("/dashboard");
       }, 800); // 🔥 delay
-  
     } catch (error) {
-  
       if (error.response?.data?.message === "Only for active members") {
         console.log("⚠️ Ignored duplicate call error");
         return;
       }
-  
+
       alert(
         error.response?.data?.message ||
-        error.message ||
-        "Failed to save workout"
+          error.message ||
+          "Failed to save workout"
       );
-  
     } finally {
       setLoading(false);
     }
   };
 
+  if (loading) return <p>Loading...</p>;
+
+  if (profileIncomplete) {
+    return (
+      <div className="profile-warning-wrapper">
+        <div className="profile-warning-card">
+          <h2>⚠️ Complete Your Profile</h2>
+          <p>Unlock your personalized workouts by completing your profile.</p>
+
+          <button onClick={() => navigate("/profile-edit")}>
+            Complete Profile
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) return <p>Loading...</p>;
 
@@ -142,7 +171,7 @@ const TodayWorkout = () => {
     return (
       <div className="rest-day-container">
         <h2>🛌 Rest Day</h2>
-        <p>Recovery day 💪</p>
+        <p>Recovery day </p>
       </div>
     );
   }
@@ -180,8 +209,8 @@ const TodayWorkout = () => {
       <h3>🔥 Total Calories Burned: {totalCalories}</h3>
 
       <button onClick={saveProgress} disabled={loading}>
-  {loading ? "Saving..." : "Done"}
-</button>
+        {loading ? "Saving..." : "Done"}
+      </button>
     </div>
   );
 };

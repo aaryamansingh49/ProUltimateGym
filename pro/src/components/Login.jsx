@@ -44,10 +44,20 @@ const Login = () => {
           },
         });
 
-        userProfile = {
-          ...user,
-          ...profileRes.data.profile,
-        };
+        console.log("PROFILE DATA:", profileRes.data.profile); // ⭐ DEBUG
+
+
+        if (profileRes.data.profile) {
+          userProfile = {
+            ...user,
+            ...profileRes.data.profile,
+          };
+        } else {
+          userProfile = {
+            ...user,
+            profileCompleted: false, // ⭐ important flag
+          };
+        }
       } catch (err) {
         console.log("Profile fetch failed");
       }
@@ -56,8 +66,23 @@ const Login = () => {
 
       setSuccess(true);
 
-      setTimeout(() => {
-        navigate("/dashboard");
+      setTimeout(async () => {
+        try {
+          const checkRes = await axios.get(
+            `${BASE_URL}/api/check-active-membership?email=${user.email}`
+          );
+
+          localStorage.setItem("isMember", checkRes.data.isActive);
+      
+          if (checkRes.data.isActive) {
+            navigate("/dashboard"); // ✅ allowed
+          } else {
+            navigate("/membership"); // ❌ redirect here
+          }
+        } catch (err) {
+          console.log("Membership check failed");
+          navigate("/membership"); // fallback
+        }
       }, 1200);
     } catch (error) {
       alert(error.response?.data?.message || "Login failed!");

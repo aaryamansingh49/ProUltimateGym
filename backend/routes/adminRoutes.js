@@ -2,7 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import Membership from "../models/Membership.js";
-import authMiddleware from "../middleware/userMiddleware.js"; 
+import userMiddleware from "../middleware/userMiddleware.js"; 
 
 dotenv.config();
 const router = express.Router();
@@ -29,7 +29,7 @@ router.post("/login", (req, res) => {
 });
 
 //  Fetch all memberships for Admin Dashboard
-router.get("/all-memberships", authMiddleware, async (req, res) => {
+router.get("/all-memberships", userMiddleware, async (req, res) => {
   try {
     const memberships = await Membership.find();
     res.json(memberships);
@@ -40,7 +40,7 @@ router.get("/all-memberships", authMiddleware, async (req, res) => {
 });
 
 //  Dynamic Chart Data Route
-router.get("/chart-data", authMiddleware, async (req, res) => {
+router.get("/chart-data", userMiddleware, async (req, res) => {
   try {
     //  Monthly Revenue from Membership totalPrice
     const revenueData = await Membership.aggregate([
@@ -98,7 +98,7 @@ router.get("/chart-data", authMiddleware, async (req, res) => {
 });
 
 //  Fetch All Payments (Admin)
-router.get("/payments", authMiddleware, async (req, res) => {
+router.get("/payments", userMiddleware, async (req, res) => {
   try {
     const payments = await Membership.find(
       {},
@@ -148,7 +148,7 @@ function daysSince(date) {
 }
 
 // GET: pending renewals (expired memberships)
-router.get('/pending-renewals', authMiddleware, async (req, res) => {
+router.get('/pending-renewals', userMiddleware, async (req, res) => {
   try {
     // fetch only needed fields for speed
     const raw = await Membership.find({}, 'fullName email phone membershipPlan startDate').lean();
@@ -187,7 +187,7 @@ router.get('/pending-renewals', authMiddleware, async (req, res) => {
 });
 
 // Renew
-router.post('/mark-renewed/:id', authMiddleware, async (req, res) => {
+router.post('/mark-renewed/:id', userMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const membership = await Membership.findById(id);

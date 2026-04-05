@@ -15,7 +15,7 @@ html, body {
   justify-content: space-between;
   align-items: center;
 
-  padding: 18px 30px; /* 🔥 height thodi badi */
+  padding: 0px 30px; /* 🔥 height thodi badi */
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }

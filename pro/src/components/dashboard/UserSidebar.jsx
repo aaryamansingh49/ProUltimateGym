@@ -84,7 +84,8 @@ const UserSidebar = ({
 
     if (bmi < 18.5) return { text: "Underweight", color: "#3498db" };
     if (bmi >= 18.5 && bmi < 24.9) return { text: "Normal", color: "#2ecc71" };
-    if (bmi >= 25 && bmi < 29.9) return { text: "Overweight", color: "#f39c12" };
+    if (bmi >= 25 && bmi < 29.9)
+      return { text: "Overweight", color: "#f39c12" };
 
     return { text: "Obese", color: "#e74c3c" };
   };
@@ -110,7 +111,9 @@ const UserSidebar = ({
             <img
               src={
                 profile?.profileImage
-                  ? `http://localhost:5001${profile.profileImage}?t=${Date.now()}`
+                  ? `http://localhost:5001${
+                      profile.profileImage
+                    }?t=${Date.now()}`
                   : "https://i.pravatar.cc/120"
               }
               alt="Profile"
@@ -127,50 +130,61 @@ const UserSidebar = ({
             onChange={handleFileChange}
           />
 
-          <h3 className="username">{name || "Aaryaman Singh"}</h3>
+          <h3 className="username">{profile?.name || name || "-"}</h3>
           <p className="user-meta">
-            {profile?.gender || "Male"}, {profile?.age || "21"} years
+            {profile?.gender || "-"}, {profile?.age || "-"} years
           </p>
+
+          {!profile && (
+            <p style={{ fontSize: "12px", color: "#888", marginTop: "5px" }}>
+              Complete your profile
+            </p>
+          )}
         </div>
 
         {/* USER STATS */}
         <div className="stats-container">
+          {/* HEIGHT */}
+          <div className="stat-row">
+            <div className="stat-icon-bg light-red">
+              <FiTrendingUp size={14} />
+            </div>
+            <span className="stat-label">Height:</span>
+            <span className="stat-value">
+              {profile?.height ? `${profile.height} cm` : "-"}
+            </span>
+          </div>
 
-{/* HEIGHT */}
-<div className="stat-row">
-  <div className="stat-icon-bg light-red">
-    <FiTrendingUp size={14} />
-  </div>
-  <span className="stat-label">Height:</span>
-  <span className="stat-value">{profile?.height || "180"} cm</span>
-</div>
+          {/* WEIGHT */}
+          <div className="stat-row">
+            <div className="stat-icon-bg light-orange">
+              <FiTarget size={14} />
+            </div>
+            <span className="stat-label">Weight:</span>
+            <span className="stat-value">
+              {profile?.weight ? `${profile.weight} kg` : "-"}
+            </span>
+          </div>
 
-{/* WEIGHT */}
-<div className="stat-row">
-  <div className="stat-icon-bg light-orange">
-    <FiTarget size={14} />
-  </div>
-  <span className="stat-label">Weight:</span>
-  <span className="stat-value">{profile?.weight || "72"} kg</span>
-</div>
+          {/* BMI */}
+          <div className="stat-row">
+            <div className="stat-icon-bg light-yellow">
+              <span className="bmi-badge">BMI</span>
+            </div>
+            <span className="stat-label">BMI:</span>
 
-{/* BMI */}
-<div className="stat-row">
-  <div className="stat-icon-bg light-yellow">
-    <span className="bmi-badge">BMI</span>
-  </div>
-  <span className="stat-label">BMI:</span>
-
-  <span className="stat-value">
-    {profile?.bmi ? profile.bmi.toFixed(1) : "22.2"}
-    <span className="bmi-text">
-      {" "}
-      ({profile?.bmi ? bmiStatus.text : "Normal"})
-    </span>
-  </span>
-</div>
-
-</div>
+            <span className="stat-value">
+              {profile?.bmi ? (
+                <>
+                  {profile.bmi.toFixed(1)}
+                  <span className="bmi-text"> ({bmiStatus.text})</span>
+                </>
+              ) : (
+                "-"
+              )}
+            </span>
+          </div>
+        </div>
 
         {/* NAVIGATION MENU */}
         <ul className="nav-menu">

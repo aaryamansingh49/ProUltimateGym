@@ -11,11 +11,13 @@ import { jwtDecode } from "jwt-decode";
 
 // Components
 import ScrollToTop from "./components/dashboard/ScrollToTop";
+import ProfileSetup from "./components/dashboard/ProfileSetup";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ChatBot from "./components/Chatbot";
 import ForgotPassword from "./components/ForgotPassword.jsx";
+
 import "./index.css";
 
 // Admin imports
@@ -132,7 +134,7 @@ const App = () => {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/login" element={<Login />} />
               <Route path="/otp-login" element={<OtpLogin />} />
-
+              <Route path="/profile-edit" element={<ProfileSetup />} />
               <Route path="/workout/today" element={<TodayWorkout />} />
               <Route path="/meal" element={<Meal />} />
 

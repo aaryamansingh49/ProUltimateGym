@@ -87,7 +87,7 @@
 .stats-container {
   display: flex;
   flex-direction: column;
-  /* gap: px; */
+  gap: 30px;
   background: #f8fafc;
   padding: 14px;
   border-radius: 14px;
@@ -164,6 +164,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -223,7 +224,7 @@
     left: 0; /* IMPORTANT */
   
     width: 85%;
-    max-width: 320px;
+    max-width: 220px;
     height: 100dvh;
   
     padding: 24px 18px;
@@ -261,6 +262,7 @@
   /* STATS BOX */
   .stats-container {
     width: 100%;  
+    gap: 10px;
     display: flex;
     flex-direction: column;
     padding: 18px;

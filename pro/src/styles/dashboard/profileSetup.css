@@ -21,9 +21,9 @@
   background: #ffffff;
 
   width: 420px;
-  max-height: 90vh;   /* ⭐ limit height */
+  max-height: 80vh;   /* ⭐ limit height */
   overflow-y: auto;   /* ⭐ enable scroll */
-
+margin-top: 70px;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -101,5 +101,13 @@
   
   .submit-btn:hover {
     background: #1e293b;
+  }
+
+  @media (max-width:768px){
+    .profile-setup-card{
+      max-height: 90vh;
+      margin-top: 42px;
+    }
+
   }
   

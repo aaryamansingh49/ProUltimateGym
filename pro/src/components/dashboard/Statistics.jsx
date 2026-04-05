@@ -269,7 +269,7 @@ const Statistics = ({ profile }) => {
     <div className="statistics-container">
       <h2>Statistics</h2>
 
-      <div className="stat-tabs">
+      <div className="stat-tabs-stat">
         {["weekly", "monthly", "quarterly", "yearly"].map((v) => (
           <button
             key={v}
@@ -282,7 +282,7 @@ const Statistics = ({ profile }) => {
       </div>
 
       {/* BAR */}
-      <div className="stat-card">
+      <div className="stat-card-stat">
         <h3>{viewType.toUpperCase()} Workouts</h3>
 
         <ResponsiveContainer width="100%" height={280}>
@@ -303,7 +303,7 @@ const Statistics = ({ profile }) => {
       </div>
 
       {/* PIE */}
-      <div className="stat-card">
+      <div className="stat-card-stat">
         <h3>Workout Distribution</h3>
 
         <ResponsiveContainer width="100%" height={340}>
@@ -333,7 +333,7 @@ const Statistics = ({ profile }) => {
       </div>
 
       {/* LINE */}
-      <div className="stat-card">
+      <div className="stat-card-stat">
         <h3> Calories Trend</h3>
 
         <ResponsiveContainer width="100%" height={280}>
@@ -354,46 +354,46 @@ const Statistics = ({ profile }) => {
 
       {/* SMALL STATS */}
 
-      <div className="stat-row">
+      <div className="stat-row-stat">
         {/* Weekly Comparison */}
-        <div className="stat-card small-card">
+        <div className="stat-card small-card-stat">
           <h4>
             <FaChartLine className="stat-icon" />
             Weekly Comparison
           </h4>
 
-          <div className="card-content">
+          <div className="card-content-stat">
             <p>This Week: {weeklyComparison.current}</p>
             <p>Last Week: {weeklyComparison.previous}</p>
 
-            <p className="progress-text">
+            <p className="progress-text-stat">
               {progressIcon} {progressMessage}
             </p>
           </div>
         </div>
 
         {/* Most Active Day */}
-        <div className="stat-card small-card">
+        <div className="stat-card small-card-stat">
           <h4>
-            <BsCalendarCheck className="stat-icon" />
+            <BsCalendarCheck className="stat-icon-stat" />
             Most Active Day
           </h4>
 
-          <div className="card-content">
+          <div className="card-content-stat">
             <h2>{mostActiveDay}</h2>
           </div>
         </div>
 
         {/* Calories */}
-        <div className="stat-card small-card">
+        <div className="stat-card small-card-stat">
           <div className="calorie-header">
             <h4>
-              <MdLocalFireDepartment className="stat-icon" />
+              <MdLocalFireDepartment className="stat-icon-stat" />
               Calories Stats
             </h4>
 
             <select
-              className="calorie-select"
+              className="calorie-select-stat"
               value={calorieView}
               onChange={(e) => setCalorieView(e.target.value)}
             >
@@ -403,7 +403,7 @@ const Statistics = ({ profile }) => {
             </select>
           </div>
 
-          <div className="card-content">
+          <div className="card-content-stat">
             <h1>
               {calorieView === "avg"
                 ? calorieStats.avg
@@ -416,13 +416,13 @@ const Statistics = ({ profile }) => {
         </div>
 
         {/* Consistency */}
-        <div className="stat-card small-card">
+        <div className="stat-card small-card-stat">
           <h4>
-            <AiOutlineRise className="stat-icon" />
+            <AiOutlineRise className="stat-icon-stat" />
             Consistency Score
           </h4>
 
-          <div className="card-content">
+          <div className="card-content-stat">
             <h1>{consistency}%</h1>
           </div>
         </div>

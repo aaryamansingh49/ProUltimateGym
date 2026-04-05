@@ -311,6 +311,62 @@
   
 }
 
+
+.profile-warning-wrapper {
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8fafc;
+}
+
+.profile-warning-card {
+  background: white;
+  padding: 40px 50px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
+  width: 90%;
+  animation: fadeIn 0.4s ease;
+}
+
+.profile-warning-card h2 {
+  color: #ef4444;
+  margin-bottom: 10px;
+}
+
+.profile-warning-card p {
+  color: #64748b;
+  margin-bottom: 25px;
+}
+
+.profile-warning-card button {
+  background: #ef4444;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.profile-warning-card button:hover {
+  background: #dc2626;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ================================
    RESPONSIVE
 ================================ */

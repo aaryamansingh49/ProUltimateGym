@@ -42,7 +42,6 @@ useEffect(() => {
     localStorage.removeItem("userKey");
     localStorage.removeItem("userId");
     localStorage.removeItem("userProfile");
-
     navigate("/login");
   };
 

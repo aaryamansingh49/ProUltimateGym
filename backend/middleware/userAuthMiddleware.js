@@ -5,10 +5,10 @@ import mongoose from "mongoose";
 dotenv.config();
 
 const userAuthMiddleware = (req, res, next) => {
-  // console.log("📩 AUTH HEADER:", req.headers.authorization);
   try {
     const authHeader = req.headers.authorization;
 
+    // ❌ No token
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
@@ -18,42 +18,41 @@ const userAuthMiddleware = (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    // IMPORTANT FIX (jwt malformed prevent)
+    // ❌ Invalid token
     if (!token || token === "undefined" || token === "null") {
-      // console.log("INVALID TOKEN RECEIVED:", token);
       return res.status(401).json({
         success: false,
         message: "Invalid token",
       });
     }
 
+    // 🔐 Verify
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // console.log("🔍 DECODED 👉", decoded);
+    // ⭐ ONLY id use (MAIN FIX)
+    const userId = decoded.id;
 
-    let userId = decoded._id || decoded.id;
-
-    if (userId && typeof userId !== "string") {
-      userId = userId.toString();
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Token payload invalid",
+      });
     }
 
-    // console.log(" USER ID FINAL ", userId);
-
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      // console.log(" INVALID USER ID:", userId);
-
       return res.status(400).json({
         success: false,
         message: "Invalid userId format",
       });
     }
 
+    // ✅ Attach
     req.userId = userId;
     req.user = decoded;
 
     next();
   } catch (error) {
-    console.log(" AUTH ERROR:", error.message);
+    console.log("❌ AUTH ERROR:", error.message);
 
     return res.status(401).json({
       success: false,

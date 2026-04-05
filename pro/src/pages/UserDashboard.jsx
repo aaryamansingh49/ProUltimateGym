@@ -56,6 +56,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
           const mergedProfile = {
             ...res.profile,
             profileImage: res.user?.profileImage || null,
+            profileCompleted: true,
           };
   
           // ✅ state update

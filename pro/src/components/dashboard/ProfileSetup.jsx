@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
 // import { saveProfile } from "../../api/profileApi";
 import "../../styles/dashboard/profileSetup.css";
+import { useNavigate } from "react-router-dom";
 
 const ProfileSetup = ({ profile, onSubmit, onClose }) => {
+  const navigate = useNavigate();
+  const handleClose = () => {
+    if (onClose) {
+      onClose(); // modal case
+    } else {
+      navigate("/dashboard"); // page case
+    }
+  };
+
+
   const isNewUser = localStorage.getItem("isNewUser") === "true";
 
   const [formData, setFormData] = useState({
@@ -26,18 +37,18 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     setFormData({
       ...formData,
       [name]: value,
     });
-  
+
     validateField(name, value);
   };
-  
+
   const validateField = (name, value) => {
     let newErrors = { ...errors };
-  
+
     if (name === "height") {
       if (value < 120 || value > 230) {
         newErrors.height =
@@ -46,7 +57,7 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
         delete newErrors.height;
       }
     }
-  
+
     if (name === "weight") {
       if (value < 35 || value > 250) {
         newErrors.weight =
@@ -55,32 +66,32 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
         delete newErrors.weight;
       }
     }
-  
+
     setErrors(newErrors);
   };
-  
+
   useEffect(() => {
     if (formData.height) {
       const heightM = formData.height / 100;
-  
+
       const minWeight = (18.5 * heightM * heightM).toFixed(1);
       const maxWeight = (24.9 * heightM * heightM).toFixed(1);
-  
+
       setHealthyRange({
         min: minWeight,
         max: maxWeight,
       });
     }
   }, [formData.height]);
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     if (errors.height || errors.weight) {
       alert("Please fix the errors before submitting.");
       return;
     }
-  
+
     try {
       // ✅ validation
       if (
@@ -92,7 +103,7 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
         alert("Please fill all required fields");
         return;
       }
-  
+
       // 🔥 FIX: send JSON instead of FormData
       const cleanData = {
         ...formData,
@@ -103,13 +114,12 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
           ? Number(formData.targetWeight)
           : undefined,
       };
-  
-      // console.log("SENDING DATA 👉", cleanData); 
-  
-      onSubmit(cleanData); 
-  
+
+      // console.log("SENDING DATA 👉", cleanData);
+
+      onSubmit(cleanData);
+
       localStorage.removeItem("isNewUser");
-  
     } catch (error) {
       console.error("Profile submit error:", error);
     }
@@ -118,15 +128,14 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
   return (
     <div className="profile-setup-overlay">
       <div className="profile-setup-card">
-        <button className="close-btn" onClick={onClose}>
-          ×
-        </button>
+       <button className="close-btn" onClick={handleClose}>
+  ×
+</button>
 
         <h2>Complete Your Profile</h2>
         <p className="subtitle">Please set up your body details</p>
 
         <form onSubmit={handleSubmit}>
-
           {!profile?.name && (
             <div className="form-group">
               <label>Name</label>
