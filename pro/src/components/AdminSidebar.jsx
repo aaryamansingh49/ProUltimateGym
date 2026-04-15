@@ -1,54 +1,67 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAdminAuth } from "../context/AdminAuthContext";
+import { LayoutDashboard, CreditCard,Users, RefreshCcw, LogOut } from "lucide-react";
+import "../styles/AdminSidebar.css";
 
 const menu = [
-  { name: "Dashboard", path: "/admin-dashboard" },
-  // { name: "Members", path: "/admin-members" },
-  // { name: "Trainers", path: "/admin-trainers" },
-  // { name: "Membership Plans", path: "/admin-plans" },
-  { name: "Payments", path: "/admin/payments" },
+  {
+    name: "Dashboard",
+    path: "/admin-dashboard",
+    icon: <LayoutDashboard size={18} />,
+  },
+  {
+    name: "Total Members",
+    path: "/admin/members",  
+    icon: <Users size={18} />,
+  },
+  {
+    name: "Pending Renewals",
+    path: "/admin/pending-renewals", 
+    icon: <RefreshCcw size={18} />,
+  },
+  {
+    name: "Payments",
+    path: "/admin/payments",
+    icon: <CreditCard size={18} />,
+  },
 ];
 
 export default function AdminSidebar() {
   const { logout } = useAdminAuth();
 
   return (
-    <aside className="w-72 bg-gray-900 text-gray-200 min-h-screen p-6">
-      <div className="mb-8">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-red-600 rounded flex items-center justify-center font-bold">G</div>
-          <div>
-            <div className="text-lg font-bold">PROULTIMATE</div>
-            <div className="text-sm text-gray-400">GYM Admin</div>
-          </div>
+    <aside className="admin-sidebar">
+      {/* TOP */}
+      <div>
+        <div className="admin-sidebar-header">
+        <h1 className="logo-text">
+  <span>Pro</span> <span>Ultimate Gyms</span>
+</h1>
+          {/* <p>Admin Panel</p> */}
         </div>
+
+        <nav className="admin-sidebar-menu">
+          {menu.map((m) => (
+            <NavLink
+              key={m.path}
+              to={m.path}
+              className={({ isActive }) =>
+                `admin-nav-link ${isActive ? "active" : ""}`
+              }
+            >
+              {m.icon}
+              {m.name}
+            </NavLink>
+          ))}
+        </nav>
       </div>
 
-      <nav className="flex flex-col gap-2">
-        {menu.map((m) => (
-          <NavLink
-            key={m.path}
-            to={m.path}
-            className={({ isActive }) =>
-              `py-2 px-4 rounded flex items-center text-sm ${
-                isActive ? "bg-red-600 text-white" : "text-gray-300 hover:bg-gray-800"
-              }`
-            }
-          >
-            {m.name}
-          </NavLink>
-        ))}
-      </nav>
-
-      <div className="mt-8">
-        <button
-          onClick={() => logout()}
-          className="w-full py-2 rounded bg-red-700 hover:bg-red-600 text-white"
-        >
-          Logout
-        </button>
-      </div>
+      {/* LOGOUT */}
+      <button onClick={logout} className="admin-logout-btn">
+        <LogOut size={18} />
+        Logout
+      </button>
     </aside>
   );
 }

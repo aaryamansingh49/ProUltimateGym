@@ -1,4 +1,3 @@
-// src/components/AdminCharts.jsx
 import React, { useEffect, useState } from "react";
 import {
   ResponsiveContainer,
@@ -10,15 +9,21 @@ import {
   LineChart,
   Line,
   CartesianGrid,
+  Cell,
 } from "recharts";
 import { useAdminAuth } from "../context/AdminAuthContext";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../api/config.js";
-
+import "../styles/AdminCharts.css";
 
 const API_BASE = BASE_URL;
 
-
+/* 🔥 COLOR LOGIC */
+const getBarColor = (value) => {
+  if (value <= 10000) return "#ef4444";  
+  if (value <= 30000) return "#f59e0b";  
+  return "#22c55e";                      
+};
 
 async function fetchChartData(adminToken) {
   const headers = {
@@ -27,18 +32,22 @@ async function fetchChartData(adminToken) {
   };
 
   const res = await fetch(`${API_BASE}/api/admin/chart-data`, { headers });
+
   if (res.status === 401) {
     const err = new Error("Unauthorized");
     err.status = 401;
     throw err;
   }
+
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(text || `HTTP ${res.status}`);
   }
+
   return res.json();
 }
 
+/* ================= REVENUE ================= */
 export function RevenueChart() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,51 +57,57 @@ export function RevenueChart() {
 
   useEffect(() => {
     let mounted = true;
-    setLoading(true);
-    setError(null);
 
     (async () => {
       try {
-        const json = await fetchChartData(adminToken || localStorage.getItem("adminToken"));
+        const json = await fetchChartData(
+          adminToken || localStorage.getItem("adminToken")
+        );
         if (!mounted) return;
         setData(json.revenue || []);
       } catch (err) {
-        console.error("Error fetching revenue data:", err);
+        console.error(err);
         if (err.status === 401) {
-          alert("Admin session required. Please login.");
+          alert("Login required");
           navigate("/admin-login");
           return;
         }
-        setError(err.message || "Failed to fetch revenue data");
+        setError("Failed to fetch revenue");
       } finally {
         if (mounted) setLoading(false);
       }
     })();
 
-    return () => {
-      mounted = false;
-    };
-    // refetch when adminToken changes
+    return () => (mounted = false);
   }, [adminToken, navigate]);
 
   return (
-    <div className="bg-gray-800 p-4 rounded-md">
-      <div className="text-sm text-gray-300 mb-3">Monthly Revenue</div>
-      <div style={{ width: "100%", height: 200 }} className="flex items-center justify-center">
+    <div className="chart-box-dark">
+      <h3 className="chart-title">Monthly Revenue</h3>
+
+      <div className="chart-container">
         {loading ? (
-          <p className="text-gray-400">Loading...</p>
+          <p className="chart-text">Loading...</p>
         ) : error ? (
-          <p className="text-red-400">{error}</p>
+          <p className="chart-error">{error}</p>
         ) : data.length === 0 ? (
-          <p className="text-gray-400">No data available</p>
+          <p className="chart-text">No data available</p>
         ) : (
           <ResponsiveContainer>
             <BarChart data={data}>
-              <CartesianGrid stroke="#2a2a2a" />
+              <CartesianGrid stroke="#374151" />
               <XAxis dataKey="month" stroke="#9ca3af" />
               <YAxis stroke="#9ca3af" />
               <Tooltip />
-              <Bar dataKey="revenue" barSize={18} fill="#22c55e" />
+
+              <Bar dataKey="revenue" barSize={22}>
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={getBarColor(entry.revenue)}
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         )}
@@ -101,6 +116,7 @@ export function RevenueChart() {
   );
 }
 
+/* ================= GROWTH ================= */
 export function GrowthChart() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -110,54 +126,53 @@ export function GrowthChart() {
 
   useEffect(() => {
     let mounted = true;
-    setLoading(true);
-    setError(null);
 
     (async () => {
       try {
-        const json = await fetchChartData(adminToken || localStorage.getItem("adminToken"));
+        const json = await fetchChartData(
+          adminToken || localStorage.getItem("adminToken")
+        );
         if (!mounted) return;
         setData(json.growth || []);
       } catch (err) {
-        console.error("Error fetching growth data:", err);
+        console.error(err);
         if (err.status === 401) {
-          alert("Admin session required. Please login.");
+          alert("Login required");
           navigate("/admin-login");
           return;
         }
-        setError(err.message || "Failed to fetch growth data");
+        setError("Failed to fetch growth");
       } finally {
         if (mounted) setLoading(false);
       }
     })();
 
-    return () => {
-      mounted = false;
-    };
+    return () => (mounted = false);
   }, [adminToken, navigate]);
 
   return (
-    <div className="bg-gray-800 p-4 rounded-md">
-      <div className="text-sm text-gray-300 mb-3">Member Growth Trend</div>
-      <div style={{ width: "100%", height: 200 }} className="flex items-center justify-center">
+    <div className="chart-box-dark">
+      <h3 className="chart-title">Member Growth Trend</h3>
+
+      <div className="chart-container">
         {loading ? (
-          <p className="text-gray-400">Loading...</p>
+          <p className="chart-text">Loading...</p>
         ) : error ? (
-          <p className="text-red-400">{error}</p>
+          <p className="chart-error">{error}</p>
         ) : data.length === 0 ? (
-          <p className="text-gray-400">No data available</p>
+          <p className="chart-text">No data available</p>
         ) : (
           <ResponsiveContainer>
             <LineChart data={data}>
-              <CartesianGrid stroke="#2a2a2a" />
+              <CartesianGrid stroke="#374151" />
               <XAxis dataKey="month" stroke="#9ca3af" />
               <YAxis stroke="#9ca3af" />
               <Tooltip />
               <Line
                 type="monotone"
                 dataKey="users"
-                stroke="#ef4444"
-                strokeWidth={2}
+                stroke="#3b82f6"
+                strokeWidth={3}
                 dot={false}
               />
             </LineChart>

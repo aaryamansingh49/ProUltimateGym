@@ -90,6 +90,7 @@ const Home = () => {
         >
           <img
             src="https://content3.jdmagicbox.com/comp/yamunanagar/d9/9999p1732.1732.230224113143.p9d9/catalogue/pro-ultimate-gyms-yamuna-nagar-yamunanagar-women-gyms-swng5p48au.jpg"
+           
             alt="Gym Reception"
             className="reception-img"
           />
@@ -118,13 +119,13 @@ const Home = () => {
             className="highlight"
             variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
           >
-          Ultimate Fitness Club
+          Pro Ultimate Gyms
           </motion.h2>
 
           <motion.p
             variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
           >
-            Ultimate Fitness Club is a rapidly growing gym franchise that is
+            Pro Ultimate Gyms is a rapidly growing gym franchise that is
             dedicated to helping individuals achieve their fitness goals. With
             45+ branches across the country, Pro Ultimate Gyms provides
             state-of-the-art equipment, knowledgeable trainers, and a supportive

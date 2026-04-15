@@ -48,8 +48,8 @@ const ExerciseCard = () => {
     <div className="simple-card" onClick={() => navigate("/workout/today")}>
   
       <div className="card-header">
-        <div className="pg-badge">UF</div>
-        <span className="sub">ULTIMATE FITNESS CLUB</span>
+        <div className="pg-badge">PUG</div>
+        <span className="sub">PRO ULTIMATE GYMS</span>
         <h2>Exercises</h2>
       </div>
   

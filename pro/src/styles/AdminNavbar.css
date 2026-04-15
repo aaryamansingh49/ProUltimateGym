@@ -1,0 +1,44 @@
+/* MAIN NAVBAR */
+.admin-navbar {
+
+    width: 100%;
+    height: 70px;
+    background: #111827; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    border-bottom: 1px solid #1e3a5f;
+  }
+  
+  /* LEFT SIDE */
+  .navbar-left h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+  
+  /* RIGHT SIDE */
+  .navbar-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* ADMIN INFO */
+  .admin-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e2e8f0;
+  }
+  
+  /* AVATAR */
+  .admin-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #334155;
+  }

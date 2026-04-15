@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import { saveProfile } from "../../api/profileApi";
+import { saveProfile } from "../../api/profileApi";
 import "../../styles/dashboard/profileSetup.css";
 import { useNavigate } from "react-router-dom";
 
@@ -84,27 +84,20 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
     }
   }, [formData.height]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (errors.height || errors.weight) {
       alert("Please fix the errors before submitting.");
       return;
     }
-
+  
+    if (!formData.age || !formData.height || !formData.weight || !formData.goal) {
+      alert("Please fill all required fields");
+      return;
+    }
+  
     try {
-      // ✅ validation
-      if (
-        !formData.age ||
-        !formData.height ||
-        !formData.weight ||
-        !formData.goal
-      ) {
-        alert("Please fill all required fields");
-        return;
-      }
-
-      // 🔥 FIX: send JSON instead of FormData
       const cleanData = {
         ...formData,
         age: Number(formData.age),
@@ -114,14 +107,34 @@ const ProfileSetup = ({ profile, onSubmit, onClose }) => {
           ? Number(formData.targetWeight)
           : undefined,
       };
-
-      // console.log("SENDING DATA 👉", cleanData);
-
-      onSubmit(cleanData);
-
+  
+      // 🔥 MAIN FIX
+      let response;
+  
+      if (onSubmit) {
+        // parent se aaya ho to use karo
+        response = await onSubmit(cleanData);
+      } else {
+        // direct API call (Meal / Exercise page ke liye)
+        response = await saveProfile(cleanData);
+      }
+  
+      // 🔥 cache update (IMPORTANT)
+      if (response?.profile) {
+        localStorage.setItem(
+          "userProfile",
+          JSON.stringify(response.profile)
+        );
+      }
+  
       localStorage.removeItem("isNewUser");
+  
+      alert("Profile Saved ✅");
+  
+      navigate("/dashboard");
     } catch (error) {
       console.error("Profile submit error:", error);
+      alert("Error saving profile");
     }
   };
 

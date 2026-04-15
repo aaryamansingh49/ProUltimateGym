@@ -60,9 +60,9 @@ useEffect(() => {
       {/* LOGO */}
       <div className="logo-wrapper">
         <div className="logo">
-          <span className="pro">ULTIMATE</span>&nbsp;
-          <span className="ultimate">FITNESS</span>&nbsp;
-          <span className="gyms">CLUB </span>
+          <span className="pro">Pro</span>&nbsp;
+          <span className="ultimate">Ultimate</span>&nbsp;
+          <span className="gyms">Gyms </span>
         </div>
       </div>
 

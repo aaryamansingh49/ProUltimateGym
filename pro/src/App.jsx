@@ -28,6 +28,7 @@ import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminPendingRenewals from "./pages/AdminPendingRenewals";
+import TotalMembers from "./pages/TotalMembers";
 
 //workout
 import TodayWorkout from "./pages/TodayWorkout";
@@ -167,6 +168,7 @@ const App = () => {
               {/* ================= ADMIN ROUTES ================= */}
 
               <Route path="/admin-login" element={<AdminLogin />} />
+              <Route path="/admin/members" element={<TotalMembers />} />
 
               <Route
                 path="/admin-dashboard"

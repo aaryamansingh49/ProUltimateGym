@@ -10,9 +10,9 @@ const Footer = () => {
         {/* Logo & Description */}
         <div className="footer-section">
         <h2 className="footer-brand">
-    <span className="pro">Pro</span> <span className="ultimate">Ultimate Gyms</span>
+    <span className="pro">Pro</span> <span className="ultimate"> Ultimate Gyms </span>
   </h2>
-          <p>Pro Ultimate Gyms is the brand with a difference. We have all the essentials you need for a great workout.</p>
+          <p>Pro Ultimate Gyms  is the brand with a difference. We have all the essentials you need for a great workout.</p>
           <div className="footer-icons">
             <FaFacebookF />
             <FaInstagram />

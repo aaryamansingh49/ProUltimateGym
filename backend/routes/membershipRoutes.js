@@ -18,7 +18,7 @@ const parseDateSafe = (dateStr) => {
   return isNaN(d.getTime()) ? null : d;
 };
 
-// 🟥 POST: Save membership & update user details
+//  POST: Save membership & update user details
 router.post("/membership", async (req, res) => {
   try {
     const {
@@ -37,6 +37,8 @@ router.post("/membership", async (req, res) => {
       purchasedBy
     } = req.body;
 
+    const isAdmin = purchasedBy === "Admin";
+
     // 🔹 Validate required fields
     if (
       !fullName || !email || !phone || !gender || !dob ||
@@ -52,16 +54,21 @@ today.setHours(0,0,0,0);
 
 const selectedDate = parseDateSafe(startDate);
 
-if (!selectedDate) {
-  return res.status(400).json({ message: "Invalid start date" });
-}
-
-// ❌ past date block
-if (selectedDate < today) {
+let actualStartDate;
+// ✅ ab safe hai use karna
+if (!isAdmin && selectedDate < today) {
   return res.status(400).json({
     message: "Start date cannot be in the past"
   });
 }
+
+// ❌ past date block
+// if (selectedDate < today) {
+//   return res.status(400).json({
+//     message: "Start date cannot be in the past"
+//   });
+// }
+
 
 // ❌ max 2 months future
 const maxDate = new Date();
@@ -102,7 +109,19 @@ for (let existingMembership of allMemberships) {
     const nutritionistRequired = membershipPlan === "Premium";
 
      /* 🔥 BACKEND FORCED START DATE (STRING) */
-     const actualStartDate = new Date().toISOString();
+    //  const actualStartDate = new Date().toISOString();
+
+//     const isAdmin = purchasedBy === "Admin";
+
+// let actualStartDate;
+
+// 🟢 ADMIN → custom date allowed
+if (isAdmin && startDate) {
+  actualStartDate = startDate;
+} else {
+  // 🔴 USER → always today
+  actualStartDate = new Date().toISOString();
+}
 
 
     // 🔹 Create new membership
@@ -258,6 +277,48 @@ router.get("/check-active-membership", async (req, res) => {
   }
 });
 
+
+// 🔴 DELETE MEMBERSHIP (ADMIN)
+router.delete("/delete-membership/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const membership = await Membership.findById(id);
+
+    if (!membership) {
+      return res.status(404).json({
+        success: false,
+        message: "Membership not found",
+      });
+    }
+
+    // 🔥 delete from DB
+    await Membership.findByIdAndDelete(id);
+
+    // 🔥 OPTIONAL: user update (plan reset)
+    const user = await User.findOne({ email: membership.email });
+
+    if (user) {
+      user.membershipPlan = null;
+      user.membershipStartDate = null;
+      user.assignedCoach = "No Coach";
+      user.nutritionist = "No Nutritionist";
+      await user.save();
+    }
+
+    res.json({
+      success: true,
+      message: "Membership deleted successfully",
+    });
+
+  } catch (err) {
+    console.error("❌ Delete Error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+});
 
 
 

@@ -1,0 +1,100 @@
+.admin-sidebar {
+  width: 260px;
+  background: #111827;
+  color: #e5e7eb;
+  padding: 20px;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  border-right: 1px solid #1f2937;
+}
+
+/* HEADER */
+.admin-sidebar-header h1 {
+  padding: 10px 0;
+  /* font-size: 17px;
+  font-weight: 600;
+  color: white; */
+}
+
+.logo-text {
+  font-size: 15px;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.logo-text::first-word {
+  color: red;
+}
+
+/* workaround kyunki ::first-word supported nahi hota */
+.logo-text span:first-child {
+  color: #ff0000;
+  border-bottom: 3px solid #ff0000;
+  padding-bottom: 2px;
+  margin-right: 6px;
+}
+
+.logo-text span:last-child {
+  color: #e5e7eb; /* sidebar dark hai to white tone */
+}
+
+.admin-sidebar-header p {
+  font-size: 12px;
+  margin-top: 4px;
+  color: #94a3b8;
+}
+
+/* MENU */
+.admin-sidebar-menu {
+  margin-top: 25px;
+}
+
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  margin-bottom: 10px;
+
+  color: #cbd5f5;
+  text-decoration: none;
+  border-radius: 8px;
+
+  transition: 0.2s;
+}
+
+.admin-nav-link:hover {
+  background: #1e293b;
+}
+
+.admin-nav-link.active {
+  background: #1e293b;
+  color: white;
+}
+
+/* LOGOUT */
+.admin-logout-btn {
+  padding: 12px;
+  margin-bottom: 70px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #1f2937;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #374151;
+}

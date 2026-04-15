@@ -38,7 +38,7 @@ const Plans = () => {
         {/* Pro Plan */}
         <div className="plan-card">
           <h3>Pro</h3>
-          <p className="price">₹12k/6mo</p>
+          <p className="price">₹10k/6mo</p>
           <ul>
             <li>✔ Full Gym Access</li>
             <li>✔ Access to all Equipment</li>

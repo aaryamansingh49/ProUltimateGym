@@ -76,7 +76,7 @@ const About = () => {
     <div className="about-page">
       {/* Header */}
       <div className="about-header">
-        <h1> PRO ULTIMATE GYMS</h1>
+        <h1> PRO ULTIMATE GYMS </h1>
         <p>YOUR ULTIMATE FITNESS DESTINATION</p>
       </div>
 
@@ -99,7 +99,7 @@ const About = () => {
           </p>{" "}
           <p>
             {" "}
-            Over the years, Pro Ultimate Gyms has evolved beyond weights and
+            Over the years, UFC has evolved beyond weights and
             machines — it has become a <strong>community of achievers</strong>,
             guided by certified trainers, equipped with advanced technology, and
             powered by motivation. Through our expanding network across North
@@ -246,7 +246,7 @@ const About = () => {
             </div>
             <h3>Bharat Pro Show 2025 - New Delhi</h3>
             <p>
-              Pro Ultimate was the title sponsor of Bharat Pro Show at IHFF.
+            Pro Ultimate Gyms was the title sponsor of Bharat Pro Show at IHFF.
             </p>
           </div>
 

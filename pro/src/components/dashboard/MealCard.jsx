@@ -55,8 +55,8 @@ const MealCard = () => {
     <div className="simple-card" onClick={goToMealPage}>
   
       <div className="card-header">
-        <div className="pg-badge">UF</div>
-        <span className="sub">ULTIMATE FITNESS CLUB</span>
+        <div className="pg-badge">PUG</div>
+        <span className="sub">PRO ULTIMATE GYMS</span>
         <h2>Meals</h2>
       </div>
   

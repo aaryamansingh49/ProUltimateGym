@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import getCurrentDay from "../utils/getCurrentDay";
 import { updateGoalProgress } from "../utils/goalProgress";
+import { FaFireAlt } from "react-icons/fa";
 import {
   getWorkoutByDay,
   getUserWorkoutProgress,
@@ -11,6 +12,13 @@ import { useNavigate } from "react-router-dom";
 import "../styles/dashboard/todayWorkout.css";
 
 const TodayWorkout = () => {
+  const todayDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+
   const [workout, setWorkout] = useState(null);
   const [completed, setCompleted] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -183,34 +191,81 @@ const TodayWorkout = () => {
       </div>
     );
   }
-
   return (
-    <div className="workout-page">
-      <h2>
-        {workout.day} – {workout.muscleGroup} Workout
-      </h2>
-
-      {workout.exercises.map((ex, index) => (
-        <div key={index} className="exercise-row">
-          <input
-            type="checkbox"
-            checked={completed[index]?.done || false}
-            onChange={() => toggleExercise(index)}
-          />
-
-          <span>
-            {ex.name} – {ex.sets}x{ex.reps}
-          </span>
-
-          <strong>{ex.calories} kcal</strong>
+    <div className="workout-wrapper">
+      <div className="workout-card">
+  
+        {/* Header */}
+        <header className="workout-header">
+          <h2>{workout.day} – {workout.muscleGroup} Workout</h2>
+         <p className="workout-date">{todayDate}</p>
+        </header>
+  
+        {/* Exercise Grid */}
+        <div className="exercise-grid">
+          {workout.exercises.map((ex, index) => (
+            <div
+              key={index}
+              className={`exercise-item ${
+                completed[index]?.done ? "checked" : ""
+              }`}
+              onClick={() => toggleExercise(index)}
+            >
+              <div className="exercise-left">
+                <div className="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    checked={completed[index]?.done || false}
+                    readOnly
+                  />
+                </div>
+  
+                <div className="exercise-info">
+                  <h4>{ex.name}</h4>
+                  <p>{ex.sets} sets × {ex.reps} reps</p>
+                </div>
+              </div>
+  
+              <div className="exercise-right">
+                {/* <FaFireAlt className="cal-icon" /> */}
+                <span className="cal-value">{ex.calories} kcal</span>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-
-      <h3>🔥 Total Calories Burned: {totalCalories}</h3>
-
-      <button onClick={saveProgress} disabled={loading}>
-        {loading ? "Saving..." : "Done"}
-      </button>
+  
+        {/* Summary */}
+        <footer className="workout-footer">
+          <div className="calories-summary">
+            <div className="summary-box">
+              <p>Active Burn</p>
+              <h4>{totalCalories} kcal</h4>
+            </div>
+            <div className="summary-box">
+              <p>Remaining</p>
+              <h4>
+                {workout.exercises
+                  .filter((_, i) => !completed[i]?.done)
+                  .reduce((acc, ex) => acc + ex.calories, 0)} kcal
+              </h4>
+            </div>
+          </div>
+  
+          <div className="total-display">
+            <p>TOTAL PROGRESS</p>
+            <h1>{totalCalories} <span>kcal</span></h1>
+          </div>
+  
+          <button 
+            className="done-btn" 
+            onClick={saveProgress} 
+            disabled={loading}
+          >
+            {loading ? "SAVING..." : "DONE"}
+          </button>
+        </footer>
+  
+      </div>
     </div>
   );
 };

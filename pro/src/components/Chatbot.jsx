@@ -35,19 +35,19 @@ const chatbotData = [
     type: "static",
     response: "Yes, online coaching is available under the 9 and 12-month plans."
   },
-  {
-    key: "membership_expiry",
-    question: "When my membership will expire?",
-    type: "protected",
-    loginRequired: true,
-    responseIfLoggedOut: "Please login to check your membership details."
-  },
-  {
-    question: "Which coach will train me?",
-    type: "protected",
-    loginRequired: true,
-    responseIfLoggedOut: "Login to see your assigned coach."
-  }
+  // {
+  //   key: "membership_expiry",
+  //   question: "When my membership will expire?",
+  //   type: "protected",
+  //   loginRequired: true,
+  //   responseIfLoggedOut: "Please login to check your membership details."
+  // },
+  // {
+  //   question: "Which coach will train me?",
+  //   type: "protected",
+  //   loginRequired: true,
+  //   responseIfLoggedOut: "Login to see your assigned coach."
+  // }
 ];
 
 const ChatBot = () => {
@@ -150,7 +150,7 @@ const ChatBot = () => {
             {!showMenu ? (
               <>
                 <div className="chatbot-response">
-                  Welcome to Pro Ultimate{username ? `, ${username}` : ""}
+                  Welcome to UFC{username ? `, ${username}` : ""}
                 </div>
                 <button
                   className="menu-button"

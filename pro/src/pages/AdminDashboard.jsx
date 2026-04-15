@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { FaUsers, FaDumbbell } from "react-icons/fa";
+import { MdAttachMoney, MdEventNote } from "react-icons/md";
 import AdminSidebar from "../components/AdminSidebar";
 import AdminNavbar from "../components/AdminNavbar";
 import { StatCard } from "../components/AdminCards";
@@ -30,18 +32,19 @@ export default function AdminDashboard() {
   const [error, setError] = useState(null);
   const { adminToken } = useAdminAuth();
 
-  // Fetch all memberships 
+  // Fetch all memberships
   useEffect(() => {
     const fetchMemberships = async () => {
       try {
         const res = await fetch(`${BASE_URL}/api/admin/all-memberships`, {
-
           headers: {
             "Content-Type": "application/json",
             ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
           },
         });
+
         if (!res.ok) throw new Error("Failed to fetch memberships");
+
         const data = await res.json();
         setMemberships(data);
       } catch (err) {
@@ -53,28 +56,26 @@ export default function AdminDashboard() {
     };
 
     fetchMemberships();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adminToken]);
 
-  // Dynamic calculations
+  // Calculations
   const totalMembers = memberships.length;
+
   const totalRevenue = memberships.reduce((sum, m) => {
-    const base = m.totalPrice || 0;
-    const renew = m.renewalRevenue || 0;
-    return sum + base + renew;
+    return sum + (m.totalPrice || 0) + (m.renewalRevenue || 0);
   }, 0);
-  
+
   const activeTrainers = new Set(
     memberships
-      .filter((m) => m.selectedTrainer && m.selectedTrainer.trim() !== "")
+      .filter((m) => m.selectedTrainer?.trim())
       .map((m) => m.selectedTrainer)
   ).size;
 
   const today = new Date();
+
   const pendingRenewals = memberships.filter((m) => {
     const end = computeEndDateFromPlan(m.startDate, m.membershipPlan);
-    if (!end) return false;
-    return end <= today; // expired memberships
+    return end && end <= today;
   }).length;
 
   return (
@@ -85,65 +86,114 @@ export default function AdminDashboard() {
         <AdminNavbar />
 
         {loading ? (
-          <div className="text-center text-gray-400 mt-20 text-lg">Loading data...</div>
+          <div className="text-center text-gray-400 mt-20 text-lg">
+            Loading data...
+          </div>
         ) : error ? (
           <div className="text-center text-red-400 mt-20 text-lg">{error}</div>
         ) : (
           <>
-            {/*Top Stat Cards */}
-            <section className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
-              <StatCard title="Total Members" value={totalMembers} />
-              <StatCard title="Active Trainers" value={activeTrainers} />
-              <StatCard
-                title="Membership Revenue (Total)"
-                value={`Rs ${totalRevenue.toLocaleString()}`}
-              />
-              {/* Pending Renewals stat card - includes link */}
-              <div className="bg-gray-800 p-4 rounded-md flex flex-col justify-between">
+            <section className="admin-stats-grid">
+              {/* Total Members */}
+              <Link to="/admin/members" className="admin-stat-card">
                 <div>
-                  <h3 className="text-sm text-gray-300">Pending Renewals</h3>
-                  <div className="text-2xl font-semibold mt-2">{pendingRenewals}</div>
+                  <p className="admin-card-title">Total Members</p>
+                  <h2> {totalMembers} </h2>
+                  <span className="admin-card-sub">+8% this month</span>
                 </div>
-                <div className="mt-4">
-                  <Link
-                    to="/admin/pending-renewals"
-                    className="inline-block px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white text-sm"
-                  >
-                    View Pending Renewals
-                  </Link>
+                <FaUsers className="admin-card-icon" />
+              </Link>
+
+              {/* Trainers */}
+              <div className="admin-stat-card">
+                <div>
+                  <p className="admin-card-title">Active Trainers</p>
+                  <h2>{activeTrainers}</h2>
                 </div>
+                <FaDumbbell className="admin-card-icon" />
+              </div>
+
+              {/* Revenue */}
+              <div className="admin-stat-card">
+                <div>
+                  <p className="admin-card-title">Total Membership Revenue</p>
+                  <h2>Rs {totalRevenue.toLocaleString()}</h2>
+                </div>
+                <MdAttachMoney className="admin-card-icon orange" />
+              </div>
+
+              {/* Pending */}
+              <div className="admin-stat-card special">
+                <div>
+                  <p className="admin-card-title">Pending Renewals</p>
+                  <h2>{pendingRenewals}</h2>
+                </div>
+
+                <MdEventNote className="admin-card-icon" />
+
+                <Link to="/admin/pending-renewals" className="admin-card-btn">
+                  View Details
+                </Link>
               </div>
             </section>
 
-            {/* Charts */}
+            {/* 📊 Charts */}
             <section className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
               <RevenueChart />
               <GrowthChart />
             </section>
 
-            {/* Info Boxes */}
-            <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-gray-800 p-4 rounded-md">
-                <h3 className="text-white font-semibold mb-2">Membership Plans</h3>
-                <div className="text-gray-300">
-                  Basic - $50 / Pro - $120 / Premium - $220
+            {/* 📦 Info Boxes */}
+            <section className="admin-info-grid">
+              {/* Membership Plans */}
+              <div className="admin-info-card">
+                <h3>Membership Plans</h3>
+
+                <div className="admin-plan-row">
+                  <span>Basic: Rs 6k/3mo</span>
+                  <span>Pro: Rs 10k/9mo</span>
+                  <span>Premium: Rs 20k/12mo</span>
                 </div>
+
+                <ul>
+                  <li>• Key features</li>
+                  <li>• Pro feature</li>
+                  <li>• Premium</li>
+                </ul>
               </div>
 
-              <div className="bg-gray-800 p-4 rounded-md">
-                <h3 className="text-white font-semibold mb-2">Equipment Status</h3>
-                <div className="text-gray-300 text-sm">
-                  Treadmill - Good, Dumbbells - Fair, Rowing Machine - Good
-                </div>
+              {/* Equipment */}
+              <div className="admin-info-card">
+                <h3>Equipment Status</h3>
+
+                <ul className="admin-equipment-list">
+                  <li>
+                    {/* 🏃 Treadmills: <span className="good">Good</span>,{" "} */}
+                    🏃 Treadmills:{" "}
+                    <span className="bad">Out of Order</span>
+                  </li>
+                  <li>
+                    🏋️ Dumbbells:{" "}
+                    <span className="good">All Good (20 sets)</span>
+                  </li>
+                  <li>
+                    🏋️ Bench Press:{" "}
+                    <span className="warn">1 Needs Maintenance</span>
+                  </li>
+                </ul>
               </div>
 
-              <div className="bg-gray-800 p-4 rounded-md">
-                <h3 className="text-white font-semibold mb-2">Announcements</h3>
-                <div className="text-gray-300 text-sm">No new announcements</div>
+              {/* Announcements */}
+              <div className="admin-info-card">
+                <h3>Announcements</h3>
+
+                <ul className="admin-announcement-list">
+                  <li>New Yoga Class starting Monday</li>
+                  <li>Holiday Hours: Closed Dec 25th</li>
+                  {/* <li>Trainer Spotlight: Welcome Mark!</li> */}
+                </ul>
               </div>
             </section>
-
-            
           </>
         )}
       </main>

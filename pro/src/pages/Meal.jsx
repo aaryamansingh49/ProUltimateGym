@@ -658,10 +658,8 @@ const Meal = () => {
       <div className="profile-warning-wrapper">
         <div className="profile-warning-card">
           <h2>⚠️ Complete Your Profile</h2>
-          <p>
-            Get your personalized meal plan by completing your profile.
-          </p>
-  
+          <p>Get your personalized meal plan by completing your profile.</p>
+
           <button onClick={() => navigate("/profile-edit")}>
             Complete Profile
           </button>
@@ -669,7 +667,7 @@ const Meal = () => {
       </div>
     );
   }
-  
+
   if (!meal || !macroTargets) return null;
 
   const sections = [
@@ -682,166 +680,156 @@ const Meal = () => {
 
   return (
     <div className="meal-wrapper">
-      <h1>Daily Meal Plan</h1>
+      <h1 className="meal-title">Daily Meal Plan</h1>
+      <p className="meal-date">
+        {new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
+      </p>
 
-      {sections.map((section) => {
-        const recommendations = suggestionTriggered
-        ? getSectionRecommendations(section.key, recommendationFoods)
-        : [];
+      <div className="meal-grid">
+        {sections.map((section) => {
+          const recommendations = suggestionTriggered
+            ? getSectionRecommendations(section.key, recommendationFoods)
+            : [];
 
-        return (
-          <div key={section.key} className="meal-section">
-            <div className="meal-header-row">
-              <h3>{section.title}</h3>
-
-              <button
-                className="add-food-btn"
-                onClick={() => {
-                  setActiveSection(section.key);
-                  setShowPopup(true);
-                }}
-              >
-                + Add
-              </button>
-            </div>
-
-            {/* DEFAULT FOODS */}
-
-            {section.data?.map((item, index) => {
-              const selected = selectedFoods.find(
-                (f) =>
-                  !f.isCustom &&
-                  f.sectionKey === section.key &&
-                  f.name === item.name
-              );
-
-              return (
-                <div
-                  key={index}
-                  className="meal-box"
-                  onClick={() => toggleDefaultFood(item, section.key)}
+          return (
+            <div key={section.key} className="meal-card">
+              <div className="meal-card-header">
+                <h3>{section.title}</h3>
+                <button
+                  className="add-btn"
+                  onClick={() => {
+                    setActiveSection(section.key);
+                    setShowPopup(true);
+                  }}
                 >
-                  <input
-                    type="checkbox"
-                    checked={!!selected}
-                    onChange={() => toggleDefaultFood(item, section.key)}
-                    onClick={(e) => e.stopPropagation()} // 🔥 IMPORTANT
-                  />
+                  + Add
+                </button>
+              </div>
 
-                  <div>
-                    <strong>{item.name}</strong>
-
-                    <div style={{ fontSize: "12px", color: "#666" }}>
-                      {/* Iron: {item.iron ?? 0} |
-                      Calcium: {item.calcium ?? 0} |
-                      Vitamin C: {item.vitaminC ?? 0} */}
-                    </div>
-                  </div>
-
-                  {selected && (
-                    <div className="qty-pill">
-                      <button
-                        onClick={() =>
-                          updateGrams(selected.instanceId, selected.grams - 10)
-                        }
-                      >
-                        −
-                      </button>
-
-                      <span>{selected.grams}g</span>
-
-                      <button
-                        onClick={() =>
-                          updateGrams(selected.instanceId, selected.grams + 10)
-                        }
-                      >
-                        +
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-
-            {/* CUSTOM FOODS */}
-
-            {selectedFoods
-              .filter((f) => f.sectionKey === section.key && f.isCustom)
-              .map((item) => (
-                <div key={item.instanceId} className="meal-box">
-                  <input
-                    type="checkbox"
-                    checked={true}
-                    onChange={() => removeFood(item.instanceId)}
-                  />
-
-                  <div>
-                    <strong>{item.name}</strong>
-
-                    <div style={{ fontSize: "12px", color: "#666" }}>
-                      {/* Iron: {item.iron ?? 0} |
-                      Calcium: {item.calcium ?? 0} |
-                      Vitamin C: {item.vitaminC ?? 0} */}
-                    </div>
-                  </div>
-
-                  <div className="qty-pill">
-                    <button
-                      onClick={() =>
-                        updateGrams(item.instanceId, item.grams - 10)
-                      }
-                    >
-                      −
-                    </button>
-
-                    <span>{item.grams}g</span>
-
-                    <button
-                      onClick={() =>
-                        updateGrams(item.instanceId, item.grams + 10)
-                      }
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              ))}
-
-            {/* SECTION RECOMMENDATION */}
-
-            {recommendations.length > 0 && (
-              <div className="section-recommend">
-                <h4>Suggested for {section.title}</h4>
-
-                {recommendations.map((food) => {
-                  const grams = calculateSmartGrams(food);
+              <div className="meal-items">
+                {/* DEFAULT FOODS */}
+                {section.data?.map((item, index) => {
+                  const selected = selectedFoods.find(
+                    (f) =>
+                      !f.isCustom &&
+                      f.sectionKey === section.key &&
+                      f.name === item.name
+                  );
 
                   return (
-                    <div key={food._id} className="meal-box">
-                      <strong>{food.name}</strong>
+                    <div
+                      key={index}
+                      className={`meal-row ${selected ? "selected" : ""}`}
+                      onClick={() => toggleDefaultFood(item, section.key)}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={!!selected}
+                        onChange={() => toggleDefaultFood(item, section.key)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
 
-                      <span style={{ marginLeft: "10px" }}>
-                        {grams}g recommended
+                      <span className="meal-name">{item.name}</span>
+
+                      {/* 👉 SAME SIZE ALWAYS */}
+                      <span className="meal-qty">
+                        {selected
+                          ? `${selected.grams}g`
+                          : item.quantity || "1 serving"}
                       </span>
-
-                      <button
-                        onClick={() => {
-                          setTempGrams(grams);
-                          addFoodToSection(food, section.key);
-                        }}
-                      >
-                        Add
-                      </button>
                     </div>
                   );
                 })}
-              </div>
-            )}
-          </div>
-        );
-      })}
 
-      {/* POPUP */}
+                {/* CUSTOM FOODS */}
+                {selectedFoods
+                  .filter((f) => f.sectionKey === section.key && f.isCustom)
+                  .map((item) => (
+                    <div key={item.instanceId} className="meal-row selected">
+                      <input
+                        type="checkbox"
+                        checked={true}
+                        onChange={() => removeFood(item.instanceId)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+
+                      <span className="meal-name">{item.name}</span>
+
+                      {/* 👉 EXACT SAME UI */}
+                      <div className="qty-pill">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateGrams(item.instanceId, item.grams - 10);
+                          }}
+                        >
+                          −
+                        </button>
+
+                        <span>{item.grams}g</span>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateGrams(item.instanceId, item.grams + 10);
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+
+              {recommendations.length > 0 && (
+                <div className="recommend-box">
+                  <h4>Suggested</h4>
+                  {recommendations.map((food) => {
+                    const grams = calculateSmartGrams(food);
+
+                    return (
+                      <div key={food._id} className="recommend-row">
+                        <span>{food.name}</span>
+                        <button
+                          onClick={() => {
+                            setTempGrams(grams);
+                            addFoodToSection(food, section.key);
+                          }}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* BUTTONS */}
+      <div className="action-buttons">
+        <button className="btn submit" onClick={handleSubmit}>
+          Submit Meal
+        </button>
+
+        <button className="btn reset" onClick={handleReset}>
+          Reset
+        </button>
+
+        <button
+          className="btn recommend"
+          onClick={() => setSuggestionTriggered((prev) => !prev)}
+        >
+          {suggestionTriggered ? "Hide Recommendation" : "Check Recommendation"}
+        </button>
+      </div>
 
       {showPopup && (
         <div className="food-popup">
@@ -870,69 +858,58 @@ const Meal = () => {
         </div>
       )}
 
-      {/* BUTTONS */}
+     
+      {/* NUTRITION */}
+<div className="nutrition-bar">
+  <div>
+    <p>Calories</p>
+    <strong>
+      {totalNutrition.calories.toFixed(0)} / {macroTargets.calories} kcal
+    </strong>
+  </div>
 
-      <div style={{ marginTop: 20, display: "flex", gap: "10px" }}>
-        <button className="submit-btn" onClick={handleSubmit}>
-          Submit Meal
-        </button>
+  <div>
+    <p>Protein</p>
+    <strong>
+      {totalNutrition.protein.toFixed(0)} / {macroTargets.protein} g
+    </strong>
+  </div>
 
-        <button
-          className="submit-btn"
-          style={{ background: "#333" }}
-          onClick={handleReset}
-        >
-          Reset
-        </button>
+  <div>
+    <p>Carbs</p>
+    <strong>
+      {totalNutrition.carbs.toFixed(0)} / {macroTargets.carbs} g
+    </strong>
+  </div>
 
-        <button
-    className="submit-btn"
-    style={{ background: "orange" }}
-    onClick={() => setSuggestionTriggered(true)}
-  >
-    Check Recommendation
-  </button>
+  <div>
+    <p>Fats</p>
+    <strong>
+      {totalNutrition.fats.toFixed(0)} / {macroTargets.fats} g
+    </strong>
+  </div>
 
-      </div>
+  <div>
+    <p>Iron</p>
+    <strong>
+      {totalNutrition.iron.toFixed(0)} / {microTargets?.iron} mg
+    </strong>
+  </div>
 
-      {/* NUTRITION SUMMARY */}
+  <div>
+    <p>Calcium</p>
+    <strong>
+      {totalNutrition.calcium.toFixed(0)} / {microTargets?.calcium} mg
+    </strong>
+  </div>
 
-      <div className="nutrition">
-        <p>
-          Calories: {totalNutrition.calories.toFixed(1)} /{" "}
-          {macroTargets.calories}
-        </p>
-
-        <p>
-          Protein: {totalNutrition.protein.toFixed(1)} / {macroTargets.protein}
-        </p>
-
-        <p>
-          Carbs: {totalNutrition.carbs.toFixed(1)} / {macroTargets.carbs}
-        </p>
-
-        <p>
-          Fats: {totalNutrition.fats.toFixed(1)} / {macroTargets.fats}
-        </p>
-
-        {microTargets && (
-          <>
-            <p>
-              Iron: {totalNutrition.iron.toFixed(1)} / {microTargets.iron}
-            </p>
-
-            <p>
-              Calcium: {totalNutrition.calcium.toFixed(1)} /{" "}
-              {microTargets.calcium}
-            </p>
-
-            <p>
-              Vitamin C: {totalNutrition.vitaminC.toFixed(1)} /{" "}
-              {microTargets.vitaminC}
-            </p>
-          </>
-        )}
-      </div>
+  <div>
+    <p>Vitamin C</p>
+    <strong>
+      {totalNutrition.vitaminC.toFixed(0)} / {microTargets?.vitaminC} mg
+    </strong>
+  </div>
+</div>
     </div>
   );
 };

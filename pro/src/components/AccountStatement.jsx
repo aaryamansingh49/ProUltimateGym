@@ -45,9 +45,9 @@ const AccountStatement = ({ userEmail }) => {
     //  Title
     doc.setFontSize(26);
     doc.setTextColor(255, 0, 0);
-    doc.text("Pro", 85, 25);
+    doc.text("PRO", 52, 25);
     doc.setTextColor(0, 0, 0);
-    doc.text("Ultimate Gym", 100, 25);
+    doc.text("ULTIMATE GYMS", 80, 25);
   
     //  Subheading
     doc.setFontSize(18);
@@ -79,7 +79,7 @@ const AccountStatement = ({ userEmail }) => {
         const finalY = data.cursor.y + 10; 
         doc.setFontSize(10);
         doc.setTextColor(150);
-        doc.text("Thank you for choosing Pro Ultimate Gym!", doc.internal.pageSize.getWidth()/2, finalY, { align: "center" });
+        doc.text("Thank you for choosing PRO ULTIMATE GYMS!", doc.internal.pageSize.getWidth()/2, finalY, { align: "center" });
       }
     });
   
